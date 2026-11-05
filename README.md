@@ -21,3 +21,7 @@ on the database; it ends with "MOOC TEST PASSED (rolled back)".
 `docs/test_lecture.html` signs in as a student, enrols, goes through a course's lectures and shows a log of every
 database call. Served by GitHub Pages (Settings → Pages → branch `main`, folder `/docs`) at
 https://octainsight.github.io/mooc/test_lecture.html (other courses: `?course=<course address>`).
+
+Public pages, also in `docs/`:
+- `award.html?id=<award id>`: a certificate or badge with the student's name, verification, download (image/PDF) and sharing (LinkedIn "Add to profile", LinkedIn, Facebook, X).
+- `profile.html?u=<username>`: a student's public page with all awards and course progress.

@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CloudEARTHi MOOC Award</title>
+<meta name="description" content="A certificate or badge earned on the CloudEARTHi MOOC. Each award has its own verification number.">
+<meta property="og:title" content="CloudEARTHi MOOC: certificate or badge">
+<meta property="og:description" content="Earned on the CloudEARTHi MOOC. Open the page to see and verify it.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#2a78d6;--blue-dark:#1d5fae;--bg:#ffffff;--side:#f4f3ef;--line:#e4e3df;--text:#0b0b0b;--muted:#6b6a66;--ok:#1d6b3a;--ok-soft:#e7f5ec;--bad:#a3261b;--bad-soft:#fdecea}
+*{box-sizing:border-box}
+body{margin:0;background:var(--side);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+header{display:flex;align-items:center;gap:12px;padding:12px 20px;background:#fff;border-bottom:1px solid var(--line)}
+header .brand{font-weight:700}
+header .brand span{color:var(--blue)}
+main{max-width:1060px;margin:0 auto;padding:24px 16px 48px}
+.stage{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 10px 40px rgba(20,30,50,.06)}
+.stage img{display:block;width:100%;height:auto;border-radius:6px}
+.badge-stage img{max-width:520px;margin:0 auto}
+h1{font-size:1.4rem;margin:22px 0 4px}
+.muted{color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-weight:600;font-size:.92rem;border-radius:9px;padding:9px 15px;border:1px solid var(--line);background:#fff;color:var(--text);cursor:pointer;text-decoration:none}
+.btn:hover{border-color:#c9c7c0}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.primary:hover{background:var(--blue-dark)}
+.btn.li{background:#0a66c2;border-color:#0a66c2;color:#fff}
+.grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-top:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.card h2{font-size:1rem;margin:0 0 8px}
+.verified{display:inline-flex;align-items:center;gap:6px;background:var(--ok-soft);color:var(--ok);border-radius:20px;padding:3px 11px;font-weight:600;font-size:.85rem}
+.revoked{background:var(--bad-soft);color:var(--bad)}
+dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;font-size:.92rem}
+dt{color:var(--muted)}
+dd{margin:0;word-break:break-all}
+.copied{color:var(--ok);font-size:.85rem;margin-left:4px}
+.hidden{display:none!important}
+@media (max-width:760px){.grid{grid-template-columns:1fr}}
+@media print{
+  @page{size:A4 landscape;margin:0}
+  body{background:#fff}
+  header,.no-print,.grid,h1,.sub{display:none!important}
+  main{padding:0;max-width:none}
+  .stage{border:0;box-shadow:none;padding:0;border-radius:0}
+  .stage img{border-radius:0;width:100vw;height:100vh;object-fit:contain}
+}
+</style>
+</head>
+<body>
+<header><div class="brand">🎓 CloudEARTHi <span>MOOC</span></div><span class="muted" style="margin-left:auto;font-size:.9rem">Verified award</span></header>
+<main>
+  <div id="msg" class="card hidden"></div>
+  <div id="page" class="hidden">
+    <div class="stage" id="stage"><img id="pic" alt=""></div>
+    <h1 id="title"></h1>
+    <div class="muted sub" id="sub"></div>
+
+    <div class="row no-print">
+      <a class="btn li" id="li-add" target="_blank" rel="noopener">in&nbsp; Add to LinkedIn profile</a>
+      <a class="btn" id="li-share" target="_blank" rel="noopener">Share on LinkedIn</a>
+      <a class="btn" id="fb" target="_blank" rel="noopener">Share on Facebook</a>
+      <a class="btn" id="x" target="_blank" rel="noopener">Share on X</a>
+      <button class="btn" id="copy">🔗 Copy link</button><span class="copied hidden" id="copied">Copied</span>
+    </div>
+    <div class="row no-print">
+      <button class="btn primary" id="png">⬇ Download image</button>
+      <button class="btn" id="pdf">🖨 Save as PDF</button>
+      <a class="btn" id="profile">👤 All awards of <span id="pname"></span></a>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>What this shows</h2>
+        <div id="desc"></div>
+        <div id="outcomes"></div>
+      </div>
+      <div class="card">
+        <h2>Verification</h2>
+        <div id="status" style="margin-bottom:10px"></div>
+        <dl>
+          <dt>Awarded to</dt><dd id="v-name"></dd>
+          <dt>Issued</dt><dd id="v-date"></dd>
+          <dt>Course</dt><dd id="v-course"></dd>
+          <dt>Issuer</dt><dd>CloudEARTHi MOOC · Octa Insight</dd>
+          <dt>Award ID</dt><dd id="v-id"></dd>
+        </dl>
+        <p class="muted" style="font-size:.82rem;margin-bottom:0">This page is read live from the MOOC database, so it always shows whether the award is valid.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<canvas id="cv" class="hidden"></canvas>
+<script>
+const DB_URL = "https://uxqeukvmnfvpgsxktgvo.supabase.co";
+const DB_KEY = "sb_publishable_oFEaDte2Hy-gGsqpa9kWeQ_HuMm6dou";
+const ISSUER = "CloudEARTHi MOOC";
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const id = new URLSearchParams(location.search).get("id") || "";
+
+function fail(text) { $("msg").innerHTML = text; $("msg").classList.remove("hidden"); }
+
+async function rpc(fn, args) {
+  const r = await fetch(`${DB_URL}/rest/v1/rpc/${fn}`, { method: "POST", body: JSON.stringify(args),
+    headers: { apikey: DB_KEY, Authorization: `Bearer ${DB_KEY}`, "Content-Type": "application/json" } });
+  if (!r.ok) throw new Error(`The database answered ${r.status}`);
+  return r.json();
+}
+
+function loadImage(src) {
+  return new Promise(res => {
+    if (!src) return res(null);
+    const im = new Image(); im.crossOrigin = "anonymous";
+    im.onload = () => res(im); im.onerror = () => res(null); im.src = src;
+  });
+}
+
+// ------------------------------------------------------------------ drawing helpers
+function fitText(ctx, text, maxW, size, font) {
+  let s = size;
+  do { ctx.font = font.replace("{s}", s); s -= 2; } while (ctx.measureText(text).width > maxW && s > 14);
+}
+function wrap(ctx, text, x, y, maxW, lh) {
+  const words = String(text).split(/\s+/); let line = "", lines = [];
+  for (const w of words) { const t = line ? line + " " + w : w; if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; }
+  if (line) lines.push(line);
+  lines.slice(0, 3).forEach((l, i) => ctx.fillText(l, x, y + i * lh));
+  return lines.length;
+}
+function roundImage(ctx, im, cx, cy, r) {
+  ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.closePath(); ctx.clip();
+  const s = Math.max((2 * r) / im.width, (2 * r) / im.height);
+  ctx.drawImage(im, cx - im.width * s / 2, cy - im.height * s / 2, im.width * s, im.height * s);
+  ctx.restore();
+}
+function medal(ctx, cx, cy, r, emoji) {
+  const g = ctx.createRadialGradient(cx - r / 3, cy - r / 3, r / 6, cx, cy, r);
+  g.addColorStop(0, "#5c9ee8"); g.addColorStop(1, "#1d5fae");
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+  ctx.font = `${r}px "Apple Color Emoji","Segoe UI Emoji",sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillText(emoji, cx, cy + r * .06); ctx.textBaseline = "alphabetic";
+}
+function ring(ctx, cx, cy, r) {
+  ctx.lineWidth = 6; ctx.strokeStyle = "#c9a646"; ctx.beginPath(); ctx.arc(cx, cy, r + 8, 0, Math.PI * 2); ctx.stroke();
+  ctx.lineWidth = 2; ctx.strokeStyle = "#2a78d6"; ctx.beginPath(); ctx.arc(cx, cy, r + 17, 0, Math.PI * 2); ctx.stroke();
+}
+
+// ------------------------------------------------------------------ certificate (A4 landscape) and badge (square)
+function drawCertificate(a, im, name, date) {
+  const cv = $("cv"), W = 2000, H = 1414, ctx = cv.getContext("2d");
+  cv.width = W; cv.height = H;
+  ctx.fillStyle = "#fffdf8"; ctx.fillRect(0, 0, W, H);
+  // corner wash
+  const g = ctx.createLinearGradient(0, 0, W, H); g.addColorStop(0, "rgba(42,120,214,.10)"); g.addColorStop(.5, "rgba(42,120,214,0)"); g.addColorStop(1, "rgba(201,166,70,.12)");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  // frames
+  ctx.strokeStyle = "#2a78d6"; ctx.lineWidth = 10; ctx.strokeRect(48, 48, W - 96, H - 96);
+  ctx.strokeStyle = "#c9a646"; ctx.lineWidth = 3; ctx.strokeRect(78, 78, W - 156, H - 156);
+  ctx.textAlign = "center"; ctx.fillStyle = "#0b0b0b";
+  ctx.font = '700 34px Inter, sans-serif'; ctx.fillStyle = "#2a78d6"; ctx.fillText("CLOUDEARTHI MOOC", W / 2, 190);
+  ctx.fillStyle = "#0b0b0b"; ctx.font = '600 92px "Cormorant Garamond", Georgia, serif';
+  ctx.fillText(a.kind === "certificate" ? "Certificate of Completion" : "Badge of Achievement", W / 2, 300);
+  ctx.font = '400 34px Inter, sans-serif'; ctx.fillStyle = "#6b6a66"; ctx.fillText("This is to certify that", W / 2, 395);
+  // name
+  ctx.fillStyle = "#0b0b0b"; fitText(ctx, name, W - 520, 120, 'italic 500 {s}px "Cormorant Garamond", Georgia, serif');
+  ctx.fillText(name, W / 2, 530);
+  ctx.strokeStyle = "#c9a646"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(W / 2 - 520, 565); ctx.lineTo(W / 2 + 520, 565); ctx.stroke();
+  ctx.font = '400 34px Inter, sans-serif'; ctx.fillStyle = "#6b6a66";
+  ctx.fillText(a.kind === "certificate" ? "has successfully completed the course" : "has earned the badge", W / 2, 640);
+  ctx.fillStyle = "#0b0b0b"; fitText(ctx, a.kind === "certificate" ? a.course.title : a.title, W - 560, 66, '700 {s}px Inter, sans-serif');
+  ctx.fillText(a.kind === "certificate" ? a.course.title : a.title, W / 2, 730);
+  ctx.font = '400 30px Inter, sans-serif'; ctx.fillStyle = "#6b6a66";
+  const line2 = a.kind === "certificate" ? a.title : `in the course ${a.course.title}`;
+  wrap(ctx, line2 + (a.project ? ` · ${a.project.title}` : ""), W / 2, 795, W - 600, 40);
+  // emblem
+  const cx = W / 2, cy = 1010, r = 118;
+  ring(ctx, cx, cy, r);
+  if (im) roundImage(ctx, im, cx, cy, r); else medal(ctx, cx, cy, r, a.kind === "certificate" ? "📜" : "🏅");
+  // footer: date, issuer, id
+  ctx.fillStyle = "#0b0b0b"; ctx.font = '600 32px Inter, sans-serif';
+  ctx.fillText(date, 430, 1080); ctx.fillText(ISSUER, W - 430, 1080);
+  ctx.strokeStyle = "#0b0b0b"; ctx.lineWidth = 1.5;
+  [[430], [W - 430]].forEach(([x]) => { ctx.beginPath(); ctx.moveTo(x - 220, 1100); ctx.lineTo(x + 220, 1100); ctx.stroke(); });
+  ctx.font = '400 26px Inter, sans-serif'; ctx.fillStyle = "#6b6a66";
+  ctx.fillText("Date of issue", 430, 1140); ctx.fillText("Issued by · Octa Insight", W - 430, 1140);
+  ctx.font = '400 22px Inter, sans-serif';
+  ctx.fillText(`Verify at ${location.origin}${location.pathname}?id=${a.id}`, W / 2, H - 120);
+}
+function drawBadge(a, im, name, date) {
+  const cv = $("cv"), S = 1200, ctx = cv.getContext("2d");
+  cv.width = S; cv.height = S;
+  const g = ctx.createLinearGradient(0, 0, S, S); g.addColorStop(0, "#eef5fd"); g.addColorStop(1, "#fbf6e8");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, S, S);
+  ctx.textAlign = "center";
+  ctx.font = '700 34px Inter, sans-serif'; ctx.fillStyle = "#2a78d6"; ctx.fillText("CLOUDEARTHI MOOC · BADGE", S / 2, 110);
+  const cx = S / 2, cy = 400, r = 220;
+  ring(ctx, cx, cy, r);
+  if (im) roundImage(ctx, im, cx, cy, r); else medal(ctx, cx, cy, r, "🏅");
+  ctx.fillStyle = "#0b0b0b"; fitText(ctx, a.title, S - 160, 64, '700 {s}px Inter, sans-serif'); ctx.fillText(a.title, S / 2, 740);
+  ctx.font = '400 30px Inter, sans-serif'; ctx.fillStyle = "#6b6a66"; wrap(ctx, a.course.title, S / 2, 795, S - 200, 38);
+  ctx.font = '400 30px Inter, sans-serif'; ctx.fillText("earned by", S / 2, 900);
+  ctx.fillStyle = "#0b0b0b"; fitText(ctx, name, S - 160, 84, 'italic 500 {s}px "Cormorant Garamond", Georgia, serif'); ctx.fillText(name, S / 2, 990);
+  ctx.font = '400 26px Inter, sans-serif'; ctx.fillStyle = "#6b6a66"; ctx.fillText(date, S / 2, 1060);
+  ctx.font = '400 20px Inter, sans-serif'; ctx.fillText(`Verify: ${location.origin}${location.pathname}?id=${a.id}`, S / 2, S - 50);
+}
+
+// ------------------------------------------------------------------ page
+(async () => {
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return fail("This award address is not complete. Open the link you were given again.");
+  let a;
+  try { a = await rpc("mooc_award", { p_id: id }); } catch (e) { return fail("The award could not be loaded: " + esc(e.message)); }
+  if (!a || !a.ok) return fail("No award with this number exists. It may have been typed wrongly.");
+  const r = a.recipient, name = [r.first_name, r.last_name].filter(Boolean).join(" ") || r.username;
+  const issued = new Date(a.issued_at);
+  const date = issued.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  const kindWord = a.kind === "certificate" ? "certificate" : "badge";
+  document.title = `${name} · ${a.title}`;
+
+  await document.fonts.ready;
+  try { await Promise.all(['600 92px "Cormorant Garamond"', 'italic 500 120px "Cormorant Garamond"', '700 40px Inter', '400 30px Inter'].map(f => document.fonts.load(f))); } catch (e) {}
+  const im = await loadImage(a.image_url);
+  (a.kind === "certificate" ? drawCertificate : drawBadge)(a, im, name, date);
+  let pngUrl = null;
+  try { pngUrl = $("cv").toDataURL("image/png"); }
+  catch (e) {                              // the design image does not allow copying: draw without it
+    (a.kind === "certificate" ? drawCertificate : drawBadge)(a, null, name, date); pngUrl = $("cv").toDataURL("image/png");
+  }
+  $("pic").src = pngUrl; $("pic").alt = `${kindWord} for ${name}: ${a.title}`;
+  if (a.kind !== "certificate") $("stage").classList.add("badge-stage");
+
+  $("title").textContent = a.title;
+  $("sub").textContent = `${a.kind === "certificate" ? "Certificate" : "Badge"} awarded to ${name} on ${date} · ${a.course.title}`;
+  $("desc").innerHTML = a.description ? `<p style="margin-top:0">${esc(a.description)}</p>` : "";
+  const outs = (a.course.outcomes || []);
+  $("outcomes").innerHTML = outs.length ? `<p style="margin-bottom:4px"><b>Learning outcomes of the course</b></p><ul style="margin-top:0">${outs.map(o => `<li>${esc(o)}</li>`).join("")}</ul>` : "";
+  $("status").innerHTML = a.revoked ? `<span class="verified revoked">✖ This award has been withdrawn</span>`
+                                    : `<span class="verified">✔ Valid award</span>`;
+  $("v-name").textContent = name; $("v-date").textContent = date; $("v-course").textContent = a.course.title; $("v-id").textContent = a.id;
+  $("pname").textContent = name;
+  $("profile").href = `profile.html?u=${encodeURIComponent(r.username)}`;
+
+  // sharing
+  const url = location.origin + location.pathname + "?id=" + a.id;
+  const text = `I earned the ${kindWord} "${a.title}" on the CloudEARTHi MOOC (${a.course.title}).`;
+  const li = new URLSearchParams({ startTask: "CERTIFICATION_NAME", name: a.title, organizationName: ISSUER,
+    issueYear: issued.getFullYear(), issueMonth: issued.getMonth() + 1, certUrl: url, certId: a.id });
+  $("li-add").href = "https://www.linkedin.com/profile/add?" + li;
+  $("li-share").href = "https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(url);
+  $("fb").href = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url);
+  $("x").href = "https://twitter.com/intent/tweet?" + new URLSearchParams({ text, url });
+  $("copy").onclick = async () => {
+    try { await navigator.clipboard.writeText(url); } catch (e) { prompt("Copy this link:", url); }
+    $("copied").classList.remove("hidden"); setTimeout(() => $("copied").classList.add("hidden"), 2000);
+  };
+  $("png").onclick = () => {
+    const link = document.createElement("a");
+    link.download = `${a.kind}-${name.replace(/[^A-Za-z0-9]+/g, "-")}-${a.title.replace(/[^A-Za-z0-9]+/g, "-")}.png`.toLowerCase();
+    link.href = pngUrl; link.click();
+  };
+  $("pdf").onclick = () => window.print();
+  if (a.revoked) ["li-add", "li-share", "fb", "x"].forEach(k => $(k).classList.add("hidden"));
+  $("page").classList.remove("hidden");
+})();
+</script>
+</body>
+</html>

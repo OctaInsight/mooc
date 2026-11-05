@@ -186,6 +186,7 @@ function showWho() {
   const w = $("who");
   if (me) {
     w.innerHTML = `<span>👤 <b>${esc([me.first_name, me.last_name].filter(Boolean).join(" ") || me.username)}</b> (${esc(me.username)})</span>
+                   <a href="profile.html?u=${encodeURIComponent(me.username)}" target="_blank" rel="noopener">My public profile</a>
                    <button id="logout">Log out</button>`;
     $("logout").onclick = async () => {
       try { await rpc("octa_user_logout", { p_token: token, p_app: "octa_mooc" }); } catch (e) {}
@@ -307,7 +308,10 @@ function badgeStatus(b) {
   const icon = b.kind === "certificate" ? "📜" : "🏅";
   const lects = (view.lectures || []).filter(l => (b.lecture_ids || []).length ? b.lecture_ids.includes(l.id) : l.status === "published");
   const steps = lects.flatMap(l => l.steps).filter(s => s.required);
-  if (b.award_id) return `<div class="card" style="padding:10px 14px;border-color:#b8e0c6;background:var(--ok-soft)">${icon} <b>${esc(b.title)}</b> — earned ✓</div>`;
+  if (b.award_id) return `<div class="card" style="padding:10px 14px;border-color:#b8e0c6;background:var(--ok-soft);display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    ${icon} <b>${esc(b.title)}</b> — earned ✓
+    <a class="pill" style="margin-left:auto;background:#fff;color:var(--blue);border-color:var(--blue);text-decoration:none;font-size:.85rem;padding:3px 10px"
+       href="award.html?id=${b.award_id}" target="_blank" rel="noopener">See your ${b.kind} and share it →</a></div>`;
   const which = (b.lecture_ids || []).length ? lects.map(l => esc(l.title)).join(", ") : "all lectures";
   let mine = "";
   if (view.enrolled) {
@@ -340,7 +344,7 @@ async function record(step, verb, position = null, data = {}) {
 }
 function showAwards(list) {
   (list || []).forEach(a => toast(`<div style="font-size:1.6rem">${a.kind === "certificate" ? "📜" : "🏅"}</div>
-    <b>You earned: ${esc(a.title)}</b><br><span class="muted">It now shows on your public profile.</span>`, 9000));
+    <b>You earned: ${esc(a.title)}</b><br><a href="award.html?id=${a.award_id}" target="_blank" rel="noopener">See it with your name and share it →</a>`, 15000));
 }
 async function complete(step) {
   const r = await record(step, "completed");
