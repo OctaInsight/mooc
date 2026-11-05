@@ -361,32 +361,49 @@ def questions_editor(step, lid):
         if cols[2].button("✕", key=f"dq_{q['id']}", help="Delete question"):
             S["mc_open_lecture"], S["mc_edit_step"] = lid, sid
             run("delete", what="question", id=q["id"]) and st.rerun()
-    with st.form(f"newq_{sid}", clear_on_submit=True):
+    added = S.pop("mc_q_added", None)
+    if added and added[0] == sid:
+        st.success(f"Question added{' at ' + added[1] if added[1] else ''}. "
+                   + ("Students will see it when the video reaches that moment." if kind == "video" else ""))
+    n = S.get(f"mc_qform_{sid}", 0)          # a new form key after each saved question gives an empty form
+    with st.form(f"newq_{sid}_{n}"):
+        st.markdown("**➕ New question**")
         cols = st.columns([1, 3])
-        at = cols[0].text_input(f"Show {where}") if where else None
+        at = cols[0].text_input(f"Show {where}", placeholder="1:30" if kind == "video" else "3") if where else None
         prompt = cols[1].text_input("Question")
         qkind = st.radio("Type", ["single", "multiple", "truefalse"], horizontal=True,
                          format_func={"single": "One right answer", "multiple": "Several right answers", "truefalse": "True / false"}.get)
-        opts = st.text_area("Answers, one per line (ignored for true/false)", height=100)
-        right = st.text_input("Number(s) of the right answer(s), e.g. 1 or 1,3 (true/false: 1 = True, 2 = False)")
+        st.caption("Answers — write each answer and tick the right one(s). Empty lines are ignored. "
+                   "For true / false, only tick True or False below.")
+        answers = []
+        for i in range(5):
+            a, b = st.columns([6, 1])
+            answers.append((a.text_input(f"Answer {i + 1}", key=f"q_{sid}_{n}_a{i}", label_visibility="collapsed",
+                                         placeholder=f"Answer {i + 1}"),
+                            b.checkbox("right", key=f"q_{sid}_{n}_r{i}")))
+        tf = st.radio("True / false: the right answer is", ["True", "False"], horizontal=True)
         expl = st.text_input("Explanation shown after a right answer (optional)")
         must = st.checkbox("Must be answered correctly to go on", True)
-        add = st.form_submit_button("➕ Add question")
+        add = st.form_submit_button("Save question", type="primary")
     if add:
         try:
-            options = ["True", "False"] if qkind == "truefalse" else lines(opts)
-            if len(options) < 2:
-                raise ValueError("Give at least two answers.")
-            nums = [int(x) for x in right.replace(" ", "").split(",") if x]
-            if not nums or any(n < 1 or n > len(options) for n in nums):
-                raise ValueError(f"The right answer must be a number from 1 to {len(options)}.")
-            if qkind != "multiple" and len(nums) > 1:
-                raise ValueError("This question type has one right answer.")
+            if qkind == "truefalse":
+                options, correct = ["True", "False"], ["0" if tf == "True" else "1"]
+            else:
+                filled = [(t.strip(), r) for t, r in answers if t.strip()]
+                options = [t for t, _ in filled]
+                correct = [str(i) for i, (_, r) in enumerate(filled) if r]
+                if len(options) < 2:
+                    raise ValueError("Write at least two answers.")
+                if not correct:
+                    raise ValueError("Tick the right answer.")
+                if qkind == "single" and len(correct) > 1:
+                    raise ValueError("Tick only one right answer, or choose \"Several right answers\".")
             extra = {}
             if kind == "video":
                 extra["at_seconds"] = db.parse_mmss(at)
                 if extra["at_seconds"] is None:
-                    raise ValueError("Give the time in the video, e.g. 2:15.")
+                    raise ValueError("Give the moment in the video when the question appears, e.g. 1:30.")
             elif kind == "pdf":
                 if not (at or "").strip().isdigit():
                     raise ValueError("Give the page number.")
@@ -397,8 +414,12 @@ def questions_editor(step, lid):
             st.error(str(e))
             return
         S["mc_open_lecture"], S["mc_edit_step"] = lid, sid
-        run("save_question", step_id=sid, prompt=prompt.strip(), kind=qkind, options=options,
-            correct=[str(n - 1) for n in nums], explanation=expl.strip(), must_pass=must, **extra) and st.rerun()
+        if run("save_question", step_id=sid, prompt=prompt.strip(), kind=qkind, options=options,
+               correct=correct, explanation=expl.strip(), must_pass=must, **extra):
+            S[f"mc_qform_{sid}"] = n + 1
+            S["mc_q_added"] = (sid, db.mmss(extra["at_seconds"]) if "at_seconds" in extra else
+                               (f"page {extra['at_page']}" if "at_page" in extra else ""))
+            st.rerun()
 
 
 # ------------------------------------------------------------------------------------------------ badges

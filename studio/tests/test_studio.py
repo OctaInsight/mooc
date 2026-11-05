@@ -57,21 +57,34 @@ def test_super_admin_builds_a_course():
     btn(at, "Save step").click().run()
     assert not errors(at), errors(at)
     assert fake.steps[sid]["config"]["youtube_id"] == "dQw4w9WgXcQ"
-    next(t for t in at.text_input if t.label == "Show at (min:sec)").input("1:30")
-    next(t for t in at.text_input if t.label == "Question").input("What adds value?")
-    next(t for t in at.text_area if t.label.startswith("Answers")).input("New ideas\nOld habits")
-    next(t for t in at.text_input if t.label.startswith("Number(s)")).input("1")
-    btn(at, "➕ Add question").click().run()
+    def fill(time, question, answers, right):
+        n = at.session_state[f"mc_qform_{sid}"] if f"mc_qform_{sid}" in at.session_state else 0
+        next(t for t in at.text_input if t.label == "Show at (min:sec)").input(time)
+        next(t for t in at.text_input if t.label == "Question").input(question)
+        for i, a in enumerate(answers):
+            at.text_input(key=f"q_{sid}_{n}_a{i}").input(a)
+        for i in right:
+            at.checkbox(key=f"q_{sid}_{n}_r{i}").check()
+        btn(at, "Save question").click().run()
+        assert not at.exception, at.exception
+
+    # forgetting to tick the right answer is refused, and what was typed stays in the form
+    fill("1:30", "What adds value?", ["New ideas", "Old habits"], [])
+    assert any("Tick the right answer" in e for e in errors(at)), errors(at)
+    assert not fake.questions
+    assert next(t for t in at.text_input if t.label == "Question").value == "What adds value?"
+    # a correct question is saved, with a confirmation, and the form is empty again
+    at.checkbox(key=f"q_{sid}_0_r0").check()
+    btn(at, "Save question").click().run()
     assert not errors(at), errors(at)
     q = next(iter(fake.questions.values()))
     assert q["at_seconds"] == 90 and q["correct"] == ["0"] and q["options"] == ["New ideas", "Old habits"]
-    # a bad question is refused with a message
-    next(t for t in at.text_input if t.label == "Show at (min:sec)").input("1:30")
-    next(t for t in at.text_input if t.label == "Question").input("Bad")
-    next(t for t in at.text_area if t.label.startswith("Answers")).input("a\nb")
-    next(t for t in at.text_input if t.label.startswith("Number(s)")).input("5")
-    btn(at, "➕ Add question").click().run()
-    assert any("from 1 to 2" in e for e in errors(at))
+    assert any("Question added at 1:30" in m.value for m in at.success), [m.value for m in at.success]
+    assert next(t for t in at.text_input if t.label == "Question").value == ""
+    # several answers ticked on a one-answer question is refused
+    fill("2.05", "Pick one", ["a", "b", "c"], [0, 2])
+    assert any("only one right answer" in e for e in errors(at)), errors(at)
+    assert len(fake.questions) == 1
     # badge
     next(t for t in at.text_input if t.label == "Title" and t.value == "").input("Innovation basics")
     saves = [b for b in at.button if b.label == "Save"]

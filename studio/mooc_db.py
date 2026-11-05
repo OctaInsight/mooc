@@ -73,7 +73,7 @@ def parse_mmss(text: str) -> int | None:
         return None
     if re.fullmatch(r"\d+", text):
         return int(text)
-    m = re.fullmatch(r"(\d+):([0-5]?\d)", text)
+    m = re.fullmatch(r"(\d+)\s*[:.,m]\s*([0-5]?\d)\s*s?", text)
     if not m:
         raise ValueError("Write the time as minutes:seconds, for example 1:30.")
     return int(m.group(1)) * 60 + int(m.group(2))
