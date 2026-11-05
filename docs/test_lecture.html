@@ -253,7 +253,8 @@ function renderCourse() {
   let action = "";
   if (!me) action = `<span class="muted">Sign in to enrol.</span>`;
   else if (!view.enrolled) action = `<button class="primary" id="enrol">Enrol in this course</button>`;
-  else action = `<span class="pill" style="background:var(--ok-soft);color:var(--ok);border-color:#b8e0c6">${view.role === "student" ? "Enrolled" : "Course team: " + esc(view.role)}</span>`;
+  else action = `<span class="pill" style="background:var(--ok-soft);color:var(--ok);border-color:#b8e0c6">${view.role === "student" ? "Enrolled" : "Course team: " + esc(view.role)}</span>`
+    + (allSteps().some(x => x.progress) ? ` <button id="redo-course" style="margin-left:auto">↻ Redo the whole course</button>` : "");
   const badges = (view.badges || []).map(b => badgeStatus(b)).join("");
   card.innerHTML = `<h1>${esc(c.title)}</h1>
     <div class="muted">${[c.level, c.language, c.hours ? c.hours + " h" : ""].filter(Boolean).map(esc).join(" · ")}</div>
@@ -269,6 +270,38 @@ function renderCourse() {
   };
 }
 
+// ----- retakes: redo a lecture (or the course) to answer everything again; the best score counts
+function bestOf(step) {
+  const l = (view.lectures || []).find(l => l.steps.some(x => x.id === step.id));
+  return l && l.best_scores ? l.best_scores[step.id] ?? null : null;
+}
+function retakesLeft(lecture) {
+  const max = view.course.max_retakes || 0;
+  return max === 0 ? Infinity : Math.max(0, max - (lecture.retakes_used || 0));
+}
+function retakeBar(step) {
+  if (!view.enrolled) return "";
+  const l = step.lecture, left = retakesLeft(l);
+  const started = l.steps.some(x => x.progress);
+  if (!started && !l.retakes_used) return "";
+  const tries = (l.retakes_used || 0) + 1;
+  return `<div class="row" style="border-top:1px solid var(--line);padding-top:12px">
+    <span class="muted" style="font-size:.88rem">Try ${tries} of this lecture${left === Infinity ? "" : ` · ${left} retake${left === 1 ? "" : "s"} left`}.
+      Redo it to answer all questions again; your best score counts.</span>
+    <button id="redo" style="margin-left:auto" ${left === 0 || !started ? "disabled" : ""}>↻ Redo this lecture</button></div>`;
+}
+async function retake(lectureId, courseId, what) {
+  if (!confirm(`Redo ${what}? Your answers and progress there start again, so you see every question again. Your best score so far is kept, and badges you earned stay yours.`)) return;
+  const r = await rpc("mooc_retake", { p_token: token, p_lecture: lectureId, p_course: courseId });
+  if (!r.ok) { notice(r.error); return; }
+  toast(`<b>Ready for a new try ↻</b><br>Start again from the first step.`);
+  current = null; await refresh(false);
+}
+document.addEventListener("click", e => {
+  if (e.target.id === "redo") { const s = stepById(current); retake(s.lecture.id, null, `the lecture "${s.lecture.title}"`); }
+  if (e.target.id === "redo-course") retake(null, view.course.id, "the whole course");
+});
+
 // what a badge needs, and how far this student is (the database decides; this only explains it)
 function badgeStatus(b) {
   const icon = b.kind === "certificate" ? "📜" : "🏅";
@@ -279,7 +312,7 @@ function badgeStatus(b) {
   let mine = "";
   if (view.enrolled) {
     const left = steps.filter(s => !(s.progress && s.progress.completed)).length;
-    const scores = steps.map(s => s.progress && s.progress.score).filter(x => x != null).map(Number);
+    const scores = steps.map(s => s.progress && s.progress.score != null ? s.progress.score : bestOf(s)).filter(x => x != null).map(Number);
     const avg = scores.length ? Math.round(scores.reduce((a, c) => a + c, 0) / scores.length) : 100;
     const scoreOk = avg >= b.min_score;
     mine = `<div style="font-size:.88rem;margin-top:4px">
@@ -349,7 +382,7 @@ function openStep(id) {
 
 // ----- video with questions that pause it
 function renderVideo(s, head, cfg) {
-  const answered = new Set(s.answered || []);
+  const answered = new Set();          // questions answered in THIS viewing: every viewing asks every question again
   const qs = (s.questions || []).filter(q => q.at_seconds != null);
   $("step-card").innerHTML = `<div class="card">${head}
     <div class="player"><div id="yt"></div>
@@ -358,11 +391,13 @@ function renderVideo(s, head, cfg) {
       <span class="muted" id="vstat">Press play to start.</span>
       <button class="primary" id="vdone" style="margin-left:auto" disabled>I have watched it ✓</button>
     </div>
-    ${qs.length ? `<p class="muted" style="margin-bottom:0">${qs.length} question${qs.length > 1 ? "s" : ""} will pause this video.</p>` : ""}</div>`;
+    ${qs.length ? `<p class="muted" style="margin-bottom:0">${qs.length} question${qs.length > 1 ? "s" : ""} will pause this video.</p>` : ""}
+    ${retakeBar(s)}</div>`;
   if (!cfg.youtube_id) { $("vstat").textContent = "The teacher has not added a video link yet."; return; }
-  let maxPos = Number(s.progress?.position || 0), lastSent = maxPos, duration = 0, asking = null;
+  let maxPos = 0, lastSent = 0, duration = 0, asking = null;
   const finished = () => s.progress && s.progress.completed;
-  const canFinish = () => qs.every(q => !q.must_pass || answered.has(q.id)) && (finished() || (duration && maxPos >= 0.9 * ((cfg.end || duration) - (cfg.start || 0)) + (cfg.start || 0)));
+  const canFinish = () => finished() || (qs.every(q => !q.must_pass || answered.has(q.id))
+    && duration && maxPos >= 0.9 * ((cfg.end || duration) - (cfg.start || 0)) + (cfg.start || 0));
   const update = () => { $("vdone").disabled = !canFinish(); $("vstat").textContent = duration ? `Watched up to ${mmss(maxPos)} of ${mmss(cfg.end || duration)}` : ""; };
   $("vdone").onclick = () => complete(s);
   withYouTube(() => {
@@ -444,14 +479,14 @@ function questionUI(el, q, onRight, inVideo = false) {
 
 // ----- PDF with page questions
 function renderPdf(s, head, cfg) {
-  const answered = new Set(s.answered || []);
+  const answered = new Set();          // asked again in every run
   const qs = s.questions || [];
   $("step-card").innerHTML = `<div class="card">${head}
     ${cfg.url ? `<iframe class="pdf" src="${esc(cfg.url)}#view=FitH"></iframe>
       <div class="row"><a href="${esc(cfg.url)}" target="_blank" rel="noopener">Open the PDF in a new tab</a></div>`
       : '<p class="muted">The teacher has not uploaded the PDF yet.</p>'}
     <div id="pq"></div>
-    <div class="row"><button class="primary" id="pdone">I have read this ✓</button></div></div>`;
+    <div class="row"><button class="primary" id="pdone">I have read this ✓</button></div>${retakeBar(s)}</div>`;
   const pq = $("pq");
   const pend = () => qs.filter(q => q.must_pass && !answered.has(q.id));
   const draw = () => {
@@ -463,7 +498,7 @@ function renderPdf(s, head, cfg) {
              questionUI(inner, q, () => { answered.add(q.id); draw(); }); }
       pq.appendChild(d);
     });
-    $("pdone").disabled = pend().length > 0;
+    $("pdone").disabled = pend().length > 0 && !(s.progress && s.progress.completed);
     $("pdone").title = pend().length ? "Answer the questions first" : "";
   };
   draw();
@@ -473,10 +508,10 @@ function renderPdf(s, head, cfg) {
 
 // ----- quiz
 function renderQuiz(s, head) {
-  const answered = new Set(s.answered || []);
+  const answered = new Set();          // asked again in every run; the score keeps the best try
   const qs = s.questions || [];
   $("step-card").innerHTML = `<div class="card">${head}
-    <p class="muted">${qs.length} question${qs.length === 1 ? "" : "s"}. Your score counts what you answer right on the first try.</p><div id="qq"></div></div>`;
+    <p class="muted">${qs.length} question${qs.length === 1 ? "" : "s"}. Your score counts what you answer right on the first try.</p><div id="qq"></div>${retakeBar(s)}</div>`;
   const draw = () => {
     const qq = $("qq"); qq.innerHTML = "";
     qs.forEach((q, i) => {

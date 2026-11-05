@@ -576,12 +576,15 @@ def tab_settings(c, role):
         summary = st.text_input("One-line summary", c.get("summary") or "")
         desc = st.text_area("Description", c.get("description") or "", height=140)
         outcomes = st.text_area("Learning outcomes of the course (one per line)", "\n".join(c.get("outcomes") or []), height=100)
-        a, b, d, e = st.columns(4)
+        a, b, d, e, f = st.columns(5)
         level = a.selectbox("Level", LEVELS, index=LEVELS.index(c.get("level") or ""), format_func=lambda x: x or "—")
         lang = b.text_input("Language", c.get("language") or "English")
         hours = d.number_input("Study hours", 0.0, 999.0, float(c.get("hours") or 0), 0.5)
         pass_score = e.number_input("Pass score (%)", 0, 100, int(c.get("pass_score") or 70), 5,
                                     help="The default minimum score for new badges and certificates.")
+        retakes = f.number_input("Retakes per lecture", 0, 99, int(c.get("max_retakes") or 0), 1,
+                                 help="How many times a student may redo a lecture to improve the score. 0 = no limit. "
+                                      "The best score of all tries counts.")
         cover = st.file_uploader("Cover image", type=["png", "jpg", "jpeg", "webp"])
         if c.get("image_url"):
             st.image(c["image_url"], width=240)
@@ -600,7 +603,8 @@ def tab_settings(c, role):
                 return
         args = dict(id=c["id"], title=title.strip(), slug=db.slugify(slug), status=status, summary=summary.strip(),
                     description=desc, outcomes=lines(outcomes), level=level, language=lang.strip(),
-                    hours=str(hours) if hours else "", pass_score=int(pass_score), image_url=image_url)
+                    hours=str(hours) if hours else "", pass_score=int(pass_score), max_retakes=int(retakes),
+                    image_url=image_url)
         if role == "super":
             args["project_id"] = proj
         run("save_course", "Course saved.", **args) and st.rerun()
