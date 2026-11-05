@@ -14,7 +14,7 @@ from octa_auth import App, require_login, sidebar, display_name  # noqa: E402
 import mooc_db as db  # noqa: E402
 from mooc_db import MoocError  # noqa: E402
 
-APP = App(id="octa_mooc", name="MOOC Studio", family="education", url="",
+APP = App(id="octa_mooc", name="MOOC Studio", family="education", url="https://cloudearthi-mooc.streamlit.app/",
           tagline="Build CloudEARTHi MOOC courses: lectures, interactive videos and PDFs, badges and certificates", icon="🎓")
 VERSION = "0.1.0"
 
