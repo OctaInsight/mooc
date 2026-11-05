@@ -425,8 +425,15 @@ def questions_editor(step, lid):
 # ------------------------------------------------------------------------------------------------ badges
 def tab_badges(c):
     st.caption("Badges are awarded automatically when a student finishes the chosen lectures with at least the minimum "
-               "average score (quizzes and graded assignments). The certificate is awarded for the whole course. "
-               "Every award gets its own public page that students can share on LinkedIn and other social media.")
+               "average score. The certificate is awarded for the whole course. Every award gets its own public page "
+               "that students can share on LinkedIn and other social media.")
+    with st.expander("How the score is counted"):
+        st.markdown("- **Video and PDF steps with questions**: the share of their questions answered right **on the first try** "
+                    "(students must still answer every must-pass question correctly to go on).\n"
+                    "- **Quizzes**: the same, first-try right answers.\n"
+                    "- **Assignments**: the teacher's grade (0–100), or 100 when handing in is enough.\n"
+                    "- Steps without questions (videos, PDFs, texts, live sessions) only need to be finished; they do not lower the score.\n\n"
+                    "Saving a badge checks every student again, so lowering the minimum awards it at once to students who now meet it.")
     lect = {l["id"]: f"{i + 1}. {l['title']}" for i, l in enumerate(c["lectures"])}
     for b in c["badges"]:
         with st.container(border=True):
@@ -479,7 +486,11 @@ def badge_form(c, lect, b):
             args["id"] = b["id"]
         else:
             args["course_id"] = c["id"]
-        run("save_badge", "Saved.", **args) and st.rerun()
+        r = run("save_badge", **args)
+        if r:
+            n = r.get("students_awarded") or 0
+            flash("success", "Saved." + (f" {n} student{'s' * (n != 1)} already meet{'s' * (n == 1)} this rule and received it now." if n else ""))
+            st.rerun()
     if b:
         if st.button("Delete", key=f"delb_{key}", help="If it was already awarded, it is switched off instead; issued awards stay valid."):
             run("delete", "Deleted.", what="badge", id=b["id"]) and st.rerun()

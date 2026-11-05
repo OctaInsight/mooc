@@ -254,12 +254,12 @@ function renderCourse() {
   if (!me) action = `<span class="muted">Sign in to enrol.</span>`;
   else if (!view.enrolled) action = `<button class="primary" id="enrol">Enrol in this course</button>`;
   else action = `<span class="pill" style="background:var(--ok-soft);color:var(--ok);border-color:#b8e0c6">${view.role === "student" ? "Enrolled" : "Course team: " + esc(view.role)}</span>`;
-  const badges = (view.badges || []).map(b => `<span class="pill">${b.kind === "certificate" ? "📜" : "🏅"} ${esc(b.title)}${b.award_id ? " — earned" : ""}</span>`).join("");
+  const badges = (view.badges || []).map(b => badgeStatus(b)).join("");
   card.innerHTML = `<h1>${esc(c.title)}</h1>
     <div class="muted">${[c.level, c.language, c.hours ? c.hours + " h" : ""].filter(Boolean).map(esc).join(" · ")}</div>
     ${c.summary ? `<p>${esc(c.summary)}</p>` : ""}
     ${outcomes ? `<p style="margin-bottom:4px"><b>You will be able to</b></p><ul style="margin-top:0">${outcomes}</ul>` : ""}
-    ${badges ? `<div style="margin-top:6px">${badges}</div>` : ""}
+    ${badges ? `<p style="margin-bottom:4px"><b>Badges and certificate</b></p>${badges}` : ""}
     <div class="row">${action}</div>`;
   const b = $("enrol");
   if (b) b.onclick = async () => {
@@ -267,6 +267,29 @@ function renderCourse() {
     if (r.ok) { check("enrol"); toast("<b>You are enrolled.</b> Start with the first step."); refresh(false); }
     else { notice(r.error); check("enrol", false); }
   };
+}
+
+// what a badge needs, and how far this student is (the database decides; this only explains it)
+function badgeStatus(b) {
+  const icon = b.kind === "certificate" ? "📜" : "🏅";
+  const lects = (view.lectures || []).filter(l => (b.lecture_ids || []).length ? b.lecture_ids.includes(l.id) : l.status === "published");
+  const steps = lects.flatMap(l => l.steps).filter(s => s.required);
+  if (b.award_id) return `<div class="card" style="padding:10px 14px;border-color:#b8e0c6;background:var(--ok-soft)">${icon} <b>${esc(b.title)}</b> — earned ✓</div>`;
+  const which = (b.lecture_ids || []).length ? lects.map(l => esc(l.title)).join(", ") : "all lectures";
+  let mine = "";
+  if (view.enrolled) {
+    const left = steps.filter(s => !(s.progress && s.progress.completed)).length;
+    const scores = steps.map(s => s.progress && s.progress.score).filter(x => x != null).map(Number);
+    const avg = scores.length ? Math.round(scores.reduce((a, c) => a + c, 0) / scores.length) : 100;
+    const scoreOk = avg >= b.min_score;
+    mine = `<div style="font-size:.88rem;margin-top:4px">
+      ${left ? `○ ${left} step${left > 1 ? "s" : ""} still to finish` : "✔ all steps finished"} ·
+      ${scoreOk ? "✔" : "✖"} your score <b>${avg}%</b> (needed ${b.min_score}%)</div>
+      ${!left && !scoreOk ? `<div class="muted" style="font-size:.82rem">Your score counts the questions answered right on the first try.
+        Ask your teacher about a second chance.</div>` : ""}`;
+  }
+  return `<div class="card" style="padding:10px 14px">${icon} <b>${esc(b.title)}</b>
+    <div class="muted" style="font-size:.85rem">Finish ${which} with a score of at least ${b.min_score}%.</div>${mine}</div>`;
 }
 
 // ------------------------------------------------------------------------------------------------ steps
