@@ -16,3 +16,8 @@ The new CloudEARTHi MOOC (mooc.cloudearthi.com), built on the Octa suite account
 ## Tests
 `cd studio && python -m pytest tests` (no database needed). Database test: run `supabase/tests/mooc_flow_test.sql`
 on the database; it ends with "MOOC TEST PASSED (rolled back)".
+
+## Student test page
+`docs/test_lecture.html` signs in as a student, enrols, goes through a course's lectures and shows a log of every
+database call. Served by GitHub Pages (Settings → Pages → branch `main`, folder `/docs`) at
+https://octainsight.github.io/mooc/test_lecture.html (other courses: `?course=<course address>`).

@@ -54,7 +54,7 @@ Registration: students are active at once; teachers are pending until a course a
 |---|---|
 | Studio | `mooc_manage(token, {action, ...})`: me, overview, course, people, submissions, students, save_project, delete_project, save_course, delete_course, set_member, decide_teacher, set_super, super_admins, save_lecture, save_step, save_question, delete, reorder, save_badge, grade, upload_ticket |
 | Students | `mooc_join(token, kind)`, `mooc_enrol(token, course)`, `mooc_record(token, step, verb, position, data)`, `mooc_answer(token, question, answer)`, `mooc_submit(token, step, text, file_url)` |
-| Public pages | `mooc_catalogue()`, `mooc_profile(username)`, `mooc_award(id)` |
+| Public pages | `mooc_catalogue()`, `mooc_course_view(token, slug)` (course page; full content for enrolled students and the course team), `mooc_profile(username)`, `mooc_award(id)` |
 
 All `Mooc_` tables have row-level security on and no public access. Files go to the public storage bucket `mooc`;
 uploads need a 30-minute ticket that only teachers and admins get (`upload_ticket`), checked by the bucket policy.

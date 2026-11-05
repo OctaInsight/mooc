@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MOOC Test Lecture</title>
+<meta name="description" content="Test page for the CloudEARTHi MOOC: sign in as a student, open a course and go through a lecture. Every step is saved in the MOOC database.">
+<style>
+:root{
+  --blue:#2a78d6; --blue-dark:#1d5fae; --blue-soft:#e8f1fc;
+  --bg:#ffffff; --side:#f4f3ef; --line:#e4e3df; --text:#0b0b0b; --muted:#6b6a66;
+  --ok:#1d6b3a; --ok-soft:#e7f5ec; --warn:#7a5b00; --warn-soft:#fff6e0; --bad:#a3261b; --bad-soft:#fdecea;
+  --radius:12px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--blue)}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--text);padding:8px 14px}
+button.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+button.primary:hover{background:var(--blue-dark)}
+button:disabled{opacity:.45;cursor:not-allowed}
+input,textarea,select{font:inherit;width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--text)}
+header{display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+header .brand{font-weight:700;font-size:1.05rem}
+header .brand span{color:var(--blue)}
+header .who{margin-left:auto;display:flex;gap:10px;align-items:center;color:var(--muted);font-size:.9rem}
+.wrap{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 58px)}
+aside{background:var(--side);border-right:1px solid var(--line);padding:18px 16px}
+main{padding:22px 26px;max-width:980px;width:100%}
+h1{font-size:1.5rem;margin:0 0 4px}
+h2{font-size:1.15rem;margin:0 0 10px}
+.muted{color:var(--muted)}
+.card{border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;background:#fff;margin-bottom:14px}
+.pill{display:inline-block;font-size:.75rem;border:1px solid var(--line);border-radius:9px;padding:1px 8px;margin-right:6px;color:var(--muted)}
+.steps{list-style:none;margin:8px 0 0;padding:0}
+.steps li{display:flex;gap:9px;align-items:center;padding:8px 9px;border-radius:8px;cursor:pointer;font-size:.92rem}
+.steps li:hover{background:#ebe9e3}
+.steps li.on{background:#fff;box-shadow:0 0 0 1px var(--line)}
+.steps .tick{width:20px;height:20px;border-radius:50%;border:2px solid #c9c7c0;display:grid;place-items:center;font-size:.7rem;flex:none;color:#fff}
+.steps li.done .tick{background:var(--ok);border-color:var(--ok)}
+.lecture-title{font-weight:600;margin-top:14px;font-size:.95rem}
+.bar{height:8px;background:#e4e2db;border-radius:6px;overflow:hidden;margin:6px 0 2px}
+.bar i{display:block;height:100%;background:var(--blue);width:0;transition:width .4s}
+.player{position:relative;aspect-ratio:16/9;background:#000;border-radius:var(--radius);overflow:hidden}
+.player > div,.player iframe{position:absolute;inset:0;width:100%;height:100%}
+.overlay{position:absolute;inset:0;background:rgba(10,20,35,.82);display:none;align-items:center;justify-content:center;padding:18px;z-index:5}
+.overlay.show{display:flex}
+.qbox{background:#fff;border-radius:var(--radius);padding:18px 20px;max-width:560px;width:100%}
+.opt{display:block;width:100%;text-align:left;margin:7px 0;padding:10px 12px}
+.opt.sel{border-color:var(--blue);background:var(--blue-soft)}
+.feedback{margin-top:10px;padding:8px 11px;border-radius:8px;display:none}
+.feedback.ok{display:block;background:var(--ok-soft);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-soft);color:var(--bad)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.checklist{list-style:none;padding:0;margin:0;font-size:.88rem}
+.checklist li{padding:3px 0}
+.checklist li::before{content:"○ ";color:#aaa}
+.checklist li.pass::before{content:"✔ ";color:var(--ok)}
+.checklist li.fail::before{content:"✖ ";color:var(--bad)}
+#log{font:12px/1.45 ui-monospace,Menlo,Consolas,monospace;background:#fbfaf7;border:1px solid var(--line);border-radius:8px;padding:10px;max-height:240px;overflow:auto;white-space:pre-wrap}
+.toast{position:fixed;right:20px;bottom:20px;background:#fff;border:1px solid var(--line);border-left:5px solid var(--ok);box-shadow:0 8px 28px rgba(0,0,0,.12);border-radius:10px;padding:14px 18px;max-width:360px;display:none;z-index:20}
+.toast.show{display:block}
+.pdf{width:100%;height:70vh;border:1px solid var(--line);border-radius:var(--radius)}
+.notice{background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:9px 12px;margin-bottom:12px}
+.hidden{display:none!important}
+@media (max-width:820px){.wrap{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid var(--line)}main{padding:16px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">🎓 CloudEARTHi <span>MOOC</span> · test lecture</div>
+  <div class="who" id="who"></div>
+</header>
+
+<div class="wrap">
+  <aside>
+    <div id="course-side"><span class="muted">Loading…</span></div>
+    <div class="card" style="margin-top:18px;padding:12px 14px">
+      <h2 style="font-size:.95rem;margin-bottom:6px">Test checklist</h2>
+      <ul class="checklist" id="checks">
+        <li data-k="course">Course loads from the database</li>
+        <li data-k="login">Student signs in with an Octa account</li>
+        <li data-k="enrol">Student is enrolled</li>
+        <li data-k="content">Lecture content is visible</li>
+        <li data-k="opened">Opening a step is recorded</li>
+        <li data-k="progress">Watching/reading progress is saved</li>
+        <li data-k="completed">A finished step is saved</li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <div id="notice" class="notice hidden"></div>
+
+    <section id="login-card" class="card hidden">
+      <h2>Sign in as a student</h2>
+      <p class="muted" style="margin-top:0">Use any Octa account. A test student account is best, so your own admin account does not collect student progress.</p>
+      <form id="login-form">
+        <div class="row" style="margin-top:0"><input id="login-name" placeholder="Username or email" autocomplete="username" required></div>
+        <div class="row" style="margin-top:8px"><input id="login-pw" type="password" placeholder="Password" autocomplete="current-password" required></div>
+        <div class="row"><button class="primary" type="submit">Sign in</button>
+          <span class="muted">No account? <a id="register-link" target="_blank" rel="noopener">Register here</a>, then come back.</span></div>
+      </form>
+      <div id="login-msg" class="feedback"></div>
+    </section>
+
+    <section id="course-card" class="card hidden"></section>
+    <section id="step-card" class="hidden"></section>
+
+    <details class="card" style="margin-top:18px">
+      <summary><b>Database log</b> <span class="muted">— every call this page makes and what the database answered</span></summary>
+      <div id="log" style="margin-top:10px"></div>
+    </details>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ------------------------------------------------------------------------------------------------ settings
+const DB_URL = "https://uxqeukvmnfvpgsxktgvo.supabase.co";
+const DB_KEY = "sb_publishable_oFEaDte2Hy-gGsqpa9kWeQ_HuMm6dou";   // publishable key: safe in a web page
+const STUDIO = "https://cloudearthi-mooc.streamlit.app/";
+const params = new URLSearchParams(location.search);
+const SLUG = (params.get("course") || "test").toLowerCase();
+const TKEY = "mooc_test_session";
+
+// ------------------------------------------------------------------------------------------------ helpers
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const mmss = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+function store(k, v) { try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch (e) {} }
+function load(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+function log(line, ok = true) {
+  const t = new Date().toLocaleTimeString();
+  $("log").textContent = `${t}  ${ok ? "" : "⚠ "}${line}\n` + $("log").textContent;
+}
+function check(k, pass = true) {
+  const li = document.querySelector(`#checks li[data-k="${k}"]`);
+  if (li) { li.classList.toggle("pass", pass); li.classList.toggle("fail", !pass); }
+}
+function toast(html, ms = 6000) {
+  const t = $("toast"); t.innerHTML = html; t.classList.add("show");
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), ms);
+}
+function notice(msg) { $("notice").textContent = msg || ""; $("notice").classList.toggle("hidden", !msg); }
+
+async function rpc(fn, args) {
+  const shown = JSON.stringify(args, (k, v) => (k === "p_password" ? "•••" : k === "p_token" && v ? v.slice(0, 6) + "…" : v));
+  try {
+    const r = await fetch(`${DB_URL}/rest/v1/rpc/${fn}`, {
+      method: "POST",
+      headers: { apikey: DB_KEY, Authorization: `Bearer ${DB_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify(args),
+    });
+    const text = await r.text();
+    const data = text ? JSON.parse(text) : null;
+    const good = r.ok && !(data && data.ok === false);
+    log(`${fn}(${shown}) → ${r.status} ${text.slice(0, 220).replace(/"token":"[^"]+"/, '"token":"…"')}`, good);
+    if (!r.ok) throw new Error(data?.message || `The database answered ${r.status}`);
+    return data;
+  } catch (e) {
+    log(`${fn} failed: ${e.message}`, false);
+    throw e;
+  }
+}
+
+// ------------------------------------------------------------------------------------------------ state
+let token = params.get("session") || load(TKEY);
+let me = null;            // signed-in user
+let view = null;          // mooc_course_view answer
+let current = null;       // step id shown
+let player = null, poll = null;
+
+// ------------------------------------------------------------------------------------------------ session
+async function checkSession() {
+  if (!token) return showWho();
+  try {
+    const r = await rpc("octa_user_session", { p_token: token, p_app: "octa_mooc" });
+    if (r && r.ok) { me = r.user; store(TKEY, token); check("login"); }
+    else { token = null; store(TKEY, null); }
+  } catch (e) { token = null; }
+  showWho();
+}
+function showWho() {
+  const w = $("who");
+  if (me) {
+    w.innerHTML = `<span>👤 <b>${esc([me.first_name, me.last_name].filter(Boolean).join(" ") || me.username)}</b> (${esc(me.username)})</span>
+                   <button id="logout">Log out</button>`;
+    $("logout").onclick = async () => {
+      try { await rpc("octa_user_logout", { p_token: token, p_app: "octa_mooc" }); } catch (e) {}
+      token = null; me = null; store(TKEY, null); stopPlayer(); refresh();
+    };
+  } else w.innerHTML = `<span>Not signed in</span>`;
+}
+$("register-link").href = STUDIO + "?register=1";
+$("login-form").onsubmit = async ev => {
+  ev.preventDefault();
+  const m = $("login-msg"); m.className = "feedback";
+  try {
+    const r = await rpc("octa_user_login", { p_login: $("login-name").value.trim(), p_password: $("login-pw").value, p_app: "octa_mooc" });
+    if (!r.ok) { m.className = "feedback bad"; m.textContent = r.error; check("login", false); return; }
+    token = r.token; me = r.user; store(TKEY, token); $("login-pw").value = "";
+    check("login"); showWho(); refresh();
+  } catch (e) { m.className = "feedback bad"; m.textContent = e.message; }
+};
+
+// ------------------------------------------------------------------------------------------------ course
+async function refresh(keepStep = true) {
+  let r;
+  try { r = await rpc("mooc_course_view", { p_token: token || "", p_slug: SLUG }); }
+  catch (e) { notice("The MOOC database could not be reached: " + e.message); check("course", false); return; }
+  if (!r.ok) { notice(r.error + ` (course address: "${SLUG}")`); check("course", false); return; }
+  notice(""); check("course");
+  view = r;
+  if (r.enrolled) check("enrol");
+  $("login-card").classList.toggle("hidden", !!me);
+  renderSide(); renderCourse();
+  const steps = allSteps();
+  if (r.enrolled && steps.length) {
+    check("content", steps.some(s => s.config));
+    const keep = keepStep && steps.find(s => s.id === current);
+    const next = keep || steps.find(s => !(s.progress && s.progress.completed)) || steps[0];
+    if (!keep || !current) openStep(next.id); else markSide();
+  } else { $("step-card").classList.add("hidden"); stopPlayer(); }
+}
+function allSteps() { return (view?.lectures || []).flatMap(l => l.steps.map(s => ({ ...s, lecture: l }))); }
+function stepById(id) { return allSteps().find(s => s.id === id); }
+
+function renderSide() {
+  const c = view.course, steps = allSteps();
+  const done = steps.filter(s => s.progress && s.progress.completed).length;
+  const pct = steps.length ? Math.round(100 * done / steps.length) : 0;
+  const icon = { video: "🎬", pdf: "📄", text: "📝", quiz: "❓", assignment: "📤", live: "🎥" };
+  $("course-side").innerHTML = `
+    <div class="muted" style="font-size:.8rem">${esc(c.project?.title || "CloudEARTHi MOOC")}</div>
+    <div style="font-weight:700;font-size:1.05rem">${esc(c.title)}</div>
+    ${view.enrolled ? `<div class="bar"><i style="width:${pct}%"></i></div><div class="muted" style="font-size:.8rem">${done} of ${steps.length} steps done · ${pct}%</div>` : ""}
+    ${view.lectures.map((l, i) => `
+      <div class="lecture-title">Lecture ${i + 1}: ${esc(l.title)}${l.status === "draft" ? ' <span class="pill">draft</span>' : ""}</div>
+      <ul class="steps">${l.steps.map(s => `
+        <li data-step="${s.id}" class="${s.progress && s.progress.completed ? "done" : ""}">
+          <span class="tick">✓</span><span>${icon[s.kind] || ""} ${esc(s.title)}</span></li>`).join("")}</ul>`).join("")}`;
+  document.querySelectorAll("#course-side li[data-step]").forEach(li => li.onclick = () => view.enrolled && openStep(li.dataset.step));
+  markSide();
+}
+function markSide() { document.querySelectorAll("#course-side li[data-step]").forEach(li => li.classList.toggle("on", li.dataset.step === current)); }
+
+function renderCourse() {
+  const c = view.course, card = $("course-card");
+  card.classList.remove("hidden");
+  const outcomes = (c.outcomes || []).map(o => `<li>${esc(o)}</li>`).join("");
+  let action = "";
+  if (!me) action = `<span class="muted">Sign in to enrol.</span>`;
+  else if (!view.enrolled) action = `<button class="primary" id="enrol">Enrol in this course</button>`;
+  else action = `<span class="pill" style="background:var(--ok-soft);color:var(--ok);border-color:#b8e0c6">${view.role === "student" ? "Enrolled" : "Course team: " + esc(view.role)}</span>`;
+  const badges = (view.badges || []).map(b => `<span class="pill">${b.kind === "certificate" ? "📜" : "🏅"} ${esc(b.title)}${b.award_id ? " — earned" : ""}</span>`).join("");
+  card.innerHTML = `<h1>${esc(c.title)}</h1>
+    <div class="muted">${[c.level, c.language, c.hours ? c.hours + " h" : ""].filter(Boolean).map(esc).join(" · ")}</div>
+    ${c.summary ? `<p>${esc(c.summary)}</p>` : ""}
+    ${outcomes ? `<p style="margin-bottom:4px"><b>You will be able to</b></p><ul style="margin-top:0">${outcomes}</ul>` : ""}
+    ${badges ? `<div style="margin-top:6px">${badges}</div>` : ""}
+    <div class="row">${action}</div>`;
+  const b = $("enrol");
+  if (b) b.onclick = async () => {
+    const r = await rpc("mooc_enrol", { p_token: token, p_course: c.id });
+    if (r.ok) { check("enrol"); toast("<b>You are enrolled.</b> Start with the first step."); refresh(false); }
+    else { notice(r.error); check("enrol", false); }
+  };
+}
+
+// ------------------------------------------------------------------------------------------------ steps
+async function record(step, verb, position = null, data = {}) {
+  try {
+    const r = await rpc("mooc_record", { p_token: token, p_step: step.id, p_verb: verb, p_position: position, p_data: data });
+    if (r.ok) {
+      if (verb === "opened") check("opened");
+      if (verb === "progressed") check("progress");
+      if (verb === "completed" || verb === "joined_live") check("completed");
+      showAwards(r.awarded);
+    } else notice(r.error);
+    return r;
+  } catch (e) { notice(e.message); return { ok: false }; }
+}
+function showAwards(list) {
+  (list || []).forEach(a => toast(`<div style="font-size:1.6rem">${a.kind === "certificate" ? "📜" : "🏅"}</div>
+    <b>You earned: ${esc(a.title)}</b><br><span class="muted">It now shows on your public profile.</span>`, 9000));
+}
+async function complete(step) {
+  const r = await record(step, "completed");
+  if (r.ok) { toast("<b>Step completed ✓</b>"); goNext(step); }
+}
+async function goNext(step) {
+  await refresh(true);
+  const steps = allSteps(), i = steps.findIndex(s => s.id === step.id);
+  if (i >= 0 && i < steps.length - 1) openStep(steps[i + 1].id);
+}
+
+function openStep(id) {
+  stopPlayer();
+  current = id; markSide();
+  const s = stepById(id), box = $("step-card");
+  box.classList.remove("hidden");
+  const done = s.progress && s.progress.completed;
+  const head = `<div class="muted" style="font-size:.85rem">${esc(s.lecture.title)}</div>
+    <h2>${esc(s.title)} ${done ? '<span class="pill" style="background:var(--ok-soft);color:var(--ok)">done ✓</span>' : ""}</h2>`;
+  record(s, "opened");
+  const cfg = s.config || {};
+  if (s.kind === "video") return renderVideo(s, head, cfg);
+  if (s.kind === "pdf") return renderPdf(s, head, cfg);
+  if (s.kind === "text") {
+    box.innerHTML = `<div class="card">${head}<div>${markdown(cfg.markdown || "")}</div>
+      <div class="row"><button class="primary" id="done">I have read this ✓</button></div></div>`;
+    $("done").onclick = () => complete(s);
+    return;
+  }
+  if (s.kind === "quiz") return renderQuiz(s, head);
+  if (s.kind === "assignment") return renderAssignment(s, head, cfg);
+  if (s.kind === "live") {
+    box.innerHTML = `<div class="card">${head}
+      <p>${cfg.group ? "Study group" : "Online lecture"}${cfg.starts_at ? " · " + esc(cfg.starts_at) : ""}${cfg.minutes ? " · " + cfg.minutes + " min" : ""}</p>
+      <div class="row">${cfg.room ? `<button class="primary" id="join">Join the session</button>` : '<span class="muted">The teacher has not added the meeting link yet.</span>'}</div></div>`;
+    if (cfg.room) $("join").onclick = async () => { window.open(cfg.room, "_blank", "noopener"); const r = await record(s, "joined_live"); if (r.ok) goNext(s); };
+  }
+}
+
+// ----- video with questions that pause it
+function renderVideo(s, head, cfg) {
+  const answered = new Set(s.answered || []);
+  const qs = (s.questions || []).filter(q => q.at_seconds != null);
+  $("step-card").innerHTML = `<div class="card">${head}
+    <div class="player"><div id="yt"></div>
+      <div class="overlay" id="ov"><div class="qbox" id="qbox"></div></div></div>
+    <div class="row">
+      <span class="muted" id="vstat">Press play to start.</span>
+      <button class="primary" id="vdone" style="margin-left:auto" disabled>I have watched it ✓</button>
+    </div>
+    ${qs.length ? `<p class="muted" style="margin-bottom:0">${qs.length} question${qs.length > 1 ? "s" : ""} will pause this video.</p>` : ""}</div>`;
+  if (!cfg.youtube_id) { $("vstat").textContent = "The teacher has not added a video link yet."; return; }
+  let maxPos = Number(s.progress?.position || 0), lastSent = maxPos, duration = 0, asking = null;
+  const finished = () => s.progress && s.progress.completed;
+  const canFinish = () => qs.every(q => !q.must_pass || answered.has(q.id)) && (finished() || (duration && maxPos >= 0.9 * ((cfg.end || duration) - (cfg.start || 0)) + (cfg.start || 0)));
+  const update = () => { $("vdone").disabled = !canFinish(); $("vstat").textContent = duration ? `Watched up to ${mmss(maxPos)} of ${mmss(cfg.end || duration)}` : ""; };
+  $("vdone").onclick = () => complete(s);
+  withYouTube(() => {
+    player = new YT.Player("yt", {
+      videoId: cfg.youtube_id,
+      playerVars: { start: cfg.start || 0, end: cfg.end || undefined, rel: 0, modestbranding: 1, playsinline: 1 },
+      events: {
+        onReady: () => {
+          duration = player.getDuration(); update();
+          poll = setInterval(() => {
+            if (!player || !player.getCurrentTime || asking) return;
+            const t = player.getCurrentTime();
+            const q = qs.find(q => !answered.has(q.id) && t >= q.at_seconds);
+            if (q) {                       // reached (or skipped past) a question: go back to it and ask
+              if (t > q.at_seconds + 2) player.seekTo(q.at_seconds, true);
+              player.pauseVideo(); asking = q; ask(q, s, ok => {
+                answered.add(q.id); asking = null; $("ov").classList.remove("show"); update(); player.playVideo();
+              });
+              return;
+            }
+            if (t <= maxPos + 3 && t > maxPos) maxPos = t;   // seeking forward does not count as watching
+            if (maxPos - lastSent >= 15) { lastSent = maxPos; record(s, "progressed", Math.round(maxPos)); }
+            update();
+          }, 500);
+        },
+        onStateChange: e => {
+          if (e.data === YT.PlayerState.ENDED) {
+            maxPos = Math.max(maxPos, duration); update();
+            record(s, "progressed", Math.round(maxPos));
+            if (canFinish() && !finished()) complete(s);
+          }
+        },
+        onError: e => { $("vstat").textContent = `YouTube could not play this video (error ${e.data}). Open the page from a web address, not from a file.`; log("YouTube error " + e.data, false); },
+      },
+    });
+  });
+}
+function ask(q, s, onRight) {
+  $("ov").classList.add("show");
+  questionUI($("qbox"), q, onRight, true);
+}
+
+// ----- one question (used on videos, PDFs and quizzes)
+function questionUI(el, q, onRight, inVideo = false) {
+  const multi = q.kind === "multiple";
+  const chosen = new Set();
+  el.innerHTML = `${inVideo ? `<div class="muted" style="font-size:.8rem">Question at ${mmss(q.at_seconds)}</div>` : ""}
+    <div style="font-weight:600;margin-bottom:6px">${esc(q.prompt)}</div>
+    ${multi ? '<div class="muted" style="font-size:.85rem">Choose all that apply.</div>' : ""}
+    ${q.options.map((o, i) => `<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}
+    ${multi ? '<div class="row"><button class="primary" data-send>Check my answer</button></div>' : ""}
+    <div class="feedback"></div>`;
+  const fb = el.querySelector(".feedback");
+  const send = async () => {
+    const r = await rpc("mooc_answer", { p_token: token, p_question: q.id, p_answer: [...chosen].map(String) });
+    if (!r.ok) { fb.className = "feedback bad"; fb.textContent = r.error; return; }
+    showAwards(r.awarded);
+    if (r.correct) {
+      fb.className = "feedback ok"; fb.innerHTML = "Right! " + esc(r.explanation || "");
+      el.querySelectorAll("button").forEach(b => b.disabled = true);
+      setTimeout(() => onRight(r), inVideo ? 1200 : 300);
+    } else if (q.must_pass) {
+      fb.className = "feedback bad"; fb.textContent = "Not quite. Try again.";
+      chosen.clear(); el.querySelectorAll(".opt").forEach(b => b.classList.remove("sel"));
+    } else {
+      const right = (r.correct_answer || []).map(i => q.options[+i]).join(", ");
+      fb.className = "feedback bad"; fb.innerHTML = `Not quite. The answer is: <b>${esc(right)}</b>. ${esc(r.explanation || "")}`;
+      setTimeout(() => onRight(r), 2500);
+    }
+  };
+  el.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    const i = b.dataset.i;
+    if (multi) { chosen.has(i) ? chosen.delete(i) : chosen.add(i); b.classList.toggle("sel"); }
+    else { chosen.clear(); chosen.add(i); send(); }
+  });
+  const sb = el.querySelector("[data-send]");
+  if (sb) sb.onclick = () => chosen.size && send();
+}
+
+// ----- PDF with page questions
+function renderPdf(s, head, cfg) {
+  const answered = new Set(s.answered || []);
+  const qs = s.questions || [];
+  $("step-card").innerHTML = `<div class="card">${head}
+    ${cfg.url ? `<iframe class="pdf" src="${esc(cfg.url)}#view=FitH"></iframe>
+      <div class="row"><a href="${esc(cfg.url)}" target="_blank" rel="noopener">Open the PDF in a new tab</a></div>`
+      : '<p class="muted">The teacher has not uploaded the PDF yet.</p>'}
+    <div id="pq"></div>
+    <div class="row"><button class="primary" id="pdone">I have read this ✓</button></div></div>`;
+  const pq = $("pq");
+  const pend = () => qs.filter(q => q.must_pass && !answered.has(q.id));
+  const draw = () => {
+    pq.innerHTML = qs.length ? `<h2 style="margin-top:16px">Questions on this reading</h2>` : "";
+    qs.forEach(q => {
+      const d = document.createElement("div"); d.className = "card";
+      if (answered.has(q.id)) d.innerHTML = `<span class="muted">${q.at_page ? "Page " + q.at_page + " · " : ""}</span>${esc(q.prompt)} <span class="pill" style="background:var(--ok-soft);color:var(--ok)">answered ✓</span>`;
+      else { d.innerHTML = q.at_page ? `<div class="muted" style="font-size:.8rem">Page ${q.at_page}</div>` : ""; const inner = document.createElement("div"); d.appendChild(inner);
+             questionUI(inner, q, () => { answered.add(q.id); draw(); }); }
+      pq.appendChild(d);
+    });
+    $("pdone").disabled = pend().length > 0;
+    $("pdone").title = pend().length ? "Answer the questions first" : "";
+  };
+  draw();
+  $("pdone").onclick = () => complete(s);
+  record(s, "progressed", 1);
+}
+
+// ----- quiz
+function renderQuiz(s, head) {
+  const answered = new Set(s.answered || []);
+  const qs = s.questions || [];
+  $("step-card").innerHTML = `<div class="card">${head}
+    <p class="muted">${qs.length} question${qs.length === 1 ? "" : "s"}. Your score counts what you answer right on the first try.</p><div id="qq"></div></div>`;
+  const draw = () => {
+    const qq = $("qq"); qq.innerHTML = "";
+    qs.forEach((q, i) => {
+      const d = document.createElement("div"); d.className = "card";
+      if (answered.has(q.id)) d.innerHTML = `${i + 1}. ${esc(q.prompt)} <span class="pill" style="background:var(--ok-soft);color:var(--ok)">✓</span>`;
+      else { const inner = document.createElement("div"); d.appendChild(inner);
+             questionUI(inner, q, r => { answered.add(q.id); if (answered.size === qs.length) { check("completed"); toast("<b>Quiz completed ✓</b>"); goNext(s); } else draw(); }); }
+      qq.appendChild(d);
+    });
+  };
+  if (!qs.length) $("qq").innerHTML = '<p class="muted">The teacher has not added questions yet.</p>'; else draw();
+}
+
+// ----- assignment
+function renderAssignment(s, head, cfg) {
+  const sub = s.submission;
+  $("step-card").innerHTML = `<div class="card">${head}
+    <div>${markdown(cfg.instructions || "")}</div>
+    ${sub ? `<div class="notice" style="margin-top:12px">Handed in ${esc(sub.submitted_at.slice(0, 16).replace("T", " "))}.
+       ${sub.score != null ? `Score: <b>${sub.score}</b>. ${esc(sub.feedback || "")}` : "Waiting for the teacher's grade."}</div>` : ""}
+    <textarea id="ans" rows="7" placeholder="Write your answer here" style="margin-top:12px"></textarea>
+    <div class="row"><button class="primary" id="send">${sub ? "Hand in again" : "Hand in"}</button></div></div>`;
+  $("send").onclick = async () => {
+    const text = $("ans").value.trim();
+    if (!text) return;
+    const r = await rpc("mooc_submit", { p_token: token, p_step: s.id, p_answer: text, p_file_url: null });
+    if (r.ok) { check("completed"); showAwards(r.awarded); toast(cfg.grading === "auto" ? "<b>Handed in ✓</b>" : "<b>Handed in ✓</b><br>Your teacher will grade it."); goNext(s); }
+    else notice(r.error);
+  };
+}
+
+// ------------------------------------------------------------------------------------------------ small things
+function markdown(md) {
+  return esc(md)
+    .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
+    .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/^- (.*)$/gm, "• $1")
+    .replace(/\n/g, "<br>");
+}
+function stopPlayer() {
+  clearInterval(poll); poll = null;
+  if (player && player.destroy) { try { player.destroy(); } catch (e) {} }
+  player = null;
+}
+let ytWaiting = [];
+function withYouTube(fn) {
+  if (window.YT && YT.Player) return fn();
+  ytWaiting.push(fn);
+  if (ytWaiting.length > 1) return;
+  window.onYouTubeIframeAPIReady = () => { ytWaiting.forEach(f => f()); ytWaiting = []; };
+  const s = document.createElement("script"); s.src = "https://www.youtube.com/iframe_api"; document.head.appendChild(s);
+}
+if (location.protocol === "file:") notice("This page is opened from a file. YouTube does not play videos in pages opened from a file: open it from its web address instead.");
+if (params.get("session")) { params.delete("session"); history.replaceState(null, "", location.pathname + (params.toString() ? "?" + params : "")); }
+
+checkSession().then(() => refresh(false));
+</script>
+</body>
+</html>
