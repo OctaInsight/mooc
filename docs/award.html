@@ -100,6 +100,7 @@ dd{margin:0;word-break:break-all}
 const DB_URL = "https://uxqeukvmnfvpgsxktgvo.supabase.co";
 const DB_KEY = "sb_publishable_oFEaDte2Hy-gGsqpa9kWeQ_HuMm6dou";
 const ISSUER = "CloudEARTHi MOOC";
+const LINKEDIN_ORG = "80352164";   // CloudEARTHi's LinkedIn company page: shows its logo on the student's profile
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const id = new URLSearchParams(location.search).get("id") || "";
@@ -248,7 +249,7 @@ function drawBadge(a, im, name, date) {
   // sharing
   const url = location.origin + location.pathname + "?id=" + a.id;
   const text = `I earned the ${kindWord} "${a.title}" on the CloudEARTHi MOOC (${a.course.title}).`;
-  const li = new URLSearchParams({ startTask: "CERTIFICATION_NAME", name: a.title, organizationName: ISSUER,
+  const li = new URLSearchParams({ startTask: "CERTIFICATION_NAME", name: a.title, organizationId: LINKEDIN_ORG,
     issueYear: issued.getFullYear(), issueMonth: issued.getMonth() + 1, certUrl: url, certId: a.id });
   $("li-add").href = "https://www.linkedin.com/profile/add?" + li;
   $("li-share").href = "https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(url);
