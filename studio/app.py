@@ -702,11 +702,11 @@ def page_people():
         kind = mail.provider()
         if kind == "resend":
             st.caption(f"Welcome and forgot-password emails are sent through **Resend** from "
-                       f"{html.escape(st.secrets['email']['from_email'])}.")
+                       f"{html.escape(mail.sender()['from_email'])}.")
         elif kind == "gmail":
-            st.warning("Emails are still sent through Gmail. Add resend_api_key and from_email to the [email] secrets.")
+            st.warning("Emails are still sent through Gmail. To use Resend: " + mail.diagnose())
         else:
-            st.warning("Email is not set up: add the [email] section with resend_api_key and from_email to the secrets.")
+            st.warning("Email is not set up. " + mail.diagnose())
         if kind and st.button("Send a test email to me"):
             try:
                 mid = mail.send(user["email"], "MOOC Studio: test email",
