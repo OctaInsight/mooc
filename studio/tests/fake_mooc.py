@@ -17,6 +17,26 @@ class FakeMooc:
         self.people = {"u-t": dict(kind="teacher", status="pending", created_at=_now())}
         self.projects, self.courses, self.members, self.lectures, self.steps, self.questions = {}, {}, {}, {}, {}, {}
         self.badges, self.subs = {}, {}
+        self.reqs = {}
+
+    def rpc(self, name, **a):
+        """The student-side functions MOOC Studio calls directly (mooc_join_options, mooc_register)."""
+        if name == "mooc_join_options":
+            return dict(ok=True, person=None, requests=[dict(r, course=self.courses[r["course_id"]]["title"]) for r in self.reqs.values()],
+                        courses=[dict(id=c["id"], slug=c["slug"], title=c["title"], status=c["status"], project=None,
+                                      my_role=self.members.get((c["id"], "u-me"))) for c in self.courses.values()])
+        if name == "mooc_register":
+            c = self.courses[a["p_course"]]
+            if a["p_kind"] == "student":
+                if c["status"] != "published":
+                    return dict(ok=False, error="This course is not open to students yet.")
+                self.members[(c["id"], "u-me")] = "student"
+                return dict(ok=True, status="enrolled", slug=c["slug"])
+            rid = self._id()
+            self.reqs[rid] = dict(id=rid, user_id="u-me", course_id=c["id"], role=a["p_kind"], status="pending",
+                                  message=a.get("p_message"), created_at=_now())
+            return dict(ok=True, status="requested", request_id=rid)
+        return dict(ok=False, error="unknown " + name)
 
     def _id(self):
         return str(uuid.uuid4())
@@ -44,9 +64,23 @@ class FakeMooc:
             cs = [dict(c, my_role="super" if sup else self.role, lectures=0, students=0, awards=0, to_grade=len(self.subs))
                   for c in self.courses.values()]
             return dict(ok=True, projects=list(self.projects.values()), courses=cs,
-                        pending_teachers=sum(1 for x in self.people.values() if x["status"] == "pending"))
+                        pending_teachers=sum(1 for x in self.people.values() if x["status"] == "pending"),
+                        pending_requests=sum(1 for r in self.reqs.values() if r["status"] == "pending"))
         if action == "course":
             return dict(ok=True, my_role="super" if sup else self.role, course=self.course_full(p["course_id"]))
+        if action == "requests":
+            return dict(ok=True, requests=[dict(self.users[r["user_id"]], request_id=r["id"], course_id=r["course_id"],
+                                                course=self.courses[r["course_id"]]["title"], role=r["role"],
+                                                message=r.get("message"), created_at=r["created_at"])
+                                           for r in self.reqs.values() if r["status"] == "pending"])
+        if action == "decide_request":
+            r = self.reqs[p["request_id"]]
+            if r["role"] == "admin" and not sup:
+                return dict(ok=False, error="Only a super admin approves course admins.")
+            r["status"] = "approved" if p["approve"] else "declined"
+            if p["approve"]:
+                self.members[(r["course_id"], r["user_id"])] = r["role"]
+            return dict(ok=True)
         if action == "people":
             return dict(ok=True, people=[dict(self.users[u], **x, courses=0) for u, x in self.people.items()])
         if action == "super_admins":

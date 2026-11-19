@@ -17,8 +17,10 @@ share one database (Supabase project Octa_projects) and the Octa suite accounts:
 | Teacher | `Mooc_members.role = 'teacher'` | lectures, steps, questions, badges and certificates; grading |
 | Student | `Mooc_members.role = 'student'` | enrols in published courses and learns |
 
-Registration: students are active at once; teachers are pending until a course admin or super admin approves them
-(`Mooc_people`). Giving someone a teacher role in a course also approves them.
+Registration: after creating an Octa account, people choose in MOOC Studio how they join, for one course:
+**student** (enrolled at once), **teacher** (approved by that course's admin or a super admin) or **admin of the
+course** (approved by a super admin only). Requests wait in `Mooc_requests` and appear under People → Requests.
+Giving someone a role in a course's Team tab needs no request.
 
 ## Content
 
@@ -52,8 +54,8 @@ Registration: students are active at once; teachers are pending until a course a
 
 | For | Function |
 |---|---|
-| Studio | `mooc_manage(token, {action, ...})`: me, overview, course, people, submissions, students, save_project, delete_project, save_course, delete_course, set_member, decide_teacher, set_super, super_admins, save_lecture, save_step, save_question, delete, reorder, save_badge, grade, upload_ticket |
-| Students | `mooc_join(token, kind)`, `mooc_enrol(token, course)`, `mooc_retake(token, lecture, course)` (redo a lecture or the course; the best score of all tries counts), `mooc_record(token, step, verb, position, data)`, `mooc_answer(token, question, answer)`, `mooc_submit(token, step, text, file_url)` |
+| Studio | `mooc_manage(token, {action, ...})`: me, overview, course, people, submissions, students, save_project, delete_project, save_course, delete_course, set_member, decide_teacher, set_super, super_admins, save_lecture, save_step, save_question, delete, reorder, save_badge, grade, upload_ticket, requests, decide_request |
+| Students | `mooc_join_options(token)`, `mooc_register(token, kind, course, message)`, `mooc_join(token, kind)`, `mooc_enrol(token, course)`, `mooc_retake(token, lecture, course)` (redo a lecture or the course; the best score of all tries counts), `mooc_record(token, step, verb, position, data)`, `mooc_answer(token, question, answer)`, `mooc_submit(token, step, text, file_url)` |
 | Public pages | `mooc_catalogue()`, `mooc_course_view(token, slug)` (course page; full content for enrolled students and the course team), `mooc_profile(username)`, `mooc_award(id)` |
 
 All `Mooc_` tables have row-level security on and no public access. Files go to the public storage bucket `mooc`;

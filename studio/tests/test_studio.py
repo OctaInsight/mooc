@@ -108,6 +108,36 @@ def test_teacher_sees_no_admin_pages():
     assert not any(b.label == "Create course" for b in at.button)
 
 
-def test_stranger_can_ask_to_teach():
-    at, fake = fresh("none")
-    assert any("Ask to become a teacher" == b.label for b in at.button)
+def test_newcomer_asks_to_teach_and_a_super_admin_approves():
+    fake_mooc.CURRENT = fake = fake_mooc.FakeMooc("none")
+    fake("save_course", title="AI course", status="published")
+    cid = next(iter(fake.courses))
+    at = AppTest.from_file(SCRIPT, default_timeout=30)
+    at.run()
+    assert not at.exception, at.exception
+    assert at.radio[0].label == "I want to join as" and len(at.radio[0].options) == 3
+    at.radio[0].set_value("teacher")
+    at.text_area[0].input("I teach AI at a university")
+    btn(at, "Send").click().run()
+    assert not at.exception, at.exception
+    r = next(iter(fake.reqs.values()))
+    assert r["role"] == "teacher" and r["course_id"] == cid and r["message"] == "I teach AI at a university"
+    assert any("request to be teacher" in m.value for m in at.success), [m.value for m in at.success]
+    assert any("Waiting for approval" in m.value for m in at.info)
+    # a student enrols at once
+    at.radio[0].set_value("student")
+    btn(at, "Send").click().run()
+    assert fake.members[(cid, "u-me")] == "student"
+    assert any("You are enrolled" in m.value for m in at.success)
+    # a super admin sees the request on the People page and approves it
+    fake.role = "super"
+    fake.users["u-t"]["id"] = "u-t"
+    r["user_id"] = "u-t"
+    at2 = AppTest.from_file(SCRIPT, default_timeout=30)
+    at2.run()
+    assert "People (1 waiting)" in at2.sidebar.radio[0].options
+    at2.sidebar.radio[0].set_value("People (1 waiting)").run()
+    assert not at2.exception, at2.exception
+    assert any("wants to be **teacher** of **AI course**" in m.value for m in at2.markdown)
+    btn(at2, "Approve").click().run()
+    assert fake.members[(cid, "u-t")] == "teacher" and r["status"] == "approved"

@@ -29,5 +29,7 @@ def _manage(action, **args):
 octa_auth.require_login = lambda app, required=True: USER
 octa_auth.sidebar = lambda app: None
 mooc_db.manage = _manage
+mooc_db.client.rpc = lambda name, **kw: FAKE.rpc(name, **kw)
+mooc_db.token = lambda: "tok"
 mooc_db.upload = lambda data, name, ctype: f"https://example.org/{name}"
 runpy.run_path(os.path.join(ROOT, "app.py"), run_name="__main__")

@@ -28,6 +28,11 @@ STEP_KINDS = {
     "live": ("🎥", "Live session", "An online lecture or study-group meeting"),
 }
 LEVELS = ["", "beginner", "intermediate", "advanced"]
+STUDENT_SITE = "https://octainsight.github.io/mooc/test_lecture.html"
+JOIN_AS = {"student": "🎒 Student: start learning at once",
+           "teacher": "🧑‍🏫 Teacher: build lectures and grade (needs approval by the course admin)",
+           "admin": "🛠️ Admin of a course: manage the course and its people (needs approval by a super admin)"}
+ROLE_WORD = {"student": "student", "teacher": "teacher", "admin": "course admin"}
 
 st.markdown("""<style>
 .block-container{padding-top:1.6rem}
@@ -89,6 +94,63 @@ def lines(text):
     return [x.strip() for x in (text or "").splitlines() if x.strip()]
 
 
+# ================================================================================================ joining
+def join_form(key: str, kinds=("student", "teacher", "admin")):
+    """Choose how to take part: student of a course (at once), teacher or admin of a course (after approval)."""
+    try:
+        o = db.client.rpc("mooc_join_options", p_token=db.token())
+    except db.client.OctaError as e:
+        st.error(str(e))
+        return
+    if not o or not o.get("ok"):
+        st.error((o or {}).get("error") or "The MOOC database refused this.")
+        return
+    waiting = [r for r in o["requests"] if r["status"] == "pending"]
+    decided = [r for r in o["requests"] if r["status"] != "pending"][:5]
+    if waiting:
+        st.info("**Waiting for approval:** " + "; ".join(f"{ROLE_WORD[r['role']]} of *{html.escape(r['course'])}*"
+                                                         for r in waiting))
+    for r in decided:
+        (st.success if r["status"] == "approved" else st.warning)(
+            f"Your request to be {ROLE_WORD[r['role']]} of *{r['course']}* was **{r['status']}**.")
+    mine = [c for c in o["courses"] if c.get("my_role") == "student"]
+    if mine:
+        st.markdown("**Your courses as a student:** " + " · ".join(
+            f"[{html.escape(c['title'])}]({STUDENT_SITE}?course={c['slug']})" for c in mine))
+    courses = o["courses"]
+    if not courses:
+        st.caption("There are no courses yet.")
+        return
+    with st.form(key, clear_on_submit=True):
+        kind = st.radio("I want to join as", list(kinds), format_func=JOIN_AS.get)
+        names = {c["id"]: c["title"] + (f"  ·  {c['project']}" if c.get("project") else "")
+                 + ("  (in preparation)" if c["status"] == "draft" else "")
+                 + (f"  (you are {ROLE_WORD[c['my_role']]})" if c.get("my_role") else "") for c in courses}
+        cid = st.selectbox("Course", list(names), format_func=names.get)
+        note = st.text_area("A few words for the person who approves (teachers and course admins)", height=80,
+                            placeholder="Your institution, what you teach, why you would like this role")
+        go = st.form_submit_button("Send", type="primary")
+    if not go:
+        return
+    try:
+        r = db.client.rpc("mooc_register", p_token=db.token(), p_kind=kind, p_course=cid, p_message=note.strip())
+    except db.client.OctaError as e:
+        st.error(str(e))
+        return
+    if not r.get("ok"):
+        st.error(r.get("error") or "The request was refused.")
+        return
+    title = next(c["title"] for c in courses if c["id"] == cid)
+    if r["status"] == "enrolled":
+        flash("success", f"You are enrolled in **{title}**. [Start learning →]({STUDENT_SITE}?course={r['slug']})")
+    elif r["status"] == "requested":
+        flash("success", f"Your request to be {ROLE_WORD[kind]} of **{title}** was sent. You will see it here once it "
+                         "is approved; then MOOC Studio opens for you.")
+    else:
+        flash("info", f"You are already {ROLE_WORD.get(r.get('role'), r.get('role'))} of **{title}**.")
+    st.rerun()
+
+
 # ================================================================================================ who am I
 me = load("me")
 overview = load("overview")
@@ -96,19 +158,11 @@ is_super = me["is_super"]
 is_course_admin = me["is_course_admin"]
 
 if not (is_super or me["can_edit_any"]):
-    st.markdown(f"## 🎓 MOOC Studio")
-    person = me.get("person") or {}
-    if person.get("kind") == "teacher" and person.get("status") == "pending":
-        st.info("Your request to teach on the CloudEARTHi MOOC is waiting for approval by an admin.")
-    else:
-        st.info("MOOC Studio is for teachers and course admins. A course admin or super admin can give you teacher "
-                "rights in a course; you can also ask to become a teacher here.")
-        if st.button("Ask to become a teacher", type="primary"):
-            try:
-                r = db.client.rpc("mooc_join", p_token=db.token(), p_kind="teacher")
-                st.success("Your request was sent." if r.get("ok") else r.get("error"))
-            except db.client.OctaError as e:
-                st.error(str(e))
+    st.markdown(f"## 🎓 Welcome to the CloudEARTHi MOOC, {html.escape(display_name(user))}")
+    st.write("Choose how you would like to take part. Students start learning at once. Teachers and course admins "
+             "build the course in MOOC Studio once their request is approved.")
+    show_flash()
+    join_form("join")
     st.stop()
 
 with st.sidebar:
@@ -117,7 +171,7 @@ with st.sidebar:
     if is_super:
         pages.append("Projects")
     if is_super or is_course_admin:
-        pending = overview.get("pending_teachers", 0)
+        pending = overview.get("pending_requests", 0)
         pages.append(f"People ({pending} waiting)" if pending else "People")
     page = st.radio("Go to", pages, label_visibility="collapsed", key="mc_page")
     st.caption(f"MOOC Studio {VERSION} · {'super admin' if is_super else 'course admin' if is_course_admin else 'teacher'}")
@@ -146,6 +200,9 @@ def page_courses():
                         if r:
                             S["mc_course"] = r["id"]
                             st.rerun()
+    if not is_super:
+        with st.expander("➕ Join another course (as teacher, course admin or student)"):
+            join_form("join_more")
     if not courses:
         st.info("No courses yet." if is_super else "You are not a teacher or admin in any course yet.")
         return
@@ -665,10 +722,30 @@ def page_people():
     st.markdown("## People")
     show_flash()
     people = load("people")["people"]
-    pending = [p for p in people if p["kind"] == "teacher" and p["status"] == "pending"]
-    st.markdown(f"#### Teachers waiting for approval ({len(pending)})")
-    if not pending:
+    reqs = load("requests")["requests"]
+    st.markdown(f"#### Requests waiting for approval ({len(reqs)})")
+    st.caption("Teacher requests are decided by the course admin or a super admin; course admin requests only by a "
+               "super admin." if is_super else "Teacher requests for the courses you manage.")
+    if not reqs:
         st.caption("Nobody is waiting.")
+    for q in reqs:
+        with st.container(border=True):
+            a, b, c = st.columns([6, 1, 1])
+            a.markdown(f"**{html.escape(display_name(q))}** <span class='mc-muted'>{html.escape(q['username'])} · "
+                       f"{html.escape(q.get('affiliation') or '')} · {html.escape(q['email'])}</span>  \n"
+                       f"wants to be **{ROLE_WORD[q['role']]}** of **{html.escape(q['course'])}** "
+                       f"<span class='mc-muted'>· {q['created_at'][:10]}</span>", unsafe_allow_html=True)
+            if q.get("message"):
+                a.caption(q["message"])
+            if b.button("Approve", key=f"rq_ok_{q['request_id']}", type="primary"):
+                run("decide_request", f"Approved: {display_name(q)} is now {ROLE_WORD[q['role']]} of {q['course']}.",
+                    request_id=q["request_id"], approve=True) and st.rerun()
+            if c.button("Decline", key=f"rq_no_{q['request_id']}"):
+                run("decide_request", "Declined.", request_id=q["request_id"], approve=False) and st.rerun()
+    asked = {q["id"] for q in reqs}
+    pending = [p for p in people if p["kind"] == "teacher" and p["status"] == "pending" and p["id"] not in asked]
+    if pending:
+        st.markdown(f"#### Teachers registered without a course ({len(pending)})")
     for p in pending:
         cols = st.columns([4, 3, 1, 1])
         cols[0].markdown(f"**{html.escape(display_name(p))}** <span class='mc-muted'>{html.escape(p['username'])}</span>", unsafe_allow_html=True)
