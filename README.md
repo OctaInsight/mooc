@@ -10,7 +10,7 @@ The new CloudEARTHi MOOC (mooc.cloudearthi.com), built on the Octa suite account
 
 ## Run MOOC Studio on Streamlit Community Cloud
 1. New app → repository `OctaInsight/mooc`, branch `main`, main file `studio/app.py`.
-2. Secrets: copy `studio/.streamlit/secrets.example.toml` and fill in the server key and Gmail app password.
+2. Secrets: copy `studio/.streamlit/secrets.example.toml` and fill in the server key and the Resend email settings (the same Resend key as the matchmaking platform).
 3. Put the app's address in the Octa suite: `update "User_apps" set url = '<address>', status = 'live' where id = 'octa_mooc';`
 
 ## Tests
