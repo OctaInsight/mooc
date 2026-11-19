@@ -82,7 +82,7 @@ function contours(w, h, seed, peaks, rings) {
   }
   return out;
 }
-const COVER_TONES = [["#e4effb", "#2a78d6", "#9fc1e8"], ["#e6f4ee", "#2e8b67", "#9fd0bb"], ["#fdf3e2", "#c98419", "#f1cf94"], ["#efeaf9", "#6a54c4", "#c3b6ec"]];
+const COVER_TONES = [["#e8f3dd", "#5c9e2e", "#b3d98f"], ["#e2f3ec", "#1e9b73", "#9fd6c0"], ["#fdf3e0", "#c98a12", "#f0d08f"], ["#e6f0f8", "#2a78d6", "#a9c8eb"]];
 function coverArt(seed) {
   const rand = rng(seed); const [bg, strong, soft] = COVER_TONES[Math.floor(rand() * COVER_TONES.length)];
   const peaks = [[.25 + rand() * .2, .35 + rand() * .3, 120], [.7 + rand() * .2, .55 + rand() * .3, 95]];
