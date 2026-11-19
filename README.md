@@ -24,6 +24,11 @@ assignments, live sessions, retakes), follow progress under My learning and open
 Served by GitHub Pages at https://octainsight.github.io/mooc/. To serve it at mooc.cloudearthi.com, add the domain in
 Settings → Pages → Custom domain and a CNAME record `mooc` → `octainsight.github.io` at the domain provider.
 
+### One-file version to upload to another website
+`python tools/build_single_page.py` writes `upload/cloudearthi-mooc.html`: the whole student website in one file (styles,
+script and logo inside). Certificate and profile links point to the GitHub Pages copies. Run it again after changing
+the site.
+
 ## Student test page
 `docs/test_lecture.html` signs in as a student, enrols, goes through a course's lectures and shows a log of every
 database call. Served by GitHub Pages (Settings → Pages → branch `main`, folder `/docs`) at

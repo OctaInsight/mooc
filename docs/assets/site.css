@@ -68,7 +68,7 @@ input:focus, textarea:focus { border-color: var(--blue); outline: none; box-shad
   border-bottom: 1px solid var(--line); }
 .top .wrap { display: flex; align-items: center; gap: 22px; height: 66px; }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font: 700 1.12rem var(--display); }
-.brand svg { width: 34px; height: 34px; }
+.brand img { width: auto; height: 42px; }
 .brand b { color: var(--blue); font-weight: 700; }
 .nav { display: flex; gap: 4px; }
 .nav a { text-decoration: none; color: var(--ink-soft); font-weight: 600; padding: 8px 12px; border-radius: 999px; }
