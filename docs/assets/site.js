@@ -133,6 +133,29 @@ function header() {
   };
 }
 
+async function projectsMenu(current) {
+  const box = $("#nav-projects");
+  if (!box) return;
+  let cat;
+  try { cat = await catalogue(); } catch (e) { box.innerHTML = ""; return; }
+  const list = projectList(cat);
+  if (!list.length) { box.innerHTML = ""; return; }
+  box.innerHTML = `<button class="navbtn${current ? " on" : ""}" aria-haspopup="true" aria-expanded="false">Projects
+      <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+    <div class="menu-panel left hidden" role="menu">
+      <a href="#/" role="menuitem">All courses <span class="muted">${cat.courses.length}</span></a>
+      ${list.map(p => `<a href="#/project/${encodeURIComponent(p.slug)}" role="menuitem" ${current === p.slug ? 'aria-current="page"' : ""}>${esc(p.title)} <span class="muted">${p.n}</span></a>`).join("")}</div>`;
+  const btn = $("button", box), panel = $(".menu-panel", box);
+  const close = () => { panel.classList.add("hidden"); btn.setAttribute("aria-expanded", "false"); };
+  btn.onclick = e => {
+    e.stopPropagation(); const open = panel.classList.toggle("hidden") === false;
+    btn.setAttribute("aria-expanded", String(open));
+    if (open) { $("a", panel).focus(); document.addEventListener("click", close, { once: true }); }
+  };
+  panel.onkeydown = e => { if (e.key === "Escape") { close(); btn.focus(); } };
+  $$("a", panel).forEach(a => (a.onclick = close));
+}
+
 // ------------------------------------------------------------------------------------------------ router
 let cleanup = null;
 function parseHash() {
@@ -146,11 +169,13 @@ async function route() {
   const view = $("#view");
   $$(".nav a").forEach(a => a.classList.toggle("on", (a.dataset.nav === "home" && !parts.length) || (a.dataset.nav === "my" && parts[0] === "my")));
   header();
+  projectsMenu(parts[0] === "project" ? parts[1] : null);
   try {
     if (!parts.length) await viewHome(view);
     else if (parts[0] === "course" && parts[1]) await viewCourse(view, parts[1]);
     else if (parts[0] === "learn" && parts[1]) await viewLearn(view, parts[1], parts[2]);
     else if (parts[0] === "my") await viewMy(view);
+    else if (parts[0] === "project" && parts[1]) await viewProject(view, parts[1]);
     else if (parts[0] === "signin") viewSignIn(view, q.get("next"));
     else if (parts[0] === "join") viewJoin(view, q.get("next"));
     else view.innerHTML = `<div class="wrap auth"><div class="box"><h1>Page not found</h1><p class="muted">This address does not lead to a page of the MOOC.</p><a class="btn" href="#/">See all courses</a></div></div>`;
@@ -189,12 +214,64 @@ function courseCard(c, mineById) {
     <div class="cover">${cover(c)}</div>
     <div class="body"><h3>${esc(c.title)}</h3>${c.summary ? `<div class="sum">${esc(c.summary)}</div>` : ""}<div class="facts">${facts.join("")}</div></div></a>`;
 }
-async function viewHome(view) {
-  const [cat, mine] = await Promise.all([S.catalogue || api("mooc_catalogue"), S.token ? myLearning().catch(() => null) : null]);
-  S.catalogue = cat;
-  const mineById = {}; (mine?.courses || []).forEach(c => (mineById[c.id] = c));
+async function catalogue() { if (!S.catalogue) S.catalogue = await api("mooc_catalogue"); return S.catalogue; }
+function groups(cat) {
   const byProject = {};
   cat.courses.forEach(c => (byProject[c.project_id || ""] ||= []).push(c));
+  return byProject;
+}
+// the projects that have courses, in their order, plus "Other courses" for courses without a project
+function projectList(cat) {
+  const by = groups(cat);
+  const list = cat.projects.filter(p => by[p.id]).map(p => ({ slug: p.slug, title: p.title, n: by[p.id].length }));
+  if (by[""] && list.length) list.push({ slug: "other", title: "Other courses", n: by[""].length });
+  return list;
+}
+function chips(cat, current) {
+  const list = projectList(cat);
+  if (!list.length) return "";
+  const chip = (href, title, n, on) => `<a class="chip${on ? " on" : ""}" href="${href}"${on ? ' aria-current="page"' : ""}>${esc(title)}<span class="n">${n}</span></a>`;
+  return `<nav class="chips wrap" aria-label="Courses by project">
+    ${chip("#/", "All courses", cat.courses.length, !current)}
+    ${list.map(p => chip(`#/project/${encodeURIComponent(p.slug)}`, p.title, p.n, current === p.slug)).join("")}</nav>`;
+}
+async function viewProject(view, slug) {
+  const [cat, mine] = await Promise.all([catalogue(), S.token ? myLearning().catch(() => null) : null]);
+  const mineById = {}; (mine?.courses || []).forEach(c => (mineById[c.id] = c));
+  const by = groups(cat);
+  const p = slug === "other" ? { slug: "other", title: "Other courses", description: "Courses that are not part of a project.", id: "" }
+                             : cat.projects.find(x => x.slug === slug);
+  if (!p) {
+    view.innerHTML = `${chips(cat, null)}<div class="wrap auth"><div class="box"><h1>Project not found</h1>
+      <p class="muted">There is no project with this address on the MOOC.</p><a class="btn" href="#/">See all courses</a></div></div>`;
+    return;
+  }
+  const courses = by[p.id] || [];
+  const about = (p.description || "").split(/\n\s*\n/).map(x => x.trim()).filter(Boolean);
+  document.title = `${p.title}: CloudEARTHi MOOC`;
+  view.innerHTML = `
+    <section class="project-hero"><div class="wrap">
+      <div class="crumbs"><a href="#/">All courses</a> / ${esc(p.title)}</div>
+      <div class="project-band">
+        ${slug !== "other" ? `<div class="logo big">${p.image_url ? `<img src="${esc(p.image_url)}" alt="${esc(p.title)} logo">` : coverArt(p.slug)}</div>` : ""}
+        <div><h1>${esc(p.title)}</h1>
+          ${about.map(x => `<p class="lead">${esc(x)}</p>`).join("")}
+          <div class="row">${p.website ? `<a class="btn quiet" href="${esc(p.website)}" target="_blank" rel="noopener">Visit the project website</a>` : ""}
+            <span class="muted">${plural(courses.length, "course")}</span></div></div>
+      </div></div></section>
+    ${chips(cat, slug)}
+    <section class="section" style="padding-top:20px"><div class="wrap">
+      ${courses.length ? `<div class="grid">${courses.map(c => courseCard(c, mineById)).join("")}</div>`
+                       : `<div class="empty">This project has no open courses yet.</div>`}</div></section>
+    <div style="height:70px"></div>`;  const row = $(".chips", view), on = $(".chip.on", view);         // phones: show the chosen project in the row
+  if (row && on && row.scrollWidth > row.clientWidth) row.scrollLeft = on.offsetLeft - (row.clientWidth - on.offsetWidth) / 2;
+}
+
+async function viewHome(view) {
+  document.title = "CloudEARTHi MOOC";
+  const [cat, mine] = await Promise.all([catalogue(), S.token ? myLearning().catch(() => null) : null]);
+  const mineById = {}; (mine?.courses || []).forEach(c => (mineById[c.id] = c));
+  const byProject = groups(cat);
   const sections = cat.projects.filter(p => byProject[p.id]).map(p => {
     const about = (p.description || "").split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
     const short = (about[1] || about[0] || "").slice(0, 300);
@@ -202,8 +279,8 @@ async function viewHome(view) {
       <div class="wrap">
         <div class="project-head">
           <div class="logo">${p.image_url ? `<img src="${esc(p.image_url)}" alt="${esc(p.title)} logo">` : coverArt(p.slug)}</div>
-          <div><h2>${esc(p.title)}</h2>${short ? `<p>${esc(short)}${short.length >= 300 ? "…" : ""}</p>` : ""}</div>
-          ${p.website ? `<a class="btn quiet site" href="${esc(p.website)}" target="_blank" rel="noopener">About the project</a>` : ""}
+          <div><h2><a href="#/project/${encodeURIComponent(p.slug)}" style="color:inherit;text-decoration:none">${esc(p.title)}</a></h2>${short ? `<p>${esc(short)}${short.length >= 300 ? "…" : ""}</p>` : ""}</div>
+          <a class="btn quiet site" href="#/project/${encodeURIComponent(p.slug)}">All ${esc(p.title)} courses</a>
         </div>
         <div class="grid">${byProject[p.id].map(c => courseCard(c, mineById)).join("")}</div>
       </div></section>`;
@@ -224,6 +301,7 @@ async function viewHome(view) {
         <div class="t"><div class="muted small">Pick up where you left off</div><h3>${esc(next.title)}</h3>
           <div class="bar" style="margin-top:8px;max-width:340px"><i style="width:${Math.round(100 * next.done / Math.max(next.steps, 1))}%"></i></div></div>
         <a class="btn big" href="#/learn/${encodeURIComponent(next.slug)}/${next.next_step}">Continue learning</a></div></div>` : ""}
+    ${chips(cat, null)}
     ${sections.join("") || `<section class="section"><div class="wrap"><div class="empty">No courses are open yet. Come back soon.</div></div></section>`}
     <div class="wrap"><div class="empty hidden" id="nohit" style="margin-top:40px">No course matches your search.</div></div>
     <div style="height:70px"></div>`;
@@ -279,7 +357,7 @@ async function viewCourse(view, slug) {
   }).join("");
   view.innerHTML = `
     <section class="course-hero"><div class="wrap">
-      <div class="crumbs"><a href="#/">Courses</a>${c.project ? ` / <a href="#/">${esc(c.project.title)}</a>` : ""}</div>
+      <div class="crumbs"><a href="#/">All courses</a>${c.project ? ` / <a href="#/project/${encodeURIComponent(c.project.slug)}">${esc(c.project.title)}</a>` : ""}</div>
       <h1>${esc(c.title)}</h1>${c.summary ? `<p class="lead">${esc(c.summary)}</p>` : ""}<div class="facts">${facts}</div>
     </div></section>
     <div class="wrap course-layout">

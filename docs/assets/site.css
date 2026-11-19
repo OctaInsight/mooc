@@ -85,6 +85,34 @@ input:focus, textarea:focus { border-color: var(--blue); outline: none; box-shad
   background: none; border: 0; font: 1rem var(--body); color: var(--ink); text-decoration: none; cursor: pointer; }
 .menu-panel a:hover, .menu-panel button:hover { background: var(--glacier); }
 
+.nav { align-items: center; }
+.navbtn { display: inline-flex; align-items: center; gap: 6px; font: 600 1rem/1.6 var(--body); color: var(--ink-soft); background: none; border: 0;
+  padding: 8px 12px; border-radius: 999px; cursor: pointer; }
+.navbtn:hover, .navbtn[aria-expanded="true"] { color: var(--ink); background: var(--glacier); }
+.navbtn.on { color: var(--blue); background: var(--glacier); }
+.menu-panel.left { left: 0; right: auto; }
+.menu-panel a[aria-current] { font-weight: 700; color: var(--blue); }
+.menu-panel a .muted { float: right; margin-left: 16px; }
+
+/* projects: the row of buttons and the project page */
+.chips { display: flex; gap: 10px; flex-wrap: wrap; padding-top: 30px; padding-bottom: 4px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px; border: 1.5px solid var(--line);
+  background: var(--paper); color: var(--ink); font-weight: 700; text-decoration: none; white-space: nowrap; }
+.chip:hover { border-color: #127a45; color: var(--ink); }
+.chip .n { font-weight: 400; font-size: .85rem; color: var(--ink-soft); background: var(--glacier); border-radius: 99px; padding: 0 8px; }
+.chip.on { background: #127a45; border-color: #127a45; color: #fff; }
+.chip.on .n { background: rgba(255, 255, 255, .22); color: #fff; }
+.project-hero { background: linear-gradient(180deg, #fbfdf8 0%, #e5f2d8 100%); border-bottom: 1px solid var(--line); }
+.project-hero .wrap { padding-top: 34px; padding-bottom: 38px; }
+.project-band { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 32px; align-items: start; }
+.project-band h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 12px; }
+.project-band .lead { color: var(--ink-soft); max-width: 70ch; margin: 0 0 10px; }
+.project-band .row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-top: 18px; }
+.logo.big { width: 150px; height: 150px; border-radius: var(--r-lg); background: var(--paper); border: 1px solid var(--line);
+  display: grid; place-items: center; overflow: hidden; padding: 14px; }
+.logo.big img { max-height: 100%; object-fit: contain; }
+.project-band:not(:has(.logo)) { grid-template-columns: 1fr; }
+
 /* ------------------------------------------------------------------ hero (the one bold element) */
 .hero { position: relative; overflow: hidden; background: linear-gradient(180deg, #fbfdf8 0%, #e5f2d8 100%);
   border-bottom: 1px solid var(--line); }
@@ -273,6 +301,9 @@ input:focus, textarea:focus { border-color: var(--blue); outline: none; box-shad
   .project-head { grid-template-columns: 60px 1fr; }
   .project-head .logo { width: 60px; height: 60px; }
   .project-head .site { grid-column: 1 / -1; }
+  .project-band { grid-template-columns: 1fr; gap: 18px; }
+  .logo.big { width: 96px; height: 96px; padding: 10px; }
+  .chips { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; -webkit-overflow-scrolling: touch; }
   .two { grid-template-columns: 1fr; }
   .reading { padding: 20px; }
   .account .btn.ghost { display: none; }

@@ -18,7 +18,8 @@ The new CloudEARTHi MOOC (mooc.cloudearthi.com), built on the Octa suite account
 on the database; it ends with "MOOC TEST PASSED (rolled back)".
 
 ## Student website
-`docs/index.html` (with `docs/assets/`) is the website students use: browse courses by project, create an account or
+`docs/index.html` (with `docs/assets/`) is the website students use: browse all courses or one project's courses
+(Projects menu, project buttons, and a page per project at `#/project/<project address>`), create an account or
 sign in with an Octa account, start a course without approval, learn (videos that pause for questions, PDFs, quizzes,
 assignments, live sessions, retakes), follow progress under My learning and open their badges and certificates.
 Served by GitHub Pages at https://octainsight.github.io/mooc/. To serve it at mooc.cloudearthi.com, add the domain in
