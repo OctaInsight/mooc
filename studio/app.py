@@ -11,6 +11,7 @@ import streamlit as st
 st.set_page_config(page_title="MOOC Studio", page_icon="🎓", layout="wide")
 
 from octa_auth import App, require_login, sidebar, display_name  # noqa: E402
+from octa_auth import mail  # noqa: E402
 import mooc_db as db  # noqa: E402
 from mooc_db import MoocError  # noqa: E402
 
@@ -697,6 +698,23 @@ def page_people():
             b.write("")
             if b.form_submit_button("Add", width="stretch") and who.strip():
                 run("set_super", "Super admin added.", user=who.strip(), on=True) and st.rerun()
+        st.markdown("#### Email")
+        kind = mail.provider()
+        if kind == "resend":
+            st.caption(f"Welcome and forgot-password emails are sent through **Resend** from "
+                       f"{html.escape(st.secrets['email']['from_email'])}.")
+        elif kind == "gmail":
+            st.warning("Emails are still sent through Gmail. Add resend_api_key and from_email to the [email] secrets.")
+        else:
+            st.warning("Email is not set up: add the [email] section with resend_api_key and from_email to the secrets.")
+        if kind and st.button("Send a test email to me"):
+            try:
+                mid = mail.send(user["email"], "MOOC Studio: test email",
+                                ["This is a test email from MOOC Studio.",
+                                 "If you can read it, welcome and forgot-password emails work."])
+                st.success(f"Sent to {user['email']}" + (f" (Resend id {mid})" if mid else "") + ". Check the inbox and spam folder.")
+            except mail.MailError as e:
+                st.error(str(e))
 
 
 # ================================================================================================ route
