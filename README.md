@@ -17,6 +17,13 @@ The new CloudEARTHi MOOC (mooc.cloudearthi.com), built on the Octa suite account
 `cd studio && python -m pytest tests` (no database needed). Database test: run `supabase/tests/mooc_flow_test.sql`
 on the database; it ends with "MOOC TEST PASSED (rolled back)".
 
+## Student website
+`docs/index.html` (with `docs/assets/`) is the website students use: browse courses by project, create an account or
+sign in with an Octa account, start a course without approval, learn (videos that pause for questions, PDFs, quizzes,
+assignments, live sessions, retakes), follow progress under My learning and open their badges and certificates.
+Served by GitHub Pages at https://octainsight.github.io/mooc/. To serve it at mooc.cloudearthi.com, add the domain in
+Settings → Pages → Custom domain and a CNAME record `mooc` → `octainsight.github.io` at the domain provider.
+
 ## Student test page
 `docs/test_lecture.html` signs in as a student, enrols, goes through a course's lectures and shows a log of every
 database call. Served by GitHub Pages (Settings → Pages → branch `main`, folder `/docs`) at

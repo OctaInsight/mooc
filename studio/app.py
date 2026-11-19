@@ -28,7 +28,7 @@ STEP_KINDS = {
     "live": ("🎥", "Live session", "An online lecture or study-group meeting"),
 }
 LEVELS = ["", "beginner", "intermediate", "advanced"]
-STUDENT_SITE = "https://octainsight.github.io/mooc/test_lecture.html"
+STUDENT_SITE = "https://octainsight.github.io/mooc/"
 JOIN_AS = {"student": "🎒 Student: start learning at once",
            "teacher": "🧑‍🏫 Teacher: build lectures and grade (needs approval by the course admin)",
            "admin": "🛠️ Admin of a course: manage the course and its people (needs approval by a super admin)"}
@@ -116,7 +116,7 @@ def join_form(key: str, kinds=("student", "teacher", "admin")):
     mine = [c for c in o["courses"] if c.get("my_role") == "student"]
     if mine:
         st.markdown("**Your courses as a student:** " + " · ".join(
-            f"[{html.escape(c['title'])}]({STUDENT_SITE}?course={c['slug']})" for c in mine))
+            f"[{html.escape(c['title'])}]({STUDENT_SITE}#/course/{c['slug']})" for c in mine))
     courses = o["courses"]
     if not courses:
         st.caption("There are no courses yet.")
@@ -142,7 +142,7 @@ def join_form(key: str, kinds=("student", "teacher", "admin")):
         return
     title = next(c["title"] for c in courses if c["id"] == cid)
     if r["status"] == "enrolled":
-        flash("success", f"You are enrolled in **{title}**. [Start learning →]({STUDENT_SITE}?course={r['slug']})")
+        flash("success", f"You are enrolled in **{title}**. [Start learning →]({STUDENT_SITE}#/course/{r['slug']})")
     elif r["status"] == "requested":
         flash("success", f"Your request to be {ROLE_WORD[kind]} of **{title}** was sent. You will see it here once it "
                          "is approved; then MOOC Studio opens for you.")
