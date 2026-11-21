@@ -19,7 +19,8 @@ import mooc_db as db
 from mooc_db import MoocError
 from octa_auth import mail
 
-AWARD_PAGE = "https://octainsight.github.io/mooc/award.html?id="
+SITE = "https://octainsight.github.io/mooc/"
+AWARD_PAGE = SITE + "award.html?id="
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 STOP_WORDS = ("limit", "not set up", "API key", "sender", "email settings", "Could not reach")
 DAILY_EMAILS = 100          # Resend free plan, shared by all Octa apps
@@ -38,6 +39,13 @@ def award_url(award_id: str) -> str:
     except Exception:
         base = AWARD_PAGE
     return f"{base}{award_id}"
+
+
+def site_url() -> str:
+    try:
+        return st.secrets.get("mooc", {}).get("site") or SITE
+    except Exception:
+        return SITE
 
 
 # ------------------------------------------------------------------------------------------------ reading the list
@@ -99,13 +107,14 @@ def read_people(upload) -> tuple[list[dict], list[str]]:
             problems.append(f"Line {line}: {email} is listed twice; the first line is used.")
             continue
         seen.add(email)
-        rows.append({"name": full, "email": email, "contribution": get("contribution"), "line": line})
+        rows.append({"name": full, "first_name": get("first"), "last_name": get("last"), "email": email,
+                     "contribution": get("contribution"), "line": line})
     return rows, problems
 
 
 # ------------------------------------------------------------------------------------------------ emails
-def _email_one(person: dict, awards: list[dict], course: dict, message: str) -> None:
-    """One email per person, linking each of their awards."""
+def _email_one(person: dict, awards: list[dict], course: dict, message: str, account: dict | None = None) -> None:
+    """One email per person, linking each of their awards. A new account also gets its set-password link."""
     certs = [a for a in awards if a["kind"] == "certificate"]
     what = "certificate" if certs and len(awards) == 1 else "badge" if len(awards) == 1 else "certificate and badges" if certs else "badges"
     e = lambda s: html.escape(str(s), quote=False)   # noqa: E731
@@ -114,16 +123,42 @@ def _email_one(person: dict, awards: list[dict], course: dict, message: str) -> 
                   f"Congratulations! You have received the {what} {names} for <b>{e(course['title'])}</b>."]
     if message.strip():
         paragraphs.append(e(message.strip()).replace("\n", "<br>"))
+    links = [f"{e(a['title'])}: <a href='{award_url(a['award_id'])}'>{award_url(a['award_id'])}</a>" for a in awards]
+    site = site_url()
+    token = (account or {}).get("set_password_token")
+    if token:
+        # a new account: the main button sets the password; the certificates are listed under it
+        paragraphs.append("We have created a free CloudEARTHi MOOC account for you, where you find your certificates "
+                          "and badges and can take our online courses. Your username is "
+                          f"<b>{e(account['username'])}</b> (you can also sign in with this email address).")
+        paragraphs.append("Choose your password with the button below. The link works for 30 days. Then sign in at any "
+                          f"time at <a href='{site}'>{site}</a> and open <b>My learning</b> to download your {what}.")
+        after = [f"Your {what} also has its own page, which you can share on LinkedIn and other social media:"] + links
+        mail.send(person["email"], f"Your {what}: {course['title']}", paragraphs,
+                  button=("Set your password", f"{site}#/welcome?t={token}"), after=after)
+        return
     paragraphs.append("Each one has its own page with your name, where you can download it and share it on LinkedIn "
                       "and other social media. The page also lets anyone check that it is genuine.")
-    first, rest = awards[0], awards[1:]
-    after = [f"{e(a['title'])}: <a href='{award_url(a['award_id'])}'>{award_url(a['award_id'])}</a>" for a in rest]
+    if account:                                            # an existing account: it is also under My learning
+        paragraphs.append(f"You will also find it under <b>My learning</b> when you sign in at <a href='{site}'>{site}</a> "
+                          f"with your Octa account ({e(account['username'])}).")
+    first = awards[0]
     mail.send(person["email"], f"Your {what}: {course['title']}", paragraphs,
               button=(f"View your {'certificate' if first['kind'] == 'certificate' else 'badge'}", award_url(first["award_id"])),
-              after=after)
+              after=links[1:])
 
 
-def send_emails(awards: list[dict], course: dict, message: str = "") -> tuple[int, int, str | None]:
+def invite(course: dict, people: list[dict]) -> dict[str, dict]:
+    """Enrol everyone as a student of the course, creating accounts for new people. {email: {username, set_password_token}}"""
+    if not people:
+        return {}
+    r = db.manage("invite_students", course_id=course["id"],
+                  rows=[{k: p.get(k, "") for k in ("name", "first_name", "last_name", "email")} for p in people])
+    return {x["email"]: x for x in r["people"]}
+
+
+def send_emails(awards: list[dict], course: dict, message: str = "",
+                accounts: dict[str, dict] | None = None) -> tuple[int, int, str | None]:
     """Email the people behind these awards (one email per person). Returns (sent, failed, reason it stopped)."""
     people: dict[str, dict] = {}
     for a in awards:
@@ -131,13 +166,18 @@ def send_emails(awards: list[dict], course: dict, message: str = "") -> tuple[in
             people.setdefault(a["email"], {"name": a["name"], "email": a["email"], "awards": []})["awards"].append(a)
     if not people:
         return 0, 0, None
+    if accounts is None:                                   # sending later: fresh set-password links for new accounts
+        try:
+            accounts = invite(course, list(people.values()))
+        except MoocError:
+            accounts = {}
     sent = failed = 0
     stopped = None
     bar = st.progress(0.0, text="Sending emails…")
     for n, p in enumerate(people.values(), 1):
         ids = [a["award_id"] for a in p["awards"]]
         try:
-            _email_one(p, p["awards"], course, message)
+            _email_one(p, p["awards"], course, message, accounts.get(p["email"]))
             db.manage("award_email", ids=ids, sent=True)
             sent += 1
         except mail.MailError as err:
@@ -160,7 +200,8 @@ def send_emails(awards: list[dict], course: dict, message: str = "") -> tuple[in
 def tab_issue(c: dict, flash) -> None:
     st.caption("Give this course's certificate and badges to a list of people, each with their own name and "
                "contribution, and email everyone the link to their certificate. Useful for conferences, workshops "
-               "and courses with little content. People do not need an account.")
+               "and courses with little content. Everyone on the list becomes a student of this course; people "
+               "without an Octa account get one, and their email asks them to choose a password.")
     badges = [b for b in c["badges"] if b.get("active", True)]
     if not badges:
         st.info("First create the certificate and/or badges in the **Badges & certificates** tab (title and design). "
@@ -199,7 +240,7 @@ def tab_issue(c: dict, flash) -> None:
                            help="For a conference or workshop, the date it took place.")
         dflt = y.text_input("Contribution for people without one in the file", placeholder="Participant",
                             help="Printed on the certificate, e.g. Participant. Leave empty to print none.")
-        send = st.checkbox("Email each person their certificate", True)
+        send = st.checkbox("Email each person their certificate (and, for new accounts, a link to choose a password)", True)
         msg = st.text_area("A few words for the email (optional)", height=80,
                            placeholder="Thank you for taking part in the workshop in Oslo.")
         preview = pd.DataFrame([{"Line": r["line"], "Name": r["name"], "Email": r["email"],
@@ -216,6 +257,7 @@ def tab_issue(c: dict, flash) -> None:
         st.error("Choose at least one certificate or badge.")
         return
     try:
+        accounts = invite(c, rows)                         # first, so the awards are tied to the accounts
         r = db.manage("bulk_award", badge_ids=chosen, issued_at=day.isoformat() + "T12:00:00Z",
                       default_contribution=dflt.strip(), rows=[{k: v for k, v in r.items() if k != "line"} for r in rows])
     except MoocError as e:
@@ -226,9 +268,11 @@ def tab_issue(c: dict, flash) -> None:
     msg_parts = [f"Issued {len(new)} award{'s' * (len(new) != 1)}."]
     if len(awards) > len(new):
         msg_parts.append(f"{len(awards) - len(new)} already existed and were left as they were.")
+    made = sum(1 for x in accounts.values() if x["created"])
+    msg_parts.append(f"All {len(accounts)} are students of this course" + (f"; {made} new account{'s' * (made != 1)} created." if made else "."))
     if send:
         todo = [a for a in awards if a["new"] or not a.get("email_sent_at")]
-        sent, failed, stopped = send_emails(todo, c, msg)
+        sent, failed, stopped = send_emails(todo, c, msg, accounts)
         msg_parts.append(f"Emails sent: {sent}." + (f" Not sent: {failed}." if failed else ""))
         if stopped:
             msg_parts.append(stopped)

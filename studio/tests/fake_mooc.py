@@ -178,6 +178,22 @@ class FakeMooc:
                     self.awards[aid] = a
                     out.append(dict(a, new=True))
             return dict(ok=True, awards=out)
+        if action == "invite_students":
+            if self.role not in ("super", "admin"):
+                return dict(ok=False, error="Only the course admin or a super admin can add people to this course.")
+            out = []
+            for r in p["rows"]:
+                email = r["email"].lower()
+                u = next((k for k, v in self.users.items() if v["email"] == email), None)
+                created = u is None
+                if created:
+                    u = "u-" + email
+                    self.users[u] = dict(id=u, username=email.split("@")[0], first_name=r.get("first_name") or r["name"],
+                                         last_name=r.get("last_name") or "", email=email, affiliation="", invited=True)
+                self.members.setdefault((p["course_id"], u), "student")
+                token = self._id().replace("-", "") if self.users[u].get("invited") else None
+                out.append(dict(email=email, username=self.users[u]["username"], created=created, set_password_token=token))
+            return dict(ok=True, people=out)
         if action == "awards":
             return dict(ok=True, awards=[a for a in self.awards.values() if a["course_id"] == p["course_id"]])
         if action == "award_email":

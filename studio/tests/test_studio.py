@@ -212,9 +212,14 @@ def test_course_admin_issues_certificates_for_a_workshop():
     assert len(fake.awards) == 3 and all(a["badge_id"] == cert for a in fake.awards.values())
     assert sorted(a["contribution"] for a in fake.awards.values()) == ["Participant", "Participant", "Speaker"]
     assert len(fake.sent) == 3 and all(a["email_sent_at"] for a in fake.awards.values())
+    # everyone is a student of the event; new people get an account and a set-password link
+    assert all(fake.members[(cid, "u-" + p["email"])] == "student" for p in people)
     m = fake.sent[0]
-    assert m["to"] == "p0@example.org" and "Dear Person 0," in m["paragraphs"][0] and "award.html?id=" in m["button"][1]
-    assert any("Issued 3 awards" in s.value and "Emails sent: 3" in s.value for s in at.success), [s.value for s in at.success]
+    assert m["to"] == "p0@example.org" and "Dear Person 0," in m["paragraphs"][0]
+    assert m["button"][0] == "Set your password" and "#/welcome?t=" in m["button"][1], m["button"]
+    assert any("award.html?id=" in x for x in m["after"]) and any("<b>p0</b>" in x for x in m["paragraphs"])
+    assert any("Issued 3 awards" in s.value and "Emails sent: 3" in s.value and "3 new accounts created" in s.value
+               for s in at.success), [s.value for s in at.success]
     # the same list again: nothing new; the limit stops emails and they can be sent later
     for a in fake.awards.values():
         a["email_sent_at"] = None
@@ -236,3 +241,20 @@ def test_course_admin_issues_certificates_for_a_workshop():
     btn(at, "Send emails not yet sent (2 people)").click().run()
     assert not at.exception, at.exception
     assert all(a["email_sent_at"] for a in fake.awards.values())
+
+
+def test_existing_account_gets_the_certificate_link():
+    import bulk
+    fake_mooc.CURRENT = fake = fake_mooc.FakeMooc("super")
+    sent = []
+    real = bulk.mail.send
+    bulk.mail.send = lambda to, subject, paragraphs, button=None, after=(): sent.append((to, paragraphs, button, list(after)))
+    try:
+        bulk._email_one({"name": "Kim <K>", "email": "k@x.org"},
+                        [dict(award_id="a1", title="Cert", kind="certificate")], {"title": "W & S"}, "",
+                        {"username": "kim", "set_password_token": None})
+    finally:
+        bulk.mail.send = real
+    to, paragraphs, button, after = sent[0]
+    assert paragraphs[0] == "Dear Kim &lt;K&gt;," and "W &amp; S" in paragraphs[1]
+    assert button == ("View your certificate", bulk.AWARD_PAGE + "a1") and any("My learning" in x for x in paragraphs)

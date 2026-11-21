@@ -178,6 +178,7 @@ async function route() {
     else if (parts[0] === "project" && parts[1]) await viewProject(view, parts[1]);
     else if (parts[0] === "signin") viewSignIn(view, q.get("next"));
     else if (parts[0] === "join") viewJoin(view, q.get("next"));
+    else if (parts[0] === "welcome") await viewWelcome(view, q.get("t"));
     else view.innerHTML = `<div class="wrap auth"><div class="box"><h1>Page not found</h1><p class="muted">This address does not lead to a page of the MOOC.</p><a class="btn" href="#/">See all courses</a></div></div>`;
   } catch (e) {
     view.innerHTML = `<div class="wrap auth"><div class="box"><h1>Something went wrong</h1><div class="msg bad">${esc(e.message)}</div>
@@ -674,6 +675,10 @@ async function viewMy(view) {
   const m = await myLearning(true);
   if (!m) return needSignIn("/my");
   const courses = m.courses.map(c => {
+    if (!c.steps) return `<div class="card"><div class="cover" aria-hidden="true">${cover(c)}</div>
+      <div class="body"><h3>${esc(c.title)}</h3>${c.project ? `<div class="muted small">${esc(c.project)}</div>` : ""}
+        <div class="small muted" style="margin-top:6px">Your certificate and badges for this event are below.</div>
+        ${c.certificate ? `<div style="margin-top:8px"><a class="btn" href="award.html?id=${c.certificate}" target="_blank" rel="noopener">Your certificate</a></div>` : ""}</div></div>`;
     const pct = c.steps ? Math.round(100 * c.done / c.steps) : 0;
     return `<div class="card"><a class="cover" href="#/course/${encodeURIComponent(c.slug)}" tabindex="-1">${cover(c)}</a>
       <div class="body"><h3>${esc(c.title)}</h3>${c.project ? `<div class="muted small">${esc(c.project)}</div>` : ""}
@@ -762,6 +767,47 @@ function viewJoin(view, next) {
     } catch (err) { m.innerHTML = `<div class="msg bad">${esc(err.message)}</div>`; b.disabled = false; }
   };
   $("input", view).focus();
+}
+
+// ------------------------------------------------------------------------------------------------ set your password
+// The link in a certificate email (#/welcome?t=…): people put on a list by the organisers got an account; here they
+// choose its password, are signed in and land on My learning with their certificates.
+async function viewWelcome(view, token) {
+  const box = inner => (view.innerHTML = `<div class="wrap auth"><div class="box">${inner}</div></div>`);
+  const expired = msg => box(`<h1>This link no longer works</h1><div class="msg bad">${esc(msg)}</div>
+      <p class="muted">If you have already chosen your password, just sign in. Otherwise ask the organisers to send the
+      email again, or use "Forgot username or password" on the <a href="${CFG.studio}" target="_blank" rel="noopener">Octa sign-in page</a>.</p>
+      <a class="btn" href="#/signin">Sign in</a>`);
+  if (!/^[0-9a-f]{64}$/.test(token || "")) return expired("The link is not complete. Open it again from your email.");
+  const c = await api("octa_user_reset_check", { p_token: token });
+  if (!c.ok) return expired(c.error || "This link has expired or was already used.");
+  box(`<h1>Choose your password</h1>
+      <p class="muted">Your CloudEARTHi MOOC account is ready: your certificates are waiting under My learning.
+        Sign in later with your email <b>${esc(c.email)}</b> or your username.</p>
+      <div id="m"></div>
+      <form id="f" novalidate>
+        <label class="field">Username<span class="hint">You may keep it or choose another: 3 to 40 letters, numbers, dots, dashes or underscores.</span>
+          <input name="user" autocomplete="username" value="${esc(c.username)}" required></label>
+        <label class="field">Password<span class="hint">At least 8 characters.</span><input name="pw" type="password" autocomplete="new-password" required></label>
+        <label class="field">Password again<input name="pw2" type="password" autocomplete="new-password" required></label>
+        <button class="btn big block" type="submit">Save password and sign in</button>
+      </form>`);
+  $("#f").onsubmit = async e => {
+    e.preventDefault();
+    const f = e.target, b = $("button", f), m = $("#m"), user = f.user.value.trim();
+    if (f.pw.value.length < 8) return (m.innerHTML = `<div class="msg bad">Your password needs at least 8 characters.</div>`);
+    if (f.pw.value !== f.pw2.value) return (m.innerHTML = `<div class="msg bad">The two passwords are not the same.</div>`);
+    b.disabled = true;
+    try {
+      const r = await api("octa_user_reset_complete", { p_token: token, p_new_password: f.pw.value, p_new_username: user === c.username ? "" : user });
+      if (!r.ok) throw new Error(r.error || "The password could not be saved.");
+      const s = await api("octa_user_login", { p_login: r.username || c.email, p_password: f.pw.value, p_app: CFG.app });
+      if (!s.ok) { toast("Your password is saved. Please sign in."); location.hash = "#/signin?next=/my"; return; }
+      S.token = s.token; S.me = s.user; store.set(TOKEN_KEY, s.token);
+      toast(`Welcome, ${S.me.first_name || S.me.username}. Your password is saved.`); afterSignIn("/my");
+    } catch (err) { m.innerHTML = `<div class="msg bad">${esc(err.message)}</div>`; b.disabled = false; }
+  };
+  $("input[name=pw]", view).focus();
 }
 
 // ------------------------------------------------------------------------------------------------ start

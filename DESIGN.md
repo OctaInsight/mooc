@@ -66,8 +66,16 @@ In MOOC Studio, a super admin or the course admin opens the course (or a "certif
 5. each person gets one email (Resend) with links to their own award pages; the result of every email is kept
    (`email_sent_at`, `email_error`).
 
-People need no account. When someone later creates an Octa account with the same email, the awards are linked to
-it (trigger on `User_accounts`) and appear on their profile. The award page prints the contribution and, for events,
+Everyone on the list becomes a **student of the course** (`invite_students`, run before `bulk_award`). People without
+an Octa account get one: the username comes from their email, the password is random and unknown, and the account is
+noted in `Mooc_invites`. Their certificate email's main button is **Set your password**, a link to the student
+website (`#/welcome?t=…`, valid 30 days) where they choose a password (and may change the username), are signed in
+and land on My learning with their certificates. Sending the email again gives a fresh link. A link is only created
+while the invited account's password has never been set, and only for someone who manages the course that invited
+it, so nobody can take over an account its owner already uses. People who already have an account are enrolled and
+get the certificate link, with a note that it is also under My learning. My learning lists certificates-only events
+even when they are not published. If someone creates an account later with the same email, awards issued to that
+email are linked to it (trigger on `User_accounts`). The award page prints the contribution and, for events,
 says "Certificate of Participation … has taken part in". The tab lists everything issued, with **Send emails not yet
 sent** (Resend's free plan: 100 emails a day for all Octa apps together; sending stops at the limit and continues
 the next day), an Excel download and **Withdraw / restore**.
@@ -76,7 +84,7 @@ the next day), an Excel download and **Withdraw / restore**.
 
 | For | Function |
 |---|---|
-| Studio | `mooc_manage(token, {action, ...})`: me, overview, course, people, submissions, students, save_project, delete_project, save_course, delete_course, set_member, decide_teacher, set_super, super_admins, save_lecture, save_step, save_question, delete, reorder, save_badge, grade, upload_ticket, requests, decide_request, bulk_award, awards, award_email, revoke_award |
+| Studio | `mooc_manage(token, {action, ...})`: me, overview, course, people, submissions, students, save_project, delete_project, save_course, delete_course, set_member, decide_teacher, set_super, super_admins, save_lecture, save_step, save_question, delete, reorder, save_badge, grade, upload_ticket, requests, decide_request, bulk_award, awards, award_email, revoke_award, invite_students |
 | Students | `mooc_join_options(token)`, `mooc_register(token, kind, course, message)`, `mooc_join(token, kind)`, `mooc_enrol(token, course)`, `mooc_retake(token, lecture, course)` (redo a lecture or the course; the best score of all tries counts), `mooc_record(token, step, verb, position, data)`, `mooc_answer(token, question, answer)`, `mooc_submit(token, step, text, file_url)` |
 | Public pages | `mooc_my_learning(token)` (signed-in student's courses, progress, next step, awards), `mooc_catalogue()`, `mooc_course_view(token, slug)` (course page; full content for enrolled students and the course team), `mooc_profile(username)`, `mooc_award(id)` |
 
