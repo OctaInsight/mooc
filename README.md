@@ -4,7 +4,7 @@ The new CloudEARTHi MOOC (mooc.cloudearthi.com), built on the Octa suite account
 
 | Folder | What |
 |---|---|
-| `studio/` | **MOOC Studio** (Streamlit): super admins, course admins and teachers build projects, courses, lectures, interactive questions, badges and certificates, and grade assignments |
+| `studio/` | **MOOC Studio** (Streamlit): super admins, course admins and teachers build projects, courses, lectures, interactive questions, badges and certificates, grade assignments, and issue certificates to a list of people from an Excel file (conferences, workshops) |
 | `supabase/migrations/` | database (Supabase project Octa_projects): `Mooc_` tables and `mooc_*` functions |
 | `supabase/tests/` | end-to-end database test; it always rolls itself back |
 
@@ -14,8 +14,8 @@ The new CloudEARTHi MOOC (mooc.cloudearthi.com), built on the Octa suite account
 3. Put the app's address in the Octa suite: `update "User_apps" set url = '<address>', status = 'live' where id = 'octa_mooc';`
 
 ## Tests
-`cd studio && python -m pytest tests` (no database needed). Database test: run `supabase/tests/mooc_flow_test.sql`
-on the database; it ends with "MOOC TEST PASSED (rolled back)".
+`cd studio && python -m pytest tests` (no database needed). Database tests: run the files in `supabase/tests/`
+on the database; each ends with "… TEST PASSED (rolled back)" and changes nothing.
 
 ## Student website
 `docs/index.html` (with `docs/assets/`) is the website students use: browse all courses or one project's courses

@@ -18,6 +18,8 @@ class FakeMooc:
         self.projects, self.courses, self.members, self.lectures, self.steps, self.questions = {}, {}, {}, {}, {}, {}
         self.badges, self.subs = {}, {}
         self.reqs = {}
+        self.awards = {}
+        self.sent, self.mail_limit = [], None   # emails "sent" by the stubbed mail.send; stop after mail_limit
 
     def rpc(self, name, **a):
         """The student-side functions MOOC Studio calls directly (mooc_join_options, mooc_register)."""
@@ -123,7 +125,7 @@ class FakeMooc:
             return dict(ok=True, id=qid)
         if action == "save_badge":
             bid = p.get("id") or self._id()
-            base = self.badges.get(bid) or dict(id=bid, course_id=p.get("course_id"), active=True, lecture_ids=[])
+            base = self.badges.get(bid) or dict(id=bid, course_id=p.get("course_id"), active=True, lecture_ids=[], min_score=70, kind="badge")
             base.update({k: v for k, v in p.items() if k not in ("id",)})
             self.badges[bid] = base
             return dict(ok=True, id=bid)
@@ -152,6 +154,39 @@ class FakeMooc:
             return dict(ok=True, awarded=[{"title": "Certificate"}])
         if action == "decide_teacher":
             self.people[p["user_id"]]["status"] = "active" if p["approve"] else "declined"
+            return dict(ok=True)
+        if action == "bulk_award":
+            if self.role not in ("super", "admin"):
+                return dict(ok=False, error="Only a course admin or super admin issues certificates.")
+            out, seen = [], set()
+            for r in p["rows"]:
+                email = (r.get("email") or "").strip().lower()
+                if not r.get("name") or "@" not in email or email in seen:
+                    continue
+                seen.add(email)
+                for bid in p["badge_ids"]:
+                    b = self.badges[bid]
+                    old = next((a for a in self.awards.values() if a["badge_id"] == bid and a["email"] == email), None)
+                    if old:
+                        out.append(dict(old, new=False))
+                        continue
+                    aid = self._id()
+                    a = dict(award_id=aid, badge_id=bid, course_id=b["course_id"], title=b["title"], kind=b["kind"],
+                             name=r["name"], email=email, contribution=r.get("contribution") or p.get("default_contribution") or None,
+                             issued_at=p.get("issued_at") or _now(), source="bulk", email_sent_at=None, email_error=None,
+                             revoked=False, has_account=False)
+                    self.awards[aid] = a
+                    out.append(dict(a, new=True))
+            return dict(ok=True, awards=out)
+        if action == "awards":
+            return dict(ok=True, awards=[a for a in self.awards.values() if a["course_id"] == p["course_id"]])
+        if action == "award_email":
+            for i in p["ids"]:
+                a = self.awards[i]
+                a["email_sent_at"], a["email_error"] = (_now(), None) if p["sent"] else (None, p.get("error"))
+            return dict(ok=True)
+        if action == "revoke_award":
+            self.awards[p["id"]]["revoked"] = p.get("revoked", True)
             return dict(ok=True)
         if action in ("delete_project", "delete_course", "set_super", "upload_ticket"):
             return dict(ok=True, ticket="t")

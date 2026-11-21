@@ -12,8 +12,8 @@ share one database (Supabase project Octa_projects) and the Octa suite accounts:
 
 | Role | Who | Can |
 |---|---|---|
-| Super admin | Octa admins + `Mooc_super_admins` | everything; creates projects and courses; names course admins and super admins |
-| Course admin | `Mooc_members.role = 'admin'` | course settings and publishing; gives teacher/student rights in the course; approves teachers; everything a teacher can |
+| Super admin | Octa admins + `Mooc_super_admins` | everything; creates projects and courses; names course admins and super admins; issues certificates from a list |
+| Course admin | `Mooc_members.role = 'admin'` | creates new courses (and becomes their admin); course settings and publishing; gives teacher/student rights in the course; approves teachers; issues certificates from a list; everything a teacher can |
 | Teacher | `Mooc_members.role = 'teacher'` | lectures, steps, questions, badges and certificates; grading |
 | Student | `Mooc_members.role = 'student'` | enrols in published courses and learns |
 
@@ -26,7 +26,8 @@ Giving someone a role in a course's Team tab needs no request.
 
 - **Project** (`Mooc_projects`): groups courses, e.g. BOOSTalent, SEEDplus, Inspiring the Minds.
 - **Course** (`Mooc_courses`): title, summary, description, learning outcomes, level, language, hours, cover,
-  pass score, status draft / published / archived.
+  pass score, status draft / published / archived. `kind` = `course` (lectures, listed on the website) or `event`
+  (certificates only: a conference, workshop or course without content here; not listed on the website).
 - **Lecture** (`Mooc_lectures`): ordered, with its own learning outcomes; draft or published.
 - **Step** (`Mooc_steps`), in order inside a lecture:
   - video (YouTube), pdf (uploaded), text, quiz, assignment (graded by a teacher or "handing in is enough"),
@@ -50,11 +51,32 @@ Giving someone a role in a course's Team tab needs no request.
 5. After every completion or grade, `mooc_check_awards` checks the course's rules and issues earned awards
    (`Mooc_awards`). Each award id is its public verification address: `mooc.cloudearthi.com/badge/<id>`.
 
+## Certificates issued from a list (conferences, workshops, short courses)
+
+In MOOC Studio, a super admin or the course admin opens the course (or a "certificates only" event) and the
+**Issue certificates** tab:
+
+1. downloads the Excel template and fills in First name, Last name, Email and, if wanted, Contribution (Speaker,
+   Participant, Organiser, Attended both days…); a CSV or a single Name column also works;
+2. uploads it and checks the preview (lines without a valid email or listed twice are skipped and named);
+3. chooses the certificate and/or badges (made first in Badges & certificates), the date on the certificate and a
+   contribution for people without one;
+4. clicks **Issue**: `bulk_award` creates one award per person and badge (`source = 'bulk'`, with
+   `recipient_name`, `recipient_email` and `contribution`); people already holding it are left as they are;
+5. each person gets one email (Resend) with links to their own award pages; the result of every email is kept
+   (`email_sent_at`, `email_error`).
+
+People need no account. When someone later creates an Octa account with the same email, the awards are linked to
+it (trigger on `User_accounts`) and appear on their profile. The award page prints the contribution and, for events,
+says "Certificate of Participation … has taken part in". The tab lists everything issued, with **Send emails not yet
+sent** (Resend's free plan: 100 emails a day for all Octa apps together; sending stops at the limit and continues
+the next day), an Excel download and **Withdraw / restore**.
+
 ## Database functions
 
 | For | Function |
 |---|---|
-| Studio | `mooc_manage(token, {action, ...})`: me, overview, course, people, submissions, students, save_project, delete_project, save_course, delete_course, set_member, decide_teacher, set_super, super_admins, save_lecture, save_step, save_question, delete, reorder, save_badge, grade, upload_ticket, requests, decide_request |
+| Studio | `mooc_manage(token, {action, ...})`: me, overview, course, people, submissions, students, save_project, delete_project, save_course, delete_course, set_member, decide_teacher, set_super, super_admins, save_lecture, save_step, save_question, delete, reorder, save_badge, grade, upload_ticket, requests, decide_request, bulk_award, awards, award_email, revoke_award |
 | Students | `mooc_join_options(token)`, `mooc_register(token, kind, course, message)`, `mooc_join(token, kind)`, `mooc_enrol(token, course)`, `mooc_retake(token, lecture, course)` (redo a lecture or the course; the best score of all tries counts), `mooc_record(token, step, verb, position, data)`, `mooc_answer(token, question, answer)`, `mooc_submit(token, step, text, file_url)` |
 | Public pages | `mooc_my_learning(token)` (signed-in student's courses, progress, next step, awards), `mooc_catalogue()`, `mooc_course_view(token, slug)` (course page; full content for enrolled students and the course team), `mooc_profile(username)`, `mooc_award(id)` |
 

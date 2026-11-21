@@ -75,7 +75,7 @@ dd{margin:0;word-break:break-all}
     </div>
 
     <div class="grid">
-      <div class="card">
+      <div class="card" id="about">
         <h2>What this shows</h2>
         <div id="desc"></div>
         <div id="outcomes"></div>
@@ -86,7 +86,8 @@ dd{margin:0;word-break:break-all}
         <dl>
           <dt>Awarded to</dt><dd id="v-name"></dd>
           <dt>Issued</dt><dd id="v-date"></dd>
-          <dt>Course</dt><dd id="v-course"></dd>
+          <dt id="v-course-l">Course</dt><dd id="v-course"></dd>
+          <dt class="hidden" id="v-contrib-l">Contribution</dt><dd class="hidden" id="v-contrib"></dd>
           <dt>Issuer</dt><dd>CloudEARTHi MOOC · Octa Insight</dd>
           <dt>Award ID</dt><dd id="v-id"></dd>
         </dl>
@@ -167,19 +168,25 @@ function drawCertificate(a, im, name, date) {
   ctx.textAlign = "center"; ctx.fillStyle = "#0b0b0b";
   ctx.font = '700 34px Inter, sans-serif'; ctx.fillStyle = "#2a78d6"; ctx.fillText("CLOUDEARTHI MOOC", W / 2, 190);
   ctx.fillStyle = "#0b0b0b"; ctx.font = '600 92px "Cormorant Garamond", Georgia, serif';
-  ctx.fillText(a.kind === "certificate" ? "Certificate of Completion" : "Badge of Achievement", W / 2, 300);
+  const ev = a.course.kind === "event";
+  ctx.fillText(a.kind !== "certificate" ? "Badge of Achievement" : ev ? "Certificate of Participation" : "Certificate of Completion", W / 2, 300);
   ctx.font = '400 34px Inter, sans-serif'; ctx.fillStyle = "#6b6a66"; ctx.fillText("This is to certify that", W / 2, 395);
   // name
   ctx.fillStyle = "#0b0b0b"; fitText(ctx, name, W - 520, 120, 'italic 500 {s}px "Cormorant Garamond", Georgia, serif');
   ctx.fillText(name, W / 2, 530);
   ctx.strokeStyle = "#c9a646"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(W / 2 - 520, 565); ctx.lineTo(W / 2 + 520, 565); ctx.stroke();
   ctx.font = '400 34px Inter, sans-serif'; ctx.fillStyle = "#6b6a66";
-  ctx.fillText(a.kind === "certificate" ? "has successfully completed the course" : "has earned the badge", W / 2, 640);
+  ctx.fillText(a.kind !== "certificate" ? (ev ? "has received the badge" : "has earned the badge")
+               : ev ? "has taken part in" : "has successfully completed the course", W / 2, 640);
   ctx.fillStyle = "#0b0b0b"; fitText(ctx, a.kind === "certificate" ? a.course.title : a.title, W - 560, 66, '700 {s}px Inter, sans-serif');
   ctx.fillText(a.kind === "certificate" ? a.course.title : a.title, W / 2, 730);
   ctx.font = '400 30px Inter, sans-serif'; ctx.fillStyle = "#6b6a66";
-  const line2 = a.kind === "certificate" ? a.title : `in the course ${a.course.title}`;
-  wrap(ctx, line2 + (a.project ? ` · ${a.project.title}` : ""), W / 2, 795, W - 600, 40);
+  const line2 = (a.kind === "certificate" ? a.title : `${ev ? "for" : "in the course"} ${a.course.title}`) + (a.project ? ` · ${a.project.title}` : "");
+  if (a.contribution) {                    // e.g. Keynote speaker: printed under the title, the rest on one line
+    ctx.fillStyle = "#0b0b0b"; fitText(ctx, "Contribution: " + a.contribution, W - 600, 38, '600 {s}px Inter, sans-serif');
+    ctx.fillText("Contribution: " + a.contribution, W / 2, 792);
+    ctx.fillStyle = "#6b6a66"; fitText(ctx, line2, W - 600, 28, '400 {s}px Inter, sans-serif'); ctx.fillText(line2, W / 2, 846);
+  } else wrap(ctx, line2, W / 2, 795, W - 600, 40);
   // emblem
   const cx = W / 2, cy = 1010, r = 118;
   ring(ctx, cx, cy, r);
@@ -206,9 +213,11 @@ function drawBadge(a, im, name, date) {
   if (im) roundImage(ctx, im, cx, cy, r); else medal(ctx, cx, cy, r, "🏅");
   ctx.fillStyle = "#0b0b0b"; fitText(ctx, a.title, S - 160, 64, '700 {s}px Inter, sans-serif'); ctx.fillText(a.title, S / 2, 740);
   ctx.font = '400 30px Inter, sans-serif'; ctx.fillStyle = "#6b6a66"; wrap(ctx, a.course.title, S / 2, 795, S - 200, 38);
-  ctx.font = '400 30px Inter, sans-serif'; ctx.fillText("earned by", S / 2, 900);
+  ctx.font = '400 30px Inter, sans-serif'; ctx.fillText(a.course.kind === "event" ? "awarded to" : "earned by", S / 2, 900);
   ctx.fillStyle = "#0b0b0b"; fitText(ctx, name, S - 160, 84, 'italic 500 {s}px "Cormorant Garamond", Georgia, serif'); ctx.fillText(name, S / 2, 990);
-  ctx.font = '400 26px Inter, sans-serif'; ctx.fillStyle = "#6b6a66"; ctx.fillText(date, S / 2, 1060);
+  let y = 1060;
+  if (a.contribution) { fitText(ctx, a.contribution, S - 200, 30, '600 {s}px Inter, sans-serif'); ctx.fillText(a.contribution, S / 2, 1046); y = 1096; }
+  ctx.font = '400 26px Inter, sans-serif'; ctx.fillStyle = "#6b6a66"; ctx.fillText(date, S / 2, y);
   ctx.font = '400 20px Inter, sans-serif'; ctx.fillText(`Verify: ${location.origin}${location.pathname}?id=${a.id}`, S / 2, S - 50);
 }
 
@@ -221,7 +230,7 @@ function drawBadge(a, im, name, date) {
   const r = a.recipient, name = [r.first_name, r.last_name].filter(Boolean).join(" ") || r.username;
   const issued = new Date(a.issued_at);
   const date = issued.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
-  const kindWord = a.kind === "certificate" ? "certificate" : "badge";
+  const kindWord = a.kind === "certificate" ? "certificate" : "badge", ev = a.course.kind === "event";
   document.title = `${name} · ${a.title}`;
 
   await document.fonts.ready;
@@ -237,19 +246,25 @@ function drawBadge(a, im, name, date) {
   if (a.kind !== "certificate") $("stage").classList.add("badge-stage");
 
   $("title").textContent = a.title;
-  $("sub").textContent = `${a.kind === "certificate" ? "Certificate" : "Badge"} awarded to ${name} on ${date} · ${a.course.title}`;
+  $("sub").textContent = `${a.kind === "certificate" ? "Certificate" : "Badge"} awarded to ${name} on ${date} · ${a.course.title}`
+                         + (a.contribution ? ` · ${a.contribution}` : "");
   $("desc").innerHTML = a.description ? `<p style="margin-top:0">${esc(a.description)}</p>` : "";
   const outs = (a.course.outcomes || []);
   $("outcomes").innerHTML = outs.length ? `<p style="margin-bottom:4px"><b>Learning outcomes of the course</b></p><ul style="margin-top:0">${outs.map(o => `<li>${esc(o)}</li>`).join("")}</ul>` : "";
   $("status").innerHTML = a.revoked ? `<span class="verified revoked">✖ This award has been withdrawn</span>`
                                     : `<span class="verified">✔ Valid award</span>`;
   $("v-name").textContent = name; $("v-date").textContent = date; $("v-course").textContent = a.course.title; $("v-id").textContent = a.id;
+  if (ev) { $("v-course-l").textContent = "Event"; $("outcomes").innerHTML = $("outcomes").innerHTML.replace("of the course", ""); }
+  if (!a.description && !outs.length) { $("about").classList.add("hidden"); $("about").parentElement.style.gridTemplateColumns = "1fr"; }
+  if (a.contribution) { $("v-contrib").textContent = a.contribution; ["v-contrib", "v-contrib-l"].forEach(i => $(i).classList.remove("hidden")); }
   $("pname").textContent = name;
-  $("profile").href = `profile.html?u=${encodeURIComponent(r.username)}`;
+  if (r.username) $("profile").href = `profile.html?u=${encodeURIComponent(r.username)}`;
+  else $("profile").classList.add("hidden");          // issued from a list to someone without an account
 
   // sharing
   const url = location.origin + location.pathname + "?id=" + a.id;
-  const text = `I earned the ${kindWord} "${a.title}" on the CloudEARTHi MOOC (${a.course.title}).`;
+  const text = ev ? `I received the ${kindWord} "${a.title}" for ${a.course.title}${a.contribution ? ` (${a.contribution})` : ""}, issued by CloudEARTHi.`
+                  : `I earned the ${kindWord} "${a.title}" on the CloudEARTHi MOOC (${a.course.title}).`;
   const li = new URLSearchParams({ startTask: "CERTIFICATION_NAME", name: a.title, organizationId: LINKEDIN_ORG,
     issueYear: issued.getFullYear(), issueMonth: issued.getMonth() + 1, certUrl: url, certId: a.id });
   $("li-add").href = "https://www.linkedin.com/profile/add?" + li;

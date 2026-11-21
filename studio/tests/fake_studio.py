@@ -32,4 +32,16 @@ mooc_db.manage = _manage
 mooc_db.client.rpc = lambda name, **kw: FAKE.rpc(name, **kw)
 mooc_db.token = lambda: "tok"
 mooc_db.upload = lambda data, name, ctype: f"https://example.org/{name}"
+
+
+def _send(to, subject, paragraphs, button=None, after=()):
+    if FAKE.mail_limit is not None and len(FAKE.sent) >= FAKE.mail_limit:
+        raise octa_auth.mail.MailError("The daily email limit has been reached. Try again tomorrow.")
+    FAKE.sent.append(dict(to=to, subject=subject, paragraphs=paragraphs, button=button, after=list(after)))
+    return "msg-" + str(len(FAKE.sent))
+
+
+octa_auth.mail.send = _send
+import bulk  # noqa: E402
+bulk.time = type("T", (), {"sleep": staticmethod(lambda s: None)})
 runpy.run_path(os.path.join(ROOT, "app.py"), run_name="__main__")

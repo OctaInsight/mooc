@@ -13,6 +13,7 @@ st.set_page_config(page_title="MOOC Studio", page_icon="🎓", layout="wide")
 from octa_auth import App, require_login, sidebar, display_name  # noqa: E402
 from octa_auth import mail  # noqa: E402
 import mooc_db as db  # noqa: E402
+import bulk  # noqa: E402
 from mooc_db import MoocError  # noqa: E402
 
 APP = App(id="octa_mooc", name="MOOC Studio", family="education", url="https://cloudearthi-mooc.streamlit.app/",
@@ -181,22 +182,32 @@ project_names = {p["id"]: p["title"] for p in projects}
 
 
 # ================================================================================================ courses list
+EVENT_PILL = "<span class='mc-pill'>certificates only</span>"
+
+
 def page_courses():
     st.markdown(f"## Hello, {html.escape(display_name(user))}")
     show_flash()
     courses = overview["courses"]
-    if is_super:
-        with st.expander("➕ New course"):
+    if is_super or is_course_admin:
+        with st.expander("➕ New course, conference or workshop"):
             with st.form("new_course", clear_on_submit=True):
-                t = st.text_input("Course title")
-                pr = st.selectbox("Project", [""] + list(project_names), format_func=lambda x: project_names.get(x, "— no project —"))
+                t = st.text_input("Title", placeholder="e.g. Earth observation basics, or Workshop on AI, Vienna 2026")
+                pr = None
+                if is_super:
+                    pr = st.selectbox("Project", [""] + list(project_names), format_func=lambda x: project_names.get(x, "— no project —"))
                 sm = st.text_input("One-line summary")
-                if st.form_submit_button("Create course", type="primary"):
+                ev = st.checkbox("Certificates only (a conference, workshop or course without lectures here)",
+                                 help="It is not listed on the student website. You create its certificate and badges, "
+                                      "then issue them to a list of people from an Excel file.")
+                if st.form_submit_button("Create", type="primary"):
                     if len(t.strip()) < 2:
-                        st.error("Give the course a title.")
+                        st.error("Give it a title.")
                     else:
-                        r = run("save_course", "Course created. Add lectures, then publish it.", title=t.strip(),
-                                project_id=pr, summary=sm.strip())
+                        extra = {"project_id": pr} if is_super else {}
+                        r = run("save_course", "Created. Add the certificate in Badges & certificates, then issue it in "
+                                "Issue certificates." if ev else "Course created. Add lectures, then publish it.",
+                                title=t.strip(), summary=sm.strip(), kind="event" if ev else "course", **extra)
                         if r:
                             S["mc_course"] = r["id"]
                             st.rerun()
@@ -216,7 +227,8 @@ def page_courses():
         for i, c in enumerate(groups[pid]):
             with cols[i % 3]:
                 st.markdown(f"<div class='mc-card'><h4>{html.escape(c['title'])}</h4>"
-                            f"<p>{pill(c['status'])}<span class='mc-pill'>{c.get('my_role') or ''}</span></p>"
+                            f"<p>{pill(c['status'])}<span class='mc-pill'>{c.get('my_role') or ''}</span>"
+                            f"{EVENT_PILL if c.get('kind') == 'event' else ''}</p>"
                             f"<p class='mc-muted' style='margin-top:6px'>{c['lectures']} lectures · {c['students']} students · "
                             f"{c['awards']} awards{' · <b>' + str(c['to_grade']) + ' to grade</b>' if c['to_grade'] else ''}</p></div>",
                             unsafe_allow_html=True)
@@ -239,20 +251,28 @@ def page_course(cid):
         S.pop("mc_course", None)
         st.rerun()
     show_flash()
-    tabs = ["📚 Lectures", "🏅 Badges & certificates", "✅ Grading & students"]
+    event = c.get("kind") == "event"
+    tabs = {"lectures": "📚 Lectures", "badges": "🏅 Badges & certificates", "grading": "✅ Grading & students"}
     if can_manage:
-        tabs += ["👥 Team", "⚙️ Course settings"]
-    t = st.tabs(tabs)
-    with t[0]:
+        tabs["issue"] = "📨 Issue certificates"
+        tabs["team"] = "👥 Team"
+        tabs["settings"] = "⚙️ Settings"
+    if event:                                   # certificates only: lead with what is used
+        order = ["badges", "issue", "team", "settings", "lectures", "grading"]
+        tabs = {k: tabs[k] for k in order if k in tabs}
+    t = dict(zip(tabs, st.tabs(list(tabs.values()))))
+    with t["lectures"]:
         tab_lectures(c)
-    with t[1]:
+    with t["badges"]:
         tab_badges(c)
-    with t[2]:
+    with t["grading"]:
         tab_grading(c)
     if can_manage:
-        with t[3]:
+        with t["issue"]:
+            bulk.tab_issue(c, flash)
+        with t["team"]:
             tab_team(c, role)
-        with t[4]:
+        with t["settings"]:
             tab_settings(c, role)
 
 
@@ -502,9 +522,11 @@ def tab_badges(c):
                 cols[0].markdown("<div style='font-size:46px;text-align:center'>" + ("📜" if b["kind"] == "certificate" else "🏅") + "</div>",
                                  unsafe_allow_html=True)
             rule = ", ".join(lect.get(x, "?") for x in b["lecture_ids"]) if b["lecture_ids"] else "all published lectures"
+            how = ("Issued to a list of people in the Issue certificates tab." if c.get("kind") == "event" else
+                   f"Finish {html.escape(rule)} with an average of at least {b['min_score']}%.")
             cols[1].markdown(f"**{html.escape(b['title'])}** <span class='mc-pill'>{b['kind']}</span>"
                              f"{'' if b['active'] else '<span class=mc-pill>switched off</span>'}  \n"
-                             f"<span class='mc-muted'>Finish {html.escape(rule)} with an average of at least {b['min_score']}%. "
+                             f"<span class='mc-muted'>{how} "
                              f"Awarded {b['awarded']} time{'s' * (b['awarded'] != 1)}.</span>", unsafe_allow_html=True)
             with cols[2].popover("Edit"):
                 badge_form(c, lect, b)
@@ -631,6 +653,9 @@ def tab_settings(c, role):
             ids = [""] + list(project_names)
             proj = st.selectbox("Project", ids, index=ids.index(c.get("project_id") or "") if (c.get("project_id") or "") in ids else 0,
                                 format_func=lambda x: project_names.get(x, "— no project —"))
+        kinds = {"course": "Course with lectures (listed on the website)",
+                 "event": "Certificates only: conference, workshop or course without lectures (not listed)"}
+        kind = st.radio("Type", list(kinds), index=list(kinds).index(c.get("kind") or "course"), format_func=kinds.get)
         summary = st.text_input("One-line summary", c.get("summary") or "")
         desc = st.text_area("Description", c.get("description") or "", height=140)
         outcomes = st.text_area("Learning outcomes of the course (one per line)", "\n".join(c.get("outcomes") or []), height=100)
@@ -648,7 +673,7 @@ def tab_settings(c, role):
             st.image(c["image_url"], width=240)
         go = st.form_submit_button("Save course", type="primary")
     if go:
-        if status == "published" and not any(l["status"] == "published" for l in c["lectures"]):
+        if status == "published" and kind == "course" and not any(l["status"] == "published" for l in c["lectures"]):
             st.error("Publish at least one lecture before publishing the course.")
             return
         image_url = c.get("image_url")
@@ -662,7 +687,7 @@ def tab_settings(c, role):
         args = dict(id=c["id"], title=title.strip(), slug=db.slugify(slug), status=status, summary=summary.strip(),
                     description=desc, outcomes=lines(outcomes), level=level, language=lang.strip(),
                     hours=str(hours) if hours else "", pass_score=int(pass_score), max_retakes=int(retakes),
-                    image_url=image_url)
+                    image_url=image_url, kind=kind)
         if role == "super":
             args["project_id"] = proj
         run("save_course", "Course saved.", **args) and st.rerun()

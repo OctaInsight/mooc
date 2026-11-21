@@ -41,8 +41,8 @@ def test_super_admin_builds_a_course():
     assert [p["title"] for p in fake.projects.values()] == ["BOOSTalent"]
     # course
     at.sidebar.radio[0].set_value("Courses").run()
-    next(t for t in at.text_input if t.label == "Course title").input("Innovation 101")
-    btn(at, "Create course").click().run()
+    next(t for t in at.text_input if t.label == "Title").input("Innovation 101")
+    btn(at, "Create").click().run()
     assert not at.exception and not errors(at), errors(at)
     cid = next(iter(fake.courses))
     assert at.session_state["mc_course"] == cid
@@ -105,7 +105,7 @@ def test_super_admin_builds_a_course():
 def test_teacher_sees_no_admin_pages():
     at, fake = fresh("teacher")
     assert at.sidebar.radio[0].options == ["Courses"]
-    assert not any(b.label == "Create course" for b in at.button)
+    assert not any(b.label == "Create" for b in at.button)
 
 
 def test_newcomer_asks_to_teach_and_a_super_admin_approves():
@@ -141,3 +141,98 @@ def test_newcomer_asks_to_teach_and_a_super_admin_approves():
     assert any("wants to be **teacher** of **AI course**" in m.value for m in at2.markdown)
     btn(at2, "Approve").click().run()
     assert fake.members[(cid, "u-t")] == "teacher" and r["status"] == "approved"
+
+
+class _Upload:
+    """What st.file_uploader hands over: a name and the bytes."""
+    def __init__(self, name, data):
+        self.name, self._d = name, data
+
+    def getvalue(self):
+        return self._d
+
+    def read(self, *a):
+        import io
+        return io.BytesIO(self._d).read(*a)
+
+
+def test_reading_the_people_list():
+    import io
+    import pandas as pd
+    import bulk
+    df = pd.DataFrame({"First name": ["Ada", "Kim", "", "Bo", "Ada"], "Surname": ["Lovelace", "Known", "", "X", "Again"],
+                       "E-mail": ["ADA@example.org", "kim@example.org", "", "bad", "ada@example.org"],
+                       "Role": ["Keynote speaker", "", "", "", ""]})
+    buf = io.BytesIO()
+    df.to_excel(buf, index=False)
+    up = _Upload("people.xlsx", buf.getvalue())
+    up_x = io.BytesIO(buf.getvalue()); up_x.name = "people.xlsx"
+    rows, problems = bulk.read_people(up_x)
+    assert [(r["name"], r["email"], r["contribution"]) for r in rows] == [
+        ("Ada Lovelace", "ada@example.org", "Keynote speaker"), ("Kim Known", "kim@example.org", "")]
+    assert len(problems) == 2 and "Bo X" in problems[0] and "twice" in problems[1], problems
+    # a semicolon CSV with one Name column (as Excel saves it in Europe)
+    csv = _Upload("list.csv", "Name;Email;Contribution\nJosé Núñez;jose@example.org;Panel chair\n".encode("utf-8-sig"))
+    rows, problems = bulk.read_people(csv)
+    assert rows[0]["name"] == "José Núñez" and rows[0]["contribution"] == "Panel chair" and not problems
+    rows, problems = bulk.read_people(_Upload("x.csv", b"Who,Where\na,b\n"))
+    assert not rows and "Email column" in problems[0]
+    assert bulk.template_xlsx()[:2] == b"PK"
+
+
+def test_course_admin_issues_certificates_for_a_workshop():
+    at, fake = fresh("admin")
+    next(t for t in at.text_input if t.label == "Title").input("Workshop on AI, Vienna 2026")
+    next(c for c in at.checkbox if c.label.startswith("Certificates only")).check()
+    btn(at, "Create").click().run()
+    assert not at.exception and not errors(at), errors(at)
+    cid = next(iter(fake.courses))
+    assert fake.courses[cid]["kind"] == "event"
+    cert = fake("save_badge", course_id=cid, kind="certificate", title="Certificate of participation")["id"]
+    fake("save_badge", course_id=cid, kind="badge", title="AI workshop badge")
+    at.run()
+    assert not at.exception, at.exception
+    assert any(b.label == "Download the template" for b in at.get("download_button"))
+    # the uploaded list (the file uploader cannot be driven in AppTest, so the reader is swapped in)
+    import bulk
+    people = [dict(name=f"Person {i}", email=f"p{i}@example.org", contribution="Speaker" if i == 0 else "", line=i + 2)
+              for i in range(3)]
+    bulk.st.file_uploader = lambda *a, **k: _Upload("list.xlsx", b"")
+    real = bulk.read_people
+    bulk.read_people = lambda up: (people, ["Line 9: Bo has no valid email (bad)."])
+    try:
+        at.run()
+        assert not at.exception, at.exception
+        next(t for t in at.text_input if t.label.startswith("Contribution for people")).input("Participant")
+        btn(at, "Issue to 3 people").click().run()
+        assert not at.exception, at.exception
+        assert not errors(at), errors(at)
+    finally:
+        bulk.read_people = real
+    assert len(fake.awards) == 3 and all(a["badge_id"] == cert for a in fake.awards.values())
+    assert sorted(a["contribution"] for a in fake.awards.values()) == ["Participant", "Participant", "Speaker"]
+    assert len(fake.sent) == 3 and all(a["email_sent_at"] for a in fake.awards.values())
+    m = fake.sent[0]
+    assert m["to"] == "p0@example.org" and "Dear Person 0," in m["paragraphs"][0] and "award.html?id=" in m["button"][1]
+    assert any("Issued 3 awards" in s.value and "Emails sent: 3" in s.value for s in at.success), [s.value for s in at.success]
+    # the same list again: nothing new; the limit stops emails and they can be sent later
+    for a in fake.awards.values():
+        a["email_sent_at"] = None
+    fake.mail_limit = len(fake.sent) + 1
+    bulk.read_people = lambda up: (people, [])
+    try:
+        at.run()
+        btn(at, "Issue to 3 people").click().run()
+        assert not at.exception, at.exception
+    finally:
+        bulk.read_people = real
+    assert len(fake.awards) == 3
+    assert sum(1 for a in fake.awards.values() if a["email_sent_at"]) == 1
+    assert sum(1 for a in fake.awards.values() if a["email_error"]) == 2
+    assert any("Not sent: 2" in w.value for w in at.warning), [w.value for w in at.warning]
+    fake.mail_limit = None
+    bulk.st.file_uploader = lambda *a, **k: None
+    at.run()
+    btn(at, "Send emails not yet sent (2 people)").click().run()
+    assert not at.exception, at.exception
+    assert all(a["email_sent_at"] for a in fake.awards.values())
