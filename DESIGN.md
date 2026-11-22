@@ -96,7 +96,11 @@ same code as the preview. Certificates already issued show the new design too.
 Each certificate's and badge's page is `https://mooc.cloudearthi.com/award.html?id=…`, which is also the address
 printed on it for verification and shared on LinkedIn. `tools/build_single_page.py` makes three files to upload into the
 same folder on mooc.cloudearthi.com, with the same names: `upload/new_mooc.html`, `upload/award.html` and
-`upload/profile.html`. Badges name the CloudEARTHi MOOC as their issuer.
+`upload/profile.html`.
+
+On every award page, **Issuer** is the course's project (for example BOOSTalent), or the CloudEARTHi MOOC when the
+course has no project; **Verified by** is always "CloudEARTHi MOOC · Octa Insight". Both also appear on the standard
+certificate and on badges. Badges show their emblem large, so text on an uploaded badge design stays readable.
 
 ## Emails
 

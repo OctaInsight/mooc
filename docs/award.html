@@ -22,7 +22,7 @@ header .brand span{color:var(--blue)}
 main{max-width:1060px;margin:0 auto;padding:24px 16px 48px}
 .stage{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 10px 40px rgba(20,30,50,.06)}
 .stage img{display:block;width:100%;height:auto;border-radius:6px}
-.badge-stage img{max-width:520px;margin:0 auto}
+.badge-stage img{max-width:640px;margin:0 auto}
 h1{font-size:1.4rem;margin:22px 0 4px}
 .muted{color:var(--muted)}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
@@ -88,7 +88,8 @@ dd{margin:0;word-break:break-all}
           <dt>Issued</dt><dd id="v-date"></dd>
           <dt id="v-course-l">Course</dt><dd id="v-course"></dd>
           <dt class="hidden" id="v-contrib-l">Contribution</dt><dd class="hidden" id="v-contrib"></dd>
-          <dt>Issuer</dt><dd id="v-issuer">CloudEARTHi MOOC · Octa Insight</dd>
+          <dt>Issuer</dt><dd id="v-issuer"></dd>
+          <dt>Verified by</dt><dd>CloudEARTHi MOOC · Octa Insight</dd>
           <dt>Award ID</dt><dd id="v-id"></dd>
         </dl>
         <p class="muted" style="font-size:.82rem;margin-bottom:0">This page is read live from the MOOC database, so it always shows whether the award is valid.</p>
@@ -103,6 +104,9 @@ dd{margin:0;word-break:break-all}
 const DB_URL = "https://uxqeukvmnfvpgsxktgvo.supabase.co";
 const DB_KEY = "sb_publishable_oFEaDte2Hy-gGsqpa9kWeQ_HuMm6dou";
 const ISSUER = "CloudEARTHi MOOC";
+const VERIFIER = "CloudEARTHi MOOC · Octa Insight";     // checks every award (shown as "Verified by")
+// Who issues an award: the course's project (e.g. its funded project), or the CloudEARTHi MOOC when there is none
+const issuerOf = a => (a.project && a.project.title) || ISSUER;
 // The address every award is verified and shared at (the MOOC's own domain), wherever this page is opened from
 const VERIFY = "https://mooc.cloudearthi.com/award.html";
 const LINKEDIN_ORG = "80352164";   // CloudEARTHi's LinkedIn company page: shows its logo on the student's profile
@@ -196,32 +200,34 @@ function drawCertificate(a, im, name, date) {
   if (im) roundImage(ctx, im, cx, cy, r); else medal(ctx, cx, cy, r, a.kind === "certificate" ? "📜" : "🏅");
   // footer: date, issuer, id
   ctx.fillStyle = "#0b0b0b"; ctx.font = '600 32px Inter, sans-serif';
-  ctx.fillText(date, 430, 1080); ctx.fillText(ISSUER, W - 430, 1080);
+  ctx.fillText(date, 430, 1080);
+  fitText(ctx, issuerOf(a), 460, 32, '600 {s}px Inter, sans-serif'); ctx.fillText(issuerOf(a), W - 430, 1080);
   ctx.strokeStyle = "#0b0b0b"; ctx.lineWidth = 1.5;
   [[430], [W - 430]].forEach(([x]) => { ctx.beginPath(); ctx.moveTo(x - 220, 1100); ctx.lineTo(x + 220, 1100); ctx.stroke(); });
   ctx.font = '400 26px Inter, sans-serif'; ctx.fillStyle = "#6b6a66";
-  ctx.fillText("Date of issue", 430, 1140); ctx.fillText("Issued by · Octa Insight", W - 430, 1140);
+  ctx.fillText("Date of issue", 430, 1140); ctx.fillText("Issued by", W - 430, 1140);
   ctx.font = '400 22px Inter, sans-serif';
-  ctx.fillText(`Verify at ${VERIFY}?id=${a.id}`, W / 2, H - 120);
+  ctx.fillText(`Verified by ${VERIFIER} · ${VERIFY}?id=${a.id}`, W / 2, H - 120);
 }
 function drawBadge(a, im, name, date) {
+  // the emblem fills most of the picture, so the text on an uploaded badge design stays readable; the words under it are small
   const cv = $("cv"), S = 1200, ctx = cv.getContext("2d");
   cv.width = S; cv.height = S;
   const g = ctx.createLinearGradient(0, 0, S, S); g.addColorStop(0, "#eef5fd"); g.addColorStop(1, "#fbf6e8");
   ctx.fillStyle = g; ctx.fillRect(0, 0, S, S);
   ctx.textAlign = "center";
-  ctx.font = '700 34px Inter, sans-serif'; ctx.fillStyle = "#2a78d6"; ctx.fillText("CLOUDEARTHI MOOC · BADGE", S / 2, 110);
-  const cx = S / 2, cy = 400, r = 220;
+  ctx.font = '700 26px Inter, sans-serif'; ctx.fillStyle = "#2a78d6"; ctx.fillText("CLOUDEARTHI MOOC · BADGE", S / 2, 62);
+  const cx = S / 2, cy = 420, r = 315;
   ring(ctx, cx, cy, r);
   if (im) roundImage(ctx, im, cx, cy, r); else medal(ctx, cx, cy, r, "🏅");
-  ctx.fillStyle = "#0b0b0b"; fitText(ctx, a.title, S - 160, 64, '700 {s}px Inter, sans-serif'); ctx.fillText(a.title, S / 2, 740);
-  ctx.font = '400 30px Inter, sans-serif'; ctx.fillStyle = "#6b6a66"; wrap(ctx, a.course.title, S / 2, 795, S - 200, 38);
-  ctx.font = '400 30px Inter, sans-serif'; ctx.fillText(a.course.kind === "event" ? "awarded to" : "earned by", S / 2, 900);
-  ctx.fillStyle = "#0b0b0b"; fitText(ctx, name, S - 160, 84, 'italic 500 {s}px "Cormorant Garamond", Georgia, serif'); ctx.fillText(name, S / 2, 990);
-  let y = 1060;
-  if (a.contribution) { fitText(ctx, a.contribution, S - 200, 30, '600 {s}px Inter, sans-serif'); ctx.fillText(a.contribution, S / 2, 1046); y = 1096; }
-  ctx.font = '400 26px Inter, sans-serif'; ctx.fillStyle = "#6b6a66"; ctx.fillText(date, S / 2, y);
-  ctx.font = '400 20px Inter, sans-serif'; ctx.fillText(`Verify: ${VERIFY}?id=${a.id}`, S / 2, S - 50);
+  ctx.fillStyle = "#0b0b0b"; fitText(ctx, a.title, S - 220, 44, '700 {s}px Inter, sans-serif'); ctx.fillText(a.title, S / 2, 830);
+  ctx.font = '400 24px Inter, sans-serif'; ctx.fillStyle = "#6b6a66"; wrap(ctx, a.course.title, S / 2, 870, S - 260, 30);
+  ctx.font = '400 22px Inter, sans-serif'; ctx.fillText(a.course.kind === "event" ? "awarded to" : "earned by", S / 2, 945);
+  ctx.fillStyle = "#0b0b0b"; fitText(ctx, name, S - 240, 58, 'italic 500 {s}px "Cormorant Garamond", Georgia, serif'); ctx.fillText(name, S / 2, 1003);
+  let y = 1050;
+  if (a.contribution) { fitText(ctx, a.contribution, S - 260, 24, '600 {s}px Inter, sans-serif'); ctx.fillText(a.contribution, S / 2, 1043); y = 1080; }
+  ctx.font = '400 21px Inter, sans-serif'; ctx.fillStyle = "#6b6a66"; ctx.fillText(`${date} · Issued by ${issuerOf(a)}`, S / 2, y);
+  ctx.font = '400 17px Inter, sans-serif'; ctx.fillText(`Verified by ${VERIFIER} · ${VERIFY}?id=${a.id}`, S / 2, S - 34);
 }
 
 // ------------------------------------------------------------------ page
@@ -243,7 +249,7 @@ function drawBadge(a, im, name, date) {
   const tim = tpl ? await loadImage(tpl.image_url) : null;
   if (tim) {                                  // the course's own certificate design, with the details where the teacher put them
     drawTemplateCertificate($("cv"), tim, tpl, {
-      name, contribution: a.contribution, course: a.course.title, title: a.title, date, verify: `Verify at ${VERIFY}?id=${a.id}`,
+      name, contribution: a.contribution, course: a.course.title, title: a.title, date, verify: `Verified by ${VERIFIER} · ${VERIFY}?id=${a.id}`,
     });
     if ($("cv").height > $("cv").width) {      // a portrait design prints on portrait paper
       const st = document.createElement("style"); st.textContent = "@media print{@page{size:A4 portrait;margin:0}}"; document.head.appendChild(st);
@@ -269,7 +275,7 @@ function drawBadge(a, im, name, date) {
   $("outcomes").innerHTML = outs.length ? `<p style="margin-bottom:4px"><b>Learning outcomes of the course</b></p><ul style="margin-top:0">${outs.map(o => `<li>${esc(o)}</li>`).join("")}</ul>` : "";
   $("status").innerHTML = a.revoked ? `<span class="verified revoked">✖ This award has been withdrawn</span>`
                                     : `<span class="verified">✔ Valid award</span>`;
-  if (a.kind !== "certificate") $("v-issuer").textContent = ISSUER;     // badges: issued by the CloudEARTHi MOOC only
+  $("v-issuer").textContent = issuerOf(a);
   $("v-name").textContent = name; $("v-date").textContent = date; $("v-course").textContent = a.course.title; $("v-id").textContent = a.id;
   if (ev) { $("v-course-l").textContent = "Event"; $("outcomes").innerHTML = $("outcomes").innerHTML.replace("of the course", ""); }
   if (!a.description && !outs.length) { $("about").classList.add("hidden"); $("about").parentElement.style.gridTemplateColumns = "1fr"; }

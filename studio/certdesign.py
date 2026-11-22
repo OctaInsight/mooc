@@ -76,7 +76,7 @@ def _download(url: str) -> bytes:
 # ------------------------------------------------------------------------------------------------ preview
 def sample_values(c: dict, b: dict) -> dict:
     return {"name": "Maria Okafor", "contribution": "Keynote speaker", "course": c["title"], "title": b["title"],
-            "date": dt.date.today().strftime("%-d %B %Y"), "verify": f"Verify at {links.award_url('1a2b3c4d-…')}"}
+            "date": dt.date.today().strftime("%-d %B %Y"), "verify": f"Verified by CloudEARTHi MOOC · Octa Insight · {links.award_url('1a2b3c4d-…')}"}
 
 
 def _font(px: int):
