@@ -2,13 +2,13 @@
 
   student website  https://mooc.cloudearthi.com/new_mooc.html   sign in, My learning, set or reset the password,
                                                                  course pages (hash links such as #/signin)
-  award pages      https://octainsight.github.io/mooc/          each certificate's or badge's own page
-                                                                 (award.html, profile.html on GitHub Pages)
+  award pages      https://mooc.cloudearthi.com/                each certificate's or badge's own page
+                                                                 (award.html, profile.html: the verification address)
 
 Either can be changed in the Streamlit secrets without new code:
   [mooc]
   site = "https://mooc.cloudearthi.com/new_mooc.html"
-  pages = "https://octainsight.github.io/mooc/"
+  pages = "https://mooc.cloudearthi.com/"
 """
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ from urllib.parse import quote
 import streamlit as st
 
 STUDENT_SITE = "https://mooc.cloudearthi.com/new_mooc.html"
-AWARD_PAGES = "https://octainsight.github.io/mooc/"
+AWARD_PAGES = "https://mooc.cloudearthi.com/"
 
 
 def _secret(name: str) -> str:

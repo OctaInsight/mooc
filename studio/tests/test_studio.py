@@ -218,7 +218,7 @@ def test_course_admin_issues_certificates_for_a_workshop():
     assert m["to"] == "p0@example.org" and "Dear Person 0," in m["paragraphs"][0]
     assert m["button"][0] == "Set your password" and m["button"][1].startswith("https://mooc.cloudearthi.com/new_mooc.html#/welcome?t="), m["button"]
     assert any("<a href='https://mooc.cloudearthi.com/new_mooc.html#/signin'>https://mooc.cloudearthi.com/new_mooc.html#/signin</a>" in x for x in m["paragraphs"]), m["paragraphs"]
-    assert any("https://octainsight.github.io/mooc/award.html?id=" in x for x in m["after"]), "award pages stay on GitHub Pages"
+    assert any("https://mooc.cloudearthi.com/award.html?id=" in x for x in m["after"]), "award pages on the MOOC domain"
     assert any("award.html?id=" in x for x in m["after"]) and any("<b>p0</b>" in x for x in m["paragraphs"])
     assert any("Issued 3 awards" in s.value and "Emails sent: 3" in s.value and "3 new accounts created" in s.value
                for s in at.success), [s.value for s in at.success]
@@ -259,7 +259,7 @@ def test_existing_account_gets_the_certificate_link():
         bulk.mail.send = real
     to, paragraphs, button, after = sent[0]
     assert paragraphs[0] == "Dear Kim &lt;K&gt;," and "W &amp; S" in paragraphs[1]
-    assert button == ("View and share your certificate", "https://octainsight.github.io/mooc/award.html?id=a1") and any("My learning" in x for x in paragraphs)
+    assert button == ("View and share your certificate", "https://mooc.cloudearthi.com/award.html?id=a1") and any("My learning" in x for x in paragraphs)
     assert any("usual Octa password" in x for x in paragraphs) and any("https://mooc.cloudearthi.com/new_mooc.html#/forgot?email=k%40x.org" in x for x in paragraphs)
     assert any("<a href='https://mooc.cloudearthi.com/new_mooc.html#/signin'>" in x for x in paragraphs) and not any("next=/my" in x for x in paragraphs)
     assert any("linkedin.com/sharing" in x for x in after)

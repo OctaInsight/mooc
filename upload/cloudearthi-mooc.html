@@ -474,7 +474,7 @@ function header() {
     <div class="menu-panel hidden" role="menu">
       <div class="who"><b>${esc(fullName(S.me))}</b><div class="muted small">${esc(S.me.username)}</div></div>
       <a href="#/my" role="menuitem">My learning</a>
-      <a href="https://octainsight.github.io/mooc/profile.html?u=${encodeURIComponent(S.me.username)}" target="_blank" rel="noopener" role="menuitem">My public profile</a>
+      <a href="https://mooc.cloudearthi.com/profile.html?u=${encodeURIComponent(S.me.username)}" target="_blank" rel="noopener" role="menuitem">My public profile</a>
       <button data-signout role="menuitem">Sign out</button></div></div>`;
   const btn = $(".avatar", box), panel = $(".menu-panel", box);
   btn.onclick = e => { e.stopPropagation(); panel.classList.toggle("hidden"); btn.setAttribute("aria-expanded", String(!panel.classList.contains("hidden"))); };
@@ -699,7 +699,7 @@ async function viewCourse(view, slug) {
   const facts = [c.level && c.level[0].toUpperCase() + c.level.slice(1), v.lectures.length && plural(v.lectures.length, "lecture"),
     c.hours && `${+c.hours} hours`, c.language].filter(Boolean).map(f => `<span class="fact">${esc(f)}</span>`).join("");
   const prizes = (v.badges || []).map(b => `<div class="prize-row"><div class="seal">${b.image_url ? `<img src="${esc(b.image_url)}" alt="">` : (b.kind === "certificate" ? "📜" : "🏅")}</div>
-      <div><b>${esc(b.title)}</b><div class="small muted">${b.award_id ? `<a href="https://octainsight.github.io/mooc/award.html?id=${b.award_id}" target="_blank" rel="noopener">You earned it: see and share</a>` : badgeNeeds(b)}</div></div></div>`).join("");
+      <div><b>${esc(b.title)}</b><div class="small muted">${b.award_id ? `<a href="https://mooc.cloudearthi.com/award.html?id=${b.award_id}" target="_blank" rel="noopener">You earned it: see and share</a>` : badgeNeeds(b)}</div></div></div>`).join("");
   const paragraphs = (c.description || "").split(/\n\s*\n/).map(s => s.trim()).filter(Boolean).map(s => `<p>${esc(s).replace(/\n/g, "<br>")}</p>`).join("");
   const outcomes = (c.outcomes || []).map(o => `<li>${ICON.check}<span>${esc(o)}</span></li>`).join("");
   const stages = v.lectures.map((l, i) => {
@@ -773,7 +773,7 @@ function celebrate(list) {
     d.innerHTML = `<div class="box"><div class="seal">${a.image_url ? `<img src="${esc(a.image_url)}" alt="">` : (a.kind === "certificate" ? "📜" : "🏅")}</div>
       <h2>${a.kind === "certificate" ? "You earned the certificate" : "You earned a badge"}</h2>
       <p class="muted" style="margin:8px 0 20px">${esc(a.title)}</p>
-      <a class="btn block" href="https://octainsight.github.io/mooc/award.html?id=${a.award_id}" target="_blank" rel="noopener">See it with your name and share it</a>
+      <a class="btn block" href="https://mooc.cloudearthi.com/award.html?id=${a.award_id}" target="_blank" rel="noopener">See it with your name and share it</a>
       <button class="btn quiet block" style="margin-top:10px" data-close>Keep learning</button></div>`;
     document.body.appendChild(d);
     const close = () => d.remove();
@@ -1031,7 +1031,7 @@ async function viewMy(view) {
     if (!c.steps) return `<div class="card"><div class="cover" aria-hidden="true">${cover(c)}</div>
       <div class="body"><h3>${esc(c.title)}</h3>${c.project ? `<div class="muted small">${esc(c.project)}</div>` : ""}
         <div class="small muted" style="margin-top:6px">Your certificate and badges for this event are below.</div>
-        ${c.certificate ? `<div style="margin-top:8px"><a class="btn" href="https://octainsight.github.io/mooc/award.html?id=${c.certificate}" target="_blank" rel="noopener">Your certificate</a></div>` : ""}</div></div>`;
+        ${c.certificate ? `<div style="margin-top:8px"><a class="btn" href="https://mooc.cloudearthi.com/award.html?id=${c.certificate}" target="_blank" rel="noopener">Your certificate</a></div>` : ""}</div></div>`;
     const pct = c.steps ? Math.round(100 * c.done / c.steps) : 0;
     return `<div class="card"><a class="cover" href="#/course/${encodeURIComponent(c.slug)}" tabindex="-1">${cover(c)}</a>
       <div class="body"><h3>${esc(c.title)}</h3>${c.project ? `<div class="muted small">${esc(c.project)}</div>` : ""}
@@ -1039,15 +1039,15 @@ async function viewMy(view) {
         <div class="small muted">${c.done} of ${c.steps} steps done</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
           <a class="btn" href="#/learn/${encodeURIComponent(c.slug)}${c.next_step ? "/" + c.next_step : ""}">${c.next_step ? (c.done ? "Continue" : "Start") : "Review"}</a>
-          ${c.certificate ? `<a class="btn quiet" href="https://octainsight.github.io/mooc/award.html?id=${c.certificate}" target="_blank" rel="noopener">Your certificate</a>` : ""}</div></div></div>`;
+          ${c.certificate ? `<a class="btn quiet" href="https://mooc.cloudearthi.com/award.html?id=${c.certificate}" target="_blank" rel="noopener">Your certificate</a>` : ""}</div></div></div>`;
   }).join("");
-  const awards = m.awards.map(a => `<a class="medal" href="https://octainsight.github.io/mooc/award.html?id=${a.id}" target="_blank" rel="noopener">
+  const awards = m.awards.map(a => `<a class="medal" href="https://mooc.cloudearthi.com/award.html?id=${a.id}" target="_blank" rel="noopener">
       <div class="seal">${a.image_url ? `<img src="${esc(a.image_url)}" alt="">` : (a.kind === "certificate" ? "📜" : "🏅")}</div>
       <b>${esc(a.title)}</b><span class="small muted">${a.kind === "certificate" ? "Certificate" : "Badge"}, ${esc(new Date(a.issued_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }))}</span></a>`).join("");
   view.innerHTML = `<div class="wrap" style="padding:44px 24px 80px">
       <h1 style="font-size:clamp(1.9rem,3.6vw,2.6rem)">Hello, ${esc(S.me.first_name || S.me.username)}</h1>
       <p class="muted" style="margin:8px 0 0">Your courses, your progress and what you have earned.
-        <a href="https://octainsight.github.io/mooc/profile.html?u=${encodeURIComponent(S.me.username)}" target="_blank" rel="noopener">See your public profile</a></p>
+        <a href="https://mooc.cloudearthi.com/profile.html?u=${encodeURIComponent(S.me.username)}" target="_blank" rel="noopener">See your public profile</a></p>
       <h2 style="margin:36px 0 16px">My courses</h2>
       ${courses ? `<div class="grid">${courses}</div>` : `<div class="empty">You have not started a course yet. <a href="#/">Choose a course</a> and start straight away.</div>`}
       <h2 style="margin:44px 0 16px">Badges and certificates</h2>

@@ -17,6 +17,7 @@ from octa_auth import client, mail  # noqa: E402
 import links  # noqa: E402
 import mooc_db as db  # noqa: E402
 import bulk  # noqa: E402
+import certdesign  # noqa: E402
 from mooc_db import MoocError  # noqa: E402
 
 APP = App(id="octa_mooc", name="MOOC Studio", family="education", url="https://cloudearthi-mooc.streamlit.app/",
@@ -625,6 +626,9 @@ def tab_badges(c):
                              f"Awarded {b['awarded']} time{'s' * (b['awarded'] != 1)}.</span>", unsafe_allow_html=True)
             with cols[2].popover("Edit"):
                 badge_form(c, lect, b)
+            if b["kind"] == "certificate":
+                with st.expander("🎨 Certificate design: " + ("your own design" if b.get("template") else "standard CloudEARTHi design")):
+                    certdesign.editor(c, b, run)
     with st.expander("➕ New badge or certificate", expanded=not c["badges"]):
         badge_form(c, lect, None)
 
@@ -636,7 +640,8 @@ def badge_form(c, lect, b):
                         format_func=lambda x: "🏅 Badge (part of the course)" if x == "badge" else "📜 Certificate (whole course)")
         title = st.text_input("Title", b["title"] if b else "")
         desc = st.text_area("What it shows the student can do", (b or {}).get("description") or "", height=70)
-        img = st.file_uploader("Design (PNG, JPG, SVG or WebP; square works best for badges)", type=["png", "jpg", "jpeg", "svg", "webp"],
+        img = st.file_uploader("Emblem (PNG, JPG, SVG or WebP; square works best). For a certificate on your own design "
+                               "with logos, use 🎨 Certificate design after saving.", type=["png", "jpg", "jpeg", "svg", "webp"],
                                key=f"img_{key}")
         lects = st.multiselect("Lectures to finish (leave empty for all)", list(lect), default=(b or {}).get("lecture_ids") or [],
                                format_func=lambda x: lect[x])

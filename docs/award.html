@@ -11,7 +11,7 @@
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,500;1,700&family=Inter:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <style>
 :root{--blue:#2a78d6;--blue-dark:#1d5fae;--bg:#ffffff;--side:#f4f3ef;--line:#e4e3df;--text:#0b0b0b;--muted:#6b6a66;--ok:#1d6b3a;--ok-soft:#e7f5ec;--bad:#a3261b;--bad-soft:#fdecea}
 *{box-sizing:border-box}
@@ -88,7 +88,7 @@ dd{margin:0;word-break:break-all}
           <dt>Issued</dt><dd id="v-date"></dd>
           <dt id="v-course-l">Course</dt><dd id="v-course"></dd>
           <dt class="hidden" id="v-contrib-l">Contribution</dt><dd class="hidden" id="v-contrib"></dd>
-          <dt>Issuer</dt><dd>CloudEARTHi MOOC · Octa Insight</dd>
+          <dt>Issuer</dt><dd id="v-issuer">CloudEARTHi MOOC · Octa Insight</dd>
           <dt>Award ID</dt><dd id="v-id"></dd>
         </dl>
         <p class="muted" style="font-size:.82rem;margin-bottom:0">This page is read live from the MOOC database, so it always shows whether the award is valid.</p>
@@ -98,10 +98,13 @@ dd{margin:0;word-break:break-all}
 </main>
 
 <canvas id="cv" class="hidden"></canvas>
+<script src="assets/certificate.js"></script>
 <script>
 const DB_URL = "https://uxqeukvmnfvpgsxktgvo.supabase.co";
 const DB_KEY = "sb_publishable_oFEaDte2Hy-gGsqpa9kWeQ_HuMm6dou";
 const ISSUER = "CloudEARTHi MOOC";
+// The address every award is verified and shared at (the MOOC's own domain), wherever this page is opened from
+const VERIFY = "https://mooc.cloudearthi.com/award.html";
 const LINKEDIN_ORG = "80352164";   // CloudEARTHi's LinkedIn company page: shows its logo on the student's profile
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -199,7 +202,7 @@ function drawCertificate(a, im, name, date) {
   ctx.font = '400 26px Inter, sans-serif'; ctx.fillStyle = "#6b6a66";
   ctx.fillText("Date of issue", 430, 1140); ctx.fillText("Issued by · Octa Insight", W - 430, 1140);
   ctx.font = '400 22px Inter, sans-serif';
-  ctx.fillText(`Verify at ${location.origin}${location.pathname}?id=${a.id}`, W / 2, H - 120);
+  ctx.fillText(`Verify at ${VERIFY}?id=${a.id}`, W / 2, H - 120);
 }
 function drawBadge(a, im, name, date) {
   const cv = $("cv"), S = 1200, ctx = cv.getContext("2d");
@@ -218,7 +221,7 @@ function drawBadge(a, im, name, date) {
   let y = 1060;
   if (a.contribution) { fitText(ctx, a.contribution, S - 200, 30, '600 {s}px Inter, sans-serif'); ctx.fillText(a.contribution, S / 2, 1046); y = 1096; }
   ctx.font = '400 26px Inter, sans-serif'; ctx.fillStyle = "#6b6a66"; ctx.fillText(date, S / 2, y);
-  ctx.font = '400 20px Inter, sans-serif'; ctx.fillText(`Verify: ${location.origin}${location.pathname}?id=${a.id}`, S / 2, S - 50);
+  ctx.font = '400 20px Inter, sans-serif'; ctx.fillText(`Verify: ${VERIFY}?id=${a.id}`, S / 2, S - 50);
 }
 
 // ------------------------------------------------------------------ page
@@ -235,12 +238,25 @@ function drawBadge(a, im, name, date) {
 
   await document.fonts.ready;
   try { await Promise.all(['600 92px "Cormorant Garamond"', 'italic 500 120px "Cormorant Garamond"', '700 40px Inter', '400 30px Inter'].map(f => document.fonts.load(f))); } catch (e) {}
-  const im = await loadImage(a.image_url);
-  (a.kind === "certificate" ? drawCertificate : drawBadge)(a, im, name, date);
   let pngUrl = null;
-  try { pngUrl = $("cv").toDataURL("image/png"); }
-  catch (e) {                              // the design image does not allow copying: draw without it
-    (a.kind === "certificate" ? drawCertificate : drawBadge)(a, null, name, date); pngUrl = $("cv").toDataURL("image/png");
+  const tpl = a.kind === "certificate" && a.template && a.template.image_url ? a.template : null;
+  const tim = tpl ? await loadImage(tpl.image_url) : null;
+  if (tim) {                                  // the course's own certificate design, with the details where the teacher put them
+    drawTemplateCertificate($("cv"), tim, tpl, {
+      name, contribution: a.contribution, course: a.course.title, title: a.title, date, verify: `Verify at ${VERIFY}?id=${a.id}`,
+    });
+    if ($("cv").height > $("cv").width) {      // a portrait design prints on portrait paper
+      const st = document.createElement("style"); st.textContent = "@media print{@page{size:A4 portrait;margin:0}}"; document.head.appendChild(st);
+    }
+    try { pngUrl = $("cv").toDataURL("image/png"); } catch (e) { pngUrl = null; }
+  }
+  if (!pngUrl) {
+    const im = await loadImage(a.image_url);
+    (a.kind === "certificate" ? drawCertificate : drawBadge)(a, im, name, date);
+    try { pngUrl = $("cv").toDataURL("image/png"); }
+    catch (e) {                              // the design image does not allow copying: draw without it
+      (a.kind === "certificate" ? drawCertificate : drawBadge)(a, null, name, date); pngUrl = $("cv").toDataURL("image/png");
+    }
   }
   $("pic").src = pngUrl; $("pic").alt = `${kindWord} for ${name}: ${a.title}`;
   if (a.kind !== "certificate") $("stage").classList.add("badge-stage");
@@ -253,6 +269,7 @@ function drawBadge(a, im, name, date) {
   $("outcomes").innerHTML = outs.length ? `<p style="margin-bottom:4px"><b>Learning outcomes of the course</b></p><ul style="margin-top:0">${outs.map(o => `<li>${esc(o)}</li>`).join("")}</ul>` : "";
   $("status").innerHTML = a.revoked ? `<span class="verified revoked">✖ This award has been withdrawn</span>`
                                     : `<span class="verified">✔ Valid award</span>`;
+  if (a.kind !== "certificate") $("v-issuer").textContent = ISSUER;     // badges: issued by the CloudEARTHi MOOC only
   $("v-name").textContent = name; $("v-date").textContent = date; $("v-course").textContent = a.course.title; $("v-id").textContent = a.id;
   if (ev) { $("v-course-l").textContent = "Event"; $("outcomes").innerHTML = $("outcomes").innerHTML.replace("of the course", ""); }
   if (!a.description && !outs.length) { $("about").classList.add("hidden"); $("about").parentElement.style.gridTemplateColumns = "1fr"; }
@@ -262,7 +279,7 @@ function drawBadge(a, im, name, date) {
   else $("profile").classList.add("hidden");          // issued from a list to someone without an account
 
   // sharing
-  const url = location.origin + location.pathname + "?id=" + a.id;
+  const url = `${VERIFY}?id=${a.id}`;
   const text = ev ? `I received the ${kindWord} "${a.title}" for ${a.course.title}${a.contribution ? ` (${a.contribution})` : ""}, issued by CloudEARTHi.`
                   : `I earned the ${kindWord} "${a.title}" on the CloudEARTHi MOOC (${a.course.title}).`;
   const li = new URLSearchParams({ startTask: "CERTIFICATION_NAME", name: a.title, organizationId: LINKEDIN_ORG,

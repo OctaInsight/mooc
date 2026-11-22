@@ -2,3 +2,5 @@ streamlit>=1.50
 pandas
 requests
 openpyxl
+pypdfium2
+streamlit-image-coordinates

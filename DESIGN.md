@@ -80,10 +80,28 @@ says "Certificate of Participation … has taken part in". The tab lists everyth
 sent** (Resend's free plan: 100 emails a day for all Octa apps together; sending stops at the limit and continues
 the next day), an Excel download and **Withdraw / restore**.
 
+## Certificates on a course's own design
+
+A course's certificate can use the course's or project's own design, with its funders' and partners' logos. In MOOC
+Studio, **Badges & certificates → 🎨 Certificate design → Our own design**: upload the design as PNG, JPG or PDF (the
+first page becomes an image, at most 3000 pixels on the long side), choose the details to write on it (the student's
+name, the contribution, the course or event, the certificate title, the date, the verification address), click on the
+picture where each goes, and set its size, colour, font, line-up, bold or italic, and an optional text before it (for
+example "as " before the contribution). An exact preview shows it as students will see it; **Save** stores it in
+`Mooc_badges.template` (null = the standard design). The award page draws it with `docs/assets/certificate.js`, the
+same code as the preview. Certificates already issued show the new design too.
+
+## Where award pages live
+
+Each certificate's and badge's page is `https://mooc.cloudearthi.com/award.html?id=…`, which is also the address
+printed on it for verification and shared on LinkedIn. `tools/build_single_page.py` makes three files to upload into the
+same folder on mooc.cloudearthi.com: `upload/cloudearthi-mooc.html` (as `new_mooc.html`), `upload/award.html` and
+`upload/profile.html`. Badges name the CloudEARTHi MOOC as their issuer.
+
 ## Emails
 
 Links in emails go to the student website at **https://mooc.cloudearthi.com/new_mooc.html** (sign in, My learning,
-set or reset the password); each award's own page stays on GitHub Pages (`award.html`). Both addresses are set in
+set or reset the password); each award's own page is `https://mooc.cloudearthi.com/award.html`. Both addresses are set in
 `studio/links.py` and can be changed in the Streamlit secrets (`[mooc] site`, `[mooc] pages`).
 
 All emails are sent by **MOOC Studio** (Python, `octa_auth/mail.py`, Resend settings in the Streamlit secrets), the
