@@ -360,6 +360,7 @@ const CFG = {
   key: "sb_publishable_oFEaDte2Hy-gGsqpa9kWeQ_HuMm6dou",   // publishable key: meant for web pages
   studio: "https://cloudearthi-mooc.streamlit.app/",
   app: "octa_mooc",
+  mailer: "https://uxqeukvmnfvpgsxktgvo.supabase.co/functions/v1/mooc-mail",   // award emails and password links
 };
 const TOKEN_KEY = "cloudearthi_mooc_session";
 
@@ -530,7 +531,8 @@ async function route() {
     else if (parts[0] === "project" && parts[1]) await viewProject(view, parts[1]);
     else if (parts[0] === "signin") viewSignIn(view, q.get("next"));
     else if (parts[0] === "join") viewJoin(view, q.get("next"));
-    else if (parts[0] === "welcome") await viewWelcome(view, q.get("t"));
+    else if (parts[0] === "welcome") await viewWelcome(view, q.get("t"), q.get("r") === "1");
+    else if (parts[0] === "forgot") viewForgot(view, q.get("email"));
     else view.innerHTML = `<div class="wrap auth"><div class="box"><h1>Page not found</h1><p class="muted">This address does not lead to a page of the MOOC.</p><a class="btn" href="#/">See all courses</a></div></div>`;
   } catch (e) {
     view.innerHTML = `<div class="wrap auth"><div class="box"><h1>Something went wrong</h1><div class="msg bad">${esc(e.message)}</div>
@@ -1067,7 +1069,7 @@ function viewSignIn(view, next) {
         <button class="btn big block" type="submit">Sign in</button>
       </form>
       <p class="small" style="margin:18px 0 0">New here? <a href="#/join${next ? "?next=" + encodeURIComponent(next) : ""}">Create a free account</a></p>
-      <p class="small muted" style="margin:6px 0 0">Forgot your password? <a href="${CFG.studio}" target="_blank" rel="noopener">Reset it on the Octa sign-in page</a> (choose "Forgot username or password").</p>
+      <p class="small muted" style="margin:6px 0 0">Forgot your password or username? <a href="#/forgot">Choose a new password</a></p>
     </div></div>`;
   $("#f").onsubmit = async e => {
     e.preventDefault();
@@ -1124,17 +1126,18 @@ function viewJoin(view, next) {
 // ------------------------------------------------------------------------------------------------ set your password
 // The link in a certificate email (#/welcome?t=…): people put on a list by the organisers got an account; here they
 // choose its password, are signed in and land on My learning with their certificates.
-async function viewWelcome(view, token) {
+async function viewWelcome(view, token, reset) {
   const box = inner => (view.innerHTML = `<div class="wrap auth"><div class="box">${inner}</div></div>`);
   const expired = msg => box(`<h1>This link no longer works</h1><div class="msg bad">${esc(msg)}</div>
-      <p class="muted">If you have already chosen your password, just sign in. Otherwise ask the organisers to send the
-      email again, or use "Forgot username or password" on the <a href="${CFG.studio}" target="_blank" rel="noopener">Octa sign-in page</a>.</p>
-      <a class="btn" href="#/signin">Sign in</a>`);
+      <p class="muted">If you have already chosen your password, just sign in. Otherwise ask for a new link: it arrives
+      by email within a minute.</p>
+      <a class="btn" href="#/signin">Sign in</a> <a class="btn ghost" href="#/forgot">Get a new link</a>`);
   if (!/^[0-9a-f]{64}$/.test(token || "")) return expired("The link is not complete. Open it again from your email.");
   const c = await api("octa_user_reset_check", { p_token: token });
   if (!c.ok) return expired(c.error || "This link has expired or was already used.");
-  box(`<h1>Choose your password</h1>
-      <p class="muted">Your CloudEARTHi MOOC account is ready: your certificates are waiting under My learning.
+  box(`<h1>${reset ? "Choose a new password" : "Choose your password"}</h1>
+      <p class="muted">${reset ? "For your Octa account: the new password works in all Octa Insight apps."
+        : "Your CloudEARTHi MOOC account is ready: your certificates are waiting under My learning."}
         Sign in later with your email <b>${esc(c.email)}</b> or your username.</p>
       <div id="m"></div>
       <form id="f" novalidate>
@@ -1160,6 +1163,38 @@ async function viewWelcome(view, token) {
     } catch (err) { m.innerHTML = `<div class="msg bad">${esc(err.message)}</div>`; b.disabled = false; }
   };
   $("input[name=pw]", view).focus();
+}
+
+// "Forgot your password?": the mooc-mail function emails a one-hour link to #/welcome. It never says whether an
+// account uses the email, so the page cannot be used to find out who is registered.
+function viewForgot(view, email) {
+  view.innerHTML = `<div class="wrap auth"><div class="box">
+      <h1>Choose a new password</h1>
+      <p class="muted">Enter the email address of your Octa account. We will email you a link to choose a new password
+        and remind you of your username.</p>
+      <div id="m"></div>
+      <form id="f" novalidate>
+        <label class="field">Email address<input name="email" type="email" autocomplete="email" value="${esc(email || "")}" required></label>
+        <button class="btn big block" type="submit">Email me a link</button>
+      </form>
+      <p class="small" style="margin:18px 0 0">Remembered it? <a href="#/signin">Sign in</a></p>
+    </div></div>`;
+  $("#f").onsubmit = async e => {
+    e.preventDefault();
+    const f = e.target, b = $("button", f), m = $("#m"), em = f.email.value.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(em)) return (m.innerHTML = `<div class="msg bad">Enter a valid email address.</div>`);
+    b.disabled = true;
+    try {
+      const r = await fetch(CFG.mailer, { method: "POST", headers: { "Content-Type": "application/json" },
+                                          body: JSON.stringify({ action: "forgot", email: em }) }).then(x => x.json());
+      if (!r.ok) throw new Error(r.error || "The email could not be sent. Please try again later.");
+      $(".box", view).innerHTML = `<h1>Check your email</h1>
+        <p>If an Octa account uses <b>${esc(em)}</b>, a link to choose a new password is on its way. It works for one hour.</p>
+        <p class="muted small">Nothing after a few minutes? Look in your spam folder, or check that this is the address you registered with.</p>
+        <a class="btn" href="#/signin">Back to sign in</a>`;
+    } catch (err) { m.innerHTML = `<div class="msg bad">${esc(err.message === "Failed to fetch" ? "The MOOC cannot be reached. Check your internet connection." : err.message)}</div>`; b.disabled = false; }
+  };
+  $("input", view).focus();
 }
 
 // ------------------------------------------------------------------------------------------------ start

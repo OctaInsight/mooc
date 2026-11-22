@@ -80,6 +80,26 @@ says "Certificate of Participation … has taken part in". The tab lists everyth
 sent** (Resend's free plan: 100 emails a day for all Octa apps together; sending stops at the limit and continues
 the next day), an Excel download and **Withdraw / restore**.
 
+## Emails
+
+| When | Sent by | Says |
+|---|---|---|
+| Certificates issued from a list, new person | MOOC Studio | what they received and for which course; an account was made (username); **Set your password** (30-day link); view, download and LinkedIn links |
+| Certificates issued from a list, existing account | MOOC Studio | it is on their profile and the course is under My learning; sign in with the usual Octa password; link to choose a new one if forgotten; view and LinkedIn links |
+| A student earns a badge or certificate in a course (also after a teacher's grade) | Edge Function `mooc-mail`, every 5 minutes | congratulations, course name, **View and share**, LinkedIn share link per award, how to sign in or reset the password |
+| "Forgot your password?" on the student website (`#/forgot`) | `mooc-mail` | one-hour link to `#/welcome?t=…&r=1`; the page never says whether the email is registered |
+
+Earned awards enter an outbox (`Mooc_awards.notify_state = 'pending'`, set by a trigger for `source = 'auto'`).
+pg_cron calls `mooc-mail` every 5 minutes while anything is waiting; it claims up to 40 people (`mooc_mail_claim`),
+sends one email per person and records the result (`mooc_mail_done`). At the Resend daily limit it stops and puts the
+rest back for the next run; an address that keeps failing is given up after 5 tries. `mooc_mail_claim`,
+`mooc_mail_done` and `mooc_site_reset` can only be called with the service role key, inside the function.
+People on a certificate list are also given access to the MOOC app in their Octa account (`User_app_access`
+granted), unless an admin had taken it away.
+
+The function's secrets are set in the Supabase dashboard (Edge Functions → Secrets): `RESEND_API_KEY`,
+`MOOC_FROM_EMAIL` (a sender on a domain verified in Resend), optional `MOOC_FROM_NAME`, `MOOC_REPLY_TO`, `MOOC_SITE`.
+
 ## Database functions
 
 | For | Function |

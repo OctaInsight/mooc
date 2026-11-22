@@ -10,6 +10,7 @@ import datetime as dt
 import html
 import io
 import re
+from urllib.parse import quote
 import time
 
 import pandas as pd
@@ -39,6 +40,10 @@ def award_url(award_id: str) -> str:
     except Exception:
         base = AWARD_PAGE
     return f"{base}{award_id}"
+
+
+def linkedin_url(award_id: str) -> str:
+    return "https://www.linkedin.com/sharing/share-offsite/?url=" + quote(award_url(award_id), safe="")
 
 
 def site_url() -> str:
@@ -114,38 +119,50 @@ def read_people(upload) -> tuple[list[dict], list[str]]:
 
 # ------------------------------------------------------------------------------------------------ emails
 def _email_one(person: dict, awards: list[dict], course: dict, message: str, account: dict | None = None) -> None:
-    """One email per person, linking each of their awards. A new account also gets its set-password link."""
+    """One email per person: what they received, for which course, how to view and share it, and how to sign in.
+    New accounts get the set-password link as the main button; existing accounts are reminded of their password
+    and given a link to choose a new one."""
     certs = [a for a in awards if a["kind"] == "certificate"]
     what = "certificate" if certs and len(awards) == 1 else "badge" if len(awards) == 1 else "certificate and badges" if certs else "badges"
     e = lambda s: html.escape(str(s), quote=False)   # noqa: E731
+    site = site_url()
     names = " and ".join(f"<b>{e(a['title'])}</b>" for a in awards)
+    event = course.get("kind") == "event"
     paragraphs = [f"Dear {e(person['name'])},",
-                  f"Congratulations! You have received the {what} {names} for <b>{e(course['title'])}</b>."]
+                  f"Congratulations! You have received the {what} {names} for "
+                  f"{'' if event else 'the course '}<b>{e(course['title'])}</b>."]
     if message.strip():
         paragraphs.append(e(message.strip()).replace("\n", "<br>"))
-    links = [f"{e(a['title'])}: <a href='{award_url(a['award_id'])}'>{award_url(a['award_id'])}</a>" for a in awards]
-    site = site_url()
+    shares = [f"{e(a['title'])}: <a href='{award_url(a['award_id'])}'>view and download</a> · "
+              f"<a href='{linkedin_url(a['award_id'])}'>share on LinkedIn</a>" for a in awards]
     token = (account or {}).get("set_password_token")
+    subject = f"Your {what}: {course['title']}"
     if token:
-        # a new account: the main button sets the password; the certificates are listed under it
-        paragraphs.append("We have created a free CloudEARTHi MOOC account for you, where you find your certificates "
-                          "and badges and can take our online courses. Your username is "
-                          f"<b>{e(account['username'])}</b> (you can also sign in with this email address).")
-        paragraphs.append("Choose your password with the button below. The link works for 30 days. Then sign in at any "
-                          f"time at <a href='{site}'>{site}</a> and open <b>My learning</b> to download your {what}.")
-        after = [f"Your {what} also has its own page, which you can share on LinkedIn and other social media:"] + links
-        mail.send(person["email"], f"Your {what}: {course['title']}", paragraphs,
-                  button=("Set your password", f"{site}#/welcome?t={token}"), after=after)
+        paragraphs.append("We have created a free CloudEARTHi MOOC account for you, where the course and your "
+                          f"{what} are kept, together with your public profile. Your username is "
+                          f"<b>{e(account['username'])}</b>; you can also sign in with this email address.")
+        paragraphs.append(f"To open your account, choose a password with the button below (the link works for 30 days). "
+                          f"Then sign in at any time at <a href='{site}'>{site}</a> and open <b>My learning</b>.")
+        after = [f"Each {'one' if len(awards) > 1 else what} also has its own page with your name, which you can "
+                 "download, add to your LinkedIn profile and share on social media:"] + shares
+        mail.send(person["email"], subject, paragraphs, button=("Set your password", f"{site}#/welcome?t={token}"), after=after)
         return
-    paragraphs.append("Each one has its own page with your name, where you can download it and share it on LinkedIn "
-                      "and other social media. The page also lets anyone check that it is genuine.")
-    if account:                                            # an existing account: it is also under My learning
-        paragraphs.append(f"You will also find it under <b>My learning</b> when you sign in at <a href='{site}'>{site}</a> "
-                          f"with your Octa account ({e(account['username'])}).")
+    if account:                                            # an existing Octa account: it is on their profile now
+        paragraphs.append(f"It has been added to your CloudEARTHi MOOC profile, and {'the event' if event else 'the course'} "
+                          "is listed under <b>My learning</b>. Sign in at "
+                          f"<a href='{site}#/signin?next=/my'>{site}</a> with your email or username "
+                          f"(<b>{e(account['username'])}</b>) and your usual Octa password, the same one you use for the "
+                          "other Octa Insight apps.")
+        paragraphs.append("Forgot your password? <a href='"
+                          f"{site}#/forgot?email={quote(person['email'])}'>Choose a new one here</a>.")
+    else:
+        paragraphs.append("Each one has its own page with your name, where you can download it and share it on "
+                          "LinkedIn and other social media. The page also lets anyone check that it is genuine.")
     first = awards[0]
-    mail.send(person["email"], f"Your {what}: {course['title']}", paragraphs,
-              button=(f"View your {'certificate' if first['kind'] == 'certificate' else 'badge'}", award_url(first["award_id"])),
-              after=links[1:])
+    mail.send(person["email"], subject, paragraphs,
+              button=(f"View and share your {'certificate' if first['kind'] == 'certificate' else 'badge'}",
+                      award_url(first["award_id"])),
+              after=shares)
 
 
 def invite(course: dict, people: list[dict]) -> dict[str, dict]:

@@ -257,4 +257,6 @@ def test_existing_account_gets_the_certificate_link():
         bulk.mail.send = real
     to, paragraphs, button, after = sent[0]
     assert paragraphs[0] == "Dear Kim &lt;K&gt;," and "W &amp; S" in paragraphs[1]
-    assert button == ("View your certificate", bulk.AWARD_PAGE + "a1") and any("My learning" in x for x in paragraphs)
+    assert button == ("View and share your certificate", bulk.AWARD_PAGE + "a1") and any("My learning" in x for x in paragraphs)
+    assert any("usual Octa password" in x for x in paragraphs) and any("#/forgot?email=k%40x.org" in x for x in paragraphs)
+    assert any("linkedin.com/sharing" in x for x in after)
