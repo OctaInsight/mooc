@@ -646,7 +646,8 @@ def badge_form(c, lect, b):
         lects = st.multiselect("Lectures to finish (leave empty for all)", list(lect), default=(b or {}).get("lecture_ids") or [],
                                format_func=lambda x: lect[x])
         score = st.slider("Minimum average score (%)", 0, 100, (b or {}).get("min_score", c.get("pass_score", 70)), 5)
-        active = st.checkbox("Award it", (b or {}).get("active", True)) if b else True
+        active = st.checkbox("Switched on", (b or {}).get("active", True),
+                             help="Switched off: it is no longer awarded or offered for issuing; people who have it keep it.") if b else True
         go = st.form_submit_button("Save", type="primary")
     if go:
         if len(title.strip()) < 2:
@@ -673,7 +674,10 @@ def badge_form(c, lect, b):
             st.rerun()
     if b:
         if st.button("Delete", key=f"delb_{key}", help="If it was already awarded, it is switched off instead; issued awards stay valid."):
-            run("delete", "Deleted.", what="badge", id=b["id"]) and st.rerun()
+            msg = ("Deleted." if not b.get("awarded") else
+                   "It was already issued, so it is switched off instead of deleted; the people who have it keep it. "
+                   "To issue it again, tick Switched on under Edit.")
+            run("delete", msg, what="badge", id=b["id"]) and st.rerun()
 
 
 # ------------------------------------------------------------------------------------------------ grading

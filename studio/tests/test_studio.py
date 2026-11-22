@@ -336,3 +336,19 @@ def test_forgot_password_page_for_students():
     at2.text_input[0].input("nobody@example.org")
     at2.button[0].click().run()
     assert "nobody@example.org" in at2.success[0].value and fake.sent[-1]["to"] == "kim@example.org"
+
+
+def test_switched_off_certificate_is_named_in_the_issue_tab_and_can_be_switched_on():
+    at, fake = fresh("admin")
+    next(t for t in at.text_input if t.label == "Title").input("Mind the Gap workshop")
+    next(c for c in at.checkbox if c.label.startswith("Certificates only")).check()
+    btn(at, "Create").click().run()
+    cid = next(iter(fake.courses))
+    fake("save_badge", course_id=cid, kind="badge", title="Workshop badge")
+    cert = fake("save_badge", course_id=cid, kind="certificate", title="Workshop certificate", active=False)["id"]
+    at.run()
+    assert any("Switched off, so not offered below" in m.value and "Workshop certificate" in m.value for m in at.markdown)
+    btn(at, "Switch on: Workshop certificate").click().run()
+    assert not at.exception, at.exception
+    assert fake.badges[cert]["active"] is True
+    assert not any("Switched off, so not offered below" in m.value for m in at.markdown)

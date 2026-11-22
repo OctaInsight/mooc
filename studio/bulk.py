@@ -203,6 +203,22 @@ def tab_issue(c: dict, flash) -> None:
                "and courses with little content. Everyone on the list becomes a student of this course; people "
                "without an Octa account get one, and their email asks them to choose a password.")
     badges = [b for b in c["badges"] if b.get("active", True)]
+    off = [b for b in c["badges"] if not b.get("active", True)]
+    if off:                                             # say so, instead of leaving them out without a word
+        with st.container(border=True):
+            st.markdown("**Switched off, so not offered below:** " + ", ".join(
+                f"{'📜' if b['kind'] == 'certificate' else '🏅'} {html.escape(b['title'])}" for b in off))
+            st.caption("A badge or certificate that was already issued is switched off instead of deleted, and stays "
+                       "valid for the people who have it. Switch it on again to issue it to more people.")
+            cols = st.columns(min(len(off), 3))
+            for i, b in enumerate(off):
+                if cols[i % len(cols)].button(f"Switch on: {b['title']}", key=f"on_{b['id']}"):
+                    try:
+                        db.manage("save_badge", id=b["id"], active=True)
+                        flash("success", f"{b['title']} is switched on again.")
+                        st.rerun()
+                    except MoocError as e:
+                        st.error(str(e))
     if not badges:
         st.info("First create the certificate and/or badges in the **Badges & certificates** tab (title and design). "
                 "Then come back here to issue them.")
