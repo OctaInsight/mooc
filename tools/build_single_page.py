@@ -2,12 +2,12 @@
 
     python tools/build_single_page.py
 
-    upload/cloudearthi-mooc.html  ->  upload as  https://mooc.cloudearthi.com/new_mooc.html   (the student website)
-    upload/award.html             ->  upload as  https://mooc.cloudearthi.com/award.html      (each certificate/badge;
-                                                                                                its verification address)
-    upload/profile.html           ->  upload as  https://mooc.cloudearthi.com/profile.html    (a student's awards)
+    upload/new_mooc.html          ->  https://mooc.cloudearthi.com/new_mooc.html     (the student website)
+    upload/award.html             ->  https://mooc.cloudearthi.com/award.html        (each certificate/badge;
+                                                                                      its verification address)
+    upload/profile.html           ->  https://mooc.cloudearthi.com/profile.html      (a student's awards)
 
-All three go into the same folder. Stylesheets, scripts and images are put inside the files; the fonts come from
+Upload all three, with these names, into the same folder. Stylesheets, scripts and images are put inside the files; the fonts come from
 Google Fonts and the data from the MOOC database, as on GitHub Pages.
 """
 import base64
@@ -56,7 +56,7 @@ def award_or_profile(name: str) -> str:
 
 def main():
     UPLOAD.mkdir(exist_ok=True)
-    for out, html in (("cloudearthi-mooc.html", site()), ("award.html", award_or_profile("award.html")),
+    for out, html in ((SITE_FILE, site()), ("award.html", award_or_profile("award.html")),
                       ("profile.html", award_or_profile("profile.html"))):
         if "assets/" in html:
             raise SystemExit(f"{out}: a link to assets/ is left in the page")

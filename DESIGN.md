@@ -95,7 +95,7 @@ same code as the preview. Certificates already issued show the new design too.
 
 Each certificate's and badge's page is `https://mooc.cloudearthi.com/award.html?id=…`, which is also the address
 printed on it for verification and shared on LinkedIn. `tools/build_single_page.py` makes three files to upload into the
-same folder on mooc.cloudearthi.com: `upload/cloudearthi-mooc.html` (as `new_mooc.html`), `upload/award.html` and
+same folder on mooc.cloudearthi.com, with the same names: `upload/new_mooc.html`, `upload/award.html` and
 `upload/profile.html`. Badges name the CloudEARTHi MOOC as their issuer.
 
 ## Emails
