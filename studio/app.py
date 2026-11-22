@@ -2,8 +2,10 @@
 
 Students never use this app; they learn on the MOOC website, which reads the same database.
 """
+import base64
 import html
 import json
+from pathlib import Path
 
 import pandas as pd
 import streamlit as st
@@ -18,7 +20,7 @@ from mooc_db import MoocError  # noqa: E402
 
 APP = App(id="octa_mooc", name="MOOC Studio", family="education", url="https://cloudearthi-mooc.streamlit.app/",
           tagline="Build CloudEARTHi MOOC courses: lectures, interactive videos and PDFs, badges and certificates", icon="🎓")
-VERSION = "0.1.0"
+VERSION = "1.0.0"
 
 STEP_KINDS = {
     "video": ("🎬", "Video", "A YouTube video, with questions that pause it"),
@@ -125,6 +127,25 @@ with st.sidebar:
     sidebar(APP)
 
 S = st.session_state
+
+
+@st.cache_data(show_spinner=False)
+def _octa_logo_b64() -> str:
+    logo = Path(__file__).parent / "octa_auth" / "octa_logo.png"
+    return base64.b64encode(logo.read_bytes()).decode() if logo.exists() else ""
+
+
+def sidebar_footer() -> None:
+    """Bottom of the sidebar: name, version, copyright and the Octa Insight logo (full resolution, scaled by the
+    browser so it stays sharp on high-density screens)."""
+    st.divider()
+    st.markdown("<div style='font-size:.82rem;line-height:1.5;color:#52514e'>"
+                f"<b style='color:#0b0b0b'>CloudEARTHi MOOC Studio {VERSION}</b><br>"
+                "© 2026 Octa Insight · Produced by Octa Systems</div>", unsafe_allow_html=True)
+    b64 = _octa_logo_b64()
+    if b64:
+        st.markdown(f"<img src='data:image/png;base64,{b64}' alt='Octa Insight' "
+                    "style='width:150px;height:auto;margin-top:8px'>", unsafe_allow_html=True)
 
 
 def flash(kind, msg):
@@ -234,6 +255,8 @@ if not (is_super or me["can_edit_any"]):
              "build the course in MOOC Studio once their request is approved.")
     show_flash()
     join_form("join")
+    with st.sidebar:
+        sidebar_footer()
     st.stop()
 
 with st.sidebar:
@@ -245,7 +268,8 @@ with st.sidebar:
         pending = overview.get("pending_requests", 0)
         pages.append(f"People ({pending} waiting)" if pending else "People")
     page = st.radio("Go to", pages, label_visibility="collapsed", key="mc_page")
-    st.caption(f"MOOC Studio {VERSION} · {'super admin' if is_super else 'course admin' if is_course_admin else 'teacher'}")
+    st.caption(f"Signed in as {'super admin' if is_super else 'course admin' if is_course_admin else 'teacher'}")
+    sidebar_footer()
 
 projects = overview["projects"]
 project_names = {p["id"]: p["title"] for p in projects}
