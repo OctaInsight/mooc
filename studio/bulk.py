@@ -16,12 +16,11 @@ import time
 import pandas as pd
 import streamlit as st
 
+import links
 import mooc_db as db
 from mooc_db import MoocError
 from octa_auth import mail
 
-SITE = "https://octainsight.github.io/mooc/"
-AWARD_PAGE = SITE + "award.html?id="
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 STOP_WORDS = ("limit", "not set up", "API key", "sender", "email settings", "Could not reach")
 DAILY_EMAILS = 100          # Resend free plan, shared by all Octa apps
@@ -34,23 +33,7 @@ COLUMNS = {                 # accepted column names (compared without spaces, do
 }
 
 
-def award_url(award_id: str) -> str:
-    try:
-        base = st.secrets.get("mooc", {}).get("award_page") or AWARD_PAGE
-    except Exception:
-        base = AWARD_PAGE
-    return f"{base}{award_id}"
-
-
-def linkedin_url(award_id: str) -> str:
-    return "https://www.linkedin.com/sharing/share-offsite/?url=" + quote(award_url(award_id), safe="")
-
-
-def site_url() -> str:
-    try:
-        return st.secrets.get("mooc", {}).get("site") or SITE
-    except Exception:
-        return SITE
+award_url, linkedin_url = links.award_url, links.linkedin_url
 
 
 # ------------------------------------------------------------------------------------------------ reading the list
@@ -125,7 +108,7 @@ def _email_one(person: dict, awards: list[dict], course: dict, message: str, acc
     certs = [a for a in awards if a["kind"] == "certificate"]
     what = "certificate" if certs and len(awards) == 1 else "badge" if len(awards) == 1 else "certificate and badges" if certs else "badges"
     e = lambda s: html.escape(str(s), quote=False)   # noqa: E731
-    site = site_url()
+    signin = links.page("/signin")
     names = " and ".join(f"<b>{e(a['title'])}</b>" for a in awards)
     event = course.get("kind") == "event"
     paragraphs = [f"Dear {e(person['name'])},",
@@ -142,19 +125,19 @@ def _email_one(person: dict, awards: list[dict], course: dict, message: str, acc
                           f"{what} are kept, together with your public profile. Your username is "
                           f"<b>{e(account['username'])}</b>; you can also sign in with this email address.")
         paragraphs.append(f"To open your account, choose a password with the button below (the link works for 30 days). "
-                          f"Then sign in at any time at <a href='{site}'>{site}</a> and open <b>My learning</b>.")
+                          f"Then sign in at any time at <a href='{signin}'>{signin}</a> and open <b>My learning</b>.")
         after = [f"Each {'one' if len(awards) > 1 else what} also has its own page with your name, which you can "
                  "download, add to your LinkedIn profile and share on social media:"] + shares
-        mail.send(person["email"], subject, paragraphs, button=("Set your password", f"{site}#/welcome?t={token}"), after=after)
+        mail.send(person["email"], subject, paragraphs, button=("Set your password", links.page(f"/welcome?t={token}")), after=after)
         return
     if account:                                            # an existing Octa account: it is on their profile now
         paragraphs.append(f"It has been added to your CloudEARTHi MOOC profile, and {'the event' if event else 'the course'} "
                           "is listed under <b>My learning</b>. Sign in at "
-                          f"<a href='{site}#/signin?next=/my'>{site}</a> with your email or username "
+                          f"<a href='{signin}'>{signin}</a> with your email or username "
                           f"(<b>{e(account['username'])}</b>) and your usual Octa password, the same one you use for the "
                           "other Octa Insight apps.")
         paragraphs.append("Forgot your password? <a href='"
-                          f"{site}#/forgot?email={quote(person['email'])}'>Choose a new one here</a>.")
+                          f"{links.page('/forgot?email=' + quote(person['email']))}'>Choose a new one here</a>.")
     else:
         paragraphs.append("Each one has its own page with your name, where you can download it and share it on "
                           "LinkedIn and other social media. The page also lets anyone check that it is genuine.")

@@ -14,6 +14,7 @@ st.set_page_config(page_title="MOOC Studio", page_icon="🎓", layout="wide")
 
 from octa_auth import App, require_login, sidebar, display_name  # noqa: E402
 from octa_auth import client, mail  # noqa: E402
+import links  # noqa: E402
 import mooc_db as db  # noqa: E402
 import bulk  # noqa: E402
 from mooc_db import MoocError  # noqa: E402
@@ -31,7 +32,7 @@ STEP_KINDS = {
     "live": ("🎥", "Live session", "An online lecture or study-group meeting"),
 }
 LEVELS = ["", "beginner", "intermediate", "advanced"]
-STUDENT_SITE = "https://octainsight.github.io/mooc/"
+STUDENT_SITE = links.site()
 JOIN_AS = {"student": "🎒 Student: start learning at once",
            "teacher": "🧑‍🏫 Teacher: build lectures and grade (needs approval by the course admin)",
            "admin": "🛠️ Admin of a course: manage the course and its people (needs approval by a super admin)"}
@@ -64,7 +65,7 @@ if mail.provider():
 def page_forgot() -> None:
     """Opened from "Forgot your password?" on the MOOC website: emails a one-hour link to choose a new password there.
     Like the Octa reset, it never says whether an account uses the email."""
-    site = outbox.site_url()
+    site = links.site()
     _, mid, _ = st.columns([1, 2, 1])
     with mid:
         st.title("Choose a new password")
@@ -73,7 +74,7 @@ def page_forgot() -> None:
         if st.session_state.get("mc_forgot_sent"):
             st.success(f"If an Octa account uses **{st.session_state['mc_forgot_sent']}**, a link to choose a new "
                        "password is on its way. It works for one hour. Nothing after a few minutes? Look in your spam folder.")
-            st.link_button("Back to the CloudEARTHi MOOC", f"{site}#/signin", type="primary")
+            st.link_button("Back to the CloudEARTHi MOOC", links.page("/signin"), type="primary")
             return
         with st.form("mc_forgot"):
             email = st.text_input("Email address", st.query_params.get("email", ""))
@@ -106,7 +107,7 @@ def page_forgot() -> None:
                     "with this email address.",
                     "The link below works for one hour. If you did not ask for it, ignore this email: your password "
                     "stays as it is.",
-                ], button=("Choose a new password", f"{site}#/welcome?t={r['token']}&r=1"),
+                ], button=("Choose a new password", links.page(f"/welcome?t={r['token']}&r=1")),
                     after=["The same password works in all Octa Insight apps."])
             except mail.MailError as e:
                 st.error("The email could not be sent. " + str(e))

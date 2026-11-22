@@ -82,6 +82,10 @@ the next day), an Excel download and **Withdraw / restore**.
 
 ## Emails
 
+Links in emails go to the student website at **https://mooc.cloudearthi.com/new_mooc.html** (sign in, My learning,
+set or reset the password); each award's own page stays on GitHub Pages (`award.html`). Both addresses are set in
+`studio/links.py` and can be changed in the Streamlit secrets (`[mooc] site`, `[mooc] pages`).
+
 All emails are sent by **MOOC Studio** (Python, `octa_auth/mail.py`, Resend settings in the Streamlit secrets), the
 same way as the Octa password reset. The database only keeps the outbox; nothing is sent from Supabase.
 

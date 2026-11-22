@@ -19,28 +19,16 @@ from urllib.parse import quote
 
 import streamlit as st
 
+import links
 from octa_auth import client, mail
 
-SITE = "https://octainsight.github.io/mooc/"
 EVERY = 300                       # seconds between checks in the background
 STOP_WORDS = ("limit", "not set up", "API key", "sender", "email settings", "Could not reach")
 _LOCK = threading.Lock()
 log = logging.getLogger("mooc.outbox")
 
 
-def site_url() -> str:
-    try:
-        return st.secrets.get("mooc", {}).get("site") or SITE
-    except Exception:
-        return SITE
-
-
-def award_url(award_id: str) -> str:
-    return f"{site_url()}award.html?id={award_id}"
-
-
-def linkedin_url(award_id: str) -> str:
-    return "https://www.linkedin.com/sharing/share-offsite/?url=" + quote(award_url(award_id), safe="")
+site_url, award_url, linkedin_url = links.site, links.award_url, links.linkedin_url
 
 
 def _e(s) -> str:
@@ -50,7 +38,7 @@ def _e(s) -> str:
 def email_earned(p: dict) -> None:
     """One email to a student for the awards they earned since the last email."""
     awards = p["awards"]
-    site = site_url()
+    signin = links.page("/signin")
     certs = [a for a in awards if a["kind"] == "certificate"]
     one = len(awards) == 1
     what = ("certificate" if certs else "badge") if one else ("certificate and badges" if certs else "badges")
@@ -60,14 +48,14 @@ def email_earned(p: dict) -> None:
         f"Dear {_e(p.get('name') or p['username'])},",
         f"Congratulations! You have earned the {what} {names} in "
         + " and ".join(f"<b>{_e(c)}</b>" for c in courses) + " on the CloudEARTHi MOOC.",
-        f"It is on your public profile and under <b>My learning</b> at <a href='{site}#/my'>{site}</a>. Its own page "
+        f"It is on your public profile and under <b>My learning</b> at <a href='{signin}'>{signin}</a>. Its own page "
         "shows your name, lets you download it, add it to your LinkedIn profile and share it on social media, and "
         "lets anyone check that it is genuine.",
     ]
     after = [f"{_e(a['title'])}: <a href='{award_url(a['id'])}'>view and download</a> · "
              f"<a href='{linkedin_url(a['id'])}'>share on LinkedIn</a>" for a in awards]
     after.append(f"To sign in, use your email or username (<b>{_e(p['username'])}</b>) and your Octa password. "
-                 f"Forgot it? <a href='{site}#/forgot?email={quote(p['email'])}'>Choose a new password</a>.")
+                 f"Forgot it? <a href='{links.page('/forgot?email=' + quote(p['email']))}'>Choose a new password</a>.")
     subject = f'You earned the {what} "{awards[0]["title"]}"' if one else f"You earned new {what}: {', '.join(courses)}"
     label = f"View and share your {what if one else ('certificate' if certs else 'badge')}"
     mail.send(p["email"], subject, paragraphs, button=(label, award_url(awards[0]["id"])), after=after)
