@@ -42,6 +42,10 @@ def _send(to, subject, paragraphs, button=None, after=()):
 
 
 octa_auth.mail.send = _send
+octa_auth.mail.provider = lambda: "resend"
+import outbox  # noqa: E402
+outbox.start_background = lambda: None               # no background thread in tests
+outbox.time = type("T", (), {"sleep": staticmethod(lambda s: None)})
 import bulk  # noqa: E402
 bulk.time = type("T", (), {"sleep": staticmethod(lambda s: None)})
 runpy.run_path(os.path.join(ROOT, "app.py"), run_name="__main__")

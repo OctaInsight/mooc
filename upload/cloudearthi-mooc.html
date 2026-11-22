@@ -360,7 +360,6 @@ const CFG = {
   key: "sb_publishable_oFEaDte2Hy-gGsqpa9kWeQ_HuMm6dou",   // publishable key: meant for web pages
   studio: "https://cloudearthi-mooc.streamlit.app/",
   app: "octa_mooc",
-  mailer: "https://uxqeukvmnfvpgsxktgvo.supabase.co/functions/v1/mooc-mail",   // award emails and password links
 };
 const TOKEN_KEY = "cloudearthi_mooc_session";
 
@@ -1165,36 +1164,16 @@ async function viewWelcome(view, token, reset) {
   $("input[name=pw]", view).focus();
 }
 
-// "Forgot your password?": the mooc-mail function emails a one-hour link to #/welcome. It never says whether an
-// account uses the email, so the page cannot be used to find out who is registered.
+// "Forgot your password?": the link email is sent by MOOC Studio (Python, like the Octa password reset), so this page
+// hands over to its small "Choose a new password" page. The link in that email comes back to #/welcome.
 function viewForgot(view, email) {
+  const url = `${CFG.studio}?mooc=forgot${email ? "&email=" + encodeURIComponent(email) : ""}`;
   view.innerHTML = `<div class="wrap auth"><div class="box">
       <h1>Choose a new password</h1>
-      <p class="muted">Enter the email address of your Octa account. We will email you a link to choose a new password
-        and remind you of your username.</p>
-      <div id="m"></div>
-      <form id="f" novalidate>
-        <label class="field">Email address<input name="email" type="email" autocomplete="email" value="${esc(email || "")}" required></label>
-        <button class="btn big block" type="submit">Email me a link</button>
-      </form>
-      <p class="small" style="margin:18px 0 0">Remembered it? <a href="#/signin">Sign in</a></p>
+      <p class="muted">Opening the page that emails you a link to choose a new password… If it does not open,
+        <a href="${esc(url)}">continue here</a>. It may take a few seconds to start.</p>
     </div></div>`;
-  $("#f").onsubmit = async e => {
-    e.preventDefault();
-    const f = e.target, b = $("button", f), m = $("#m"), em = f.email.value.trim();
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(em)) return (m.innerHTML = `<div class="msg bad">Enter a valid email address.</div>`);
-    b.disabled = true;
-    try {
-      const r = await fetch(CFG.mailer, { method: "POST", headers: { "Content-Type": "application/json" },
-                                          body: JSON.stringify({ action: "forgot", email: em }) }).then(x => x.json());
-      if (!r.ok) throw new Error(r.error || "The email could not be sent. Please try again later.");
-      $(".box", view).innerHTML = `<h1>Check your email</h1>
-        <p>If an Octa account uses <b>${esc(em)}</b>, a link to choose a new password is on its way. It works for one hour.</p>
-        <p class="muted small">Nothing after a few minutes? Look in your spam folder, or check that this is the address you registered with.</p>
-        <a class="btn" href="#/signin">Back to sign in</a>`;
-    } catch (err) { m.innerHTML = `<div class="msg bad">${esc(err.message === "Failed to fetch" ? "The MOOC cannot be reached. Check your internet connection." : err.message)}</div>`; b.disabled = false; }
-  };
-  $("input", view).focus();
+  location.replace(url);
 }
 
 // ------------------------------------------------------------------------------------------------ start

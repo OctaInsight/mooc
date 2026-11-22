@@ -19,10 +19,25 @@ class FakeMooc:
         self.badges, self.subs = {}, {}
         self.reqs = {}
         self.awards = {}
-        self.sent, self.mail_limit = [], None   # emails "sent" by the stubbed mail.send; stop after mail_limit
+        self.sent, self.mail_limit = [], None
+        self.outbox, self.claimed, self.mail_done, self.resets = [], [], [], []   # emails "sent" by the stubbed mail.send; stop after mail_limit
 
     def rpc(self, name, **a):
         """The student-side functions MOOC Studio calls directly (mooc_join_options, mooc_register)."""
+        if name == "mooc_mail_claim_app":                    # the award outbox (server key checked by the database)
+            people, self.outbox = self.outbox, []
+            self.claimed += [a["id"] for p in people for a in p["awards"]]
+            return dict(ok=True, people=people)
+        if name == "mooc_mail_done_app":
+            self.mail_done.append(dict(ids=a["p_ids"], ok=a["p_ok"], error=a.get("p_error"), count=a.get("p_count", True)))
+            return dict(ok=True)
+        if name == "mooc_mail_status":
+            return dict(ok=True, pending=len(self.outbox), failed=0, last_error=None)
+        if name == "mooc_site_reset_app":
+            self.resets.append(a["p_email"])
+            if a["p_email"] == "kim@example.org":
+                return dict(ok=True, exists=True, token="t" * 64, username="kim", name="Kim K", email="kim@example.org")
+            return dict(ok=True, exists=False)
         if name == "mooc_join_options":
             return dict(ok=True, person=None, requests=[dict(r, course=self.courses[r["course_id"]]["title"]) for r in self.reqs.values()],
                         courses=[dict(id=c["id"], slug=c["slug"], title=c["title"], status=c["status"], project=None,

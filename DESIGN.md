@@ -82,23 +82,25 @@ the next day), an Excel download and **Withdraw / restore**.
 
 ## Emails
 
-| When | Sent by | Says |
-|---|---|---|
-| Certificates issued from a list, new person | MOOC Studio | what they received and for which course; an account was made (username); **Set your password** (30-day link); view, download and LinkedIn links |
-| Certificates issued from a list, existing account | MOOC Studio | it is on their profile and the course is under My learning; sign in with the usual Octa password; link to choose a new one if forgotten; view and LinkedIn links |
-| A student earns a badge or certificate in a course (also after a teacher's grade) | Edge Function `mooc-mail`, every 5 minutes | congratulations, course name, **View and share**, LinkedIn share link per award, how to sign in or reset the password |
-| "Forgot your password?" on the student website (`#/forgot`) | `mooc-mail` | one-hour link to `#/welcome?t=…&r=1`; the page never says whether the email is registered |
+All emails are sent by **MOOC Studio** (Python, `octa_auth/mail.py`, Resend settings in the Streamlit secrets), the
+same way as the Octa password reset. The database only keeps the outbox; nothing is sent from Supabase.
+
+| When | Says |
+|---|---|
+| Certificates issued from a list, new person | what they received and for which course; an account was made (username); **Set your password** (30-day link); view, download and LinkedIn links |
+| Certificates issued from a list, existing account | it is on their profile and the course is under My learning; sign in with the usual Octa password; link to choose a new one if forgotten; view and LinkedIn links |
+| A student earns a badge or certificate in a course (also after a teacher's grade) | congratulations, course name, **View and share**, a LinkedIn share link per award, how to sign in or reset the password |
+| "Forgot your password?" on the student website | `#/forgot` opens MOOC Studio at `?mooc=forgot`, which emails a one-hour link back to `#/welcome?t=…&r=1`; it never says whether the email is registered |
 
 Earned awards enter an outbox (`Mooc_awards.notify_state = 'pending'`, set by a trigger for `source = 'auto'`).
-pg_cron calls `mooc-mail` every 5 minutes while anything is waiting; it claims up to 40 people (`mooc_mail_claim`),
-sends one email per person and records the result (`mooc_mail_done`). At the Resend daily limit it stops and puts the
-rest back for the next run; an address that keeps failing is given up after 5 tries. `mooc_mail_claim`,
-`mooc_mail_done` and `mooc_site_reset` can only be called with the service role key, inside the function.
+MOOC Studio empties it (`outbox.py`): a background thread checks every 5 minutes while the app is running, a few go
+out each time anyone opens the app, and People → Email shows how many are waiting with **Send waiting award emails
+now**. Streamlit Cloud puts a quiet app to sleep; waiting emails then go out the next time someone opens MOOC Studio.
+At the Resend daily limit sending stops and the rest wait; an address that keeps failing is given up after 5 tries.
+The outbox and the reset link are reached with the app's server key (`mooc_mail_claim_app`, `mooc_mail_done_app`,
+`mooc_mail_status`, `mooc_site_reset_app`), like `octa_user_reset_request`.
 People on a certificate list are also given access to the MOOC app in their Octa account (`User_app_access`
 granted), unless an admin had taken it away.
-
-The function's secrets are set in the Supabase dashboard (Edge Functions → Secrets): `RESEND_API_KEY`,
-`MOOC_FROM_EMAIL` (a sender on a domain verified in Resend), optional `MOOC_FROM_NAME`, `MOOC_REPLY_TO`, `MOOC_SITE`.
 
 ## Database functions
 

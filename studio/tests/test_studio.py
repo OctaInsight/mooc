@@ -260,3 +260,75 @@ def test_existing_account_gets_the_certificate_link():
     assert button == ("View and share your certificate", bulk.AWARD_PAGE + "a1") and any("My learning" in x for x in paragraphs)
     assert any("usual Octa password" in x for x in paragraphs) and any("#/forgot?email=k%40x.org" in x for x in paragraphs)
     assert any("linkedin.com/sharing" in x for x in after)
+
+
+def _person(i, n=1):
+    return dict(user_id=f"u{i}", email=f"s{i}@example.org", username=f"s{i}", name=None if i == 1 else f"Student {i}",
+                awards=[dict(id=f"a{i}{k}", title=f"Badge {k}", kind="certificate" if k == 0 else "badge",
+                             course="EO basics", course_kind="course", score=90) for k in range(n)])
+
+
+def test_award_emails_are_sent_by_studio_when_it_opens():
+    fake_mooc.CURRENT = fake = fake_mooc.FakeMooc("super")
+    fake.outbox = [_person(0, 2), _person(1)]
+    at = AppTest.from_file(SCRIPT, default_timeout=30)
+    at.run()
+    assert not at.exception, at.exception
+    assert [m["to"] for m in fake.sent] == ["s0@example.org", "s1@example.org"]
+    m = fake.sent[0]
+    assert m["subject"] == "You earned new certificate and badges: EO basics", m["subject"]
+    assert "Dear Student 0," == m["paragraphs"][0] and "<b>EO basics</b>" in m["paragraphs"][1]
+    assert m["button"][0] == "View and share your certificate" and m["button"][1].endswith("award.html?id=a00")
+    assert sum("linkedin.com/sharing" in x for x in m["after"]) == 2 and "#/forgot?email=s0%40example.org" in m["after"][-1]
+    assert fake.sent[1]["paragraphs"][0] == "Dear s1," and fake.sent[1]["subject"] == 'You earned the certificate "Badge 0"'
+    assert [d["ok"] for d in fake.mail_done] == [True, True]
+    # the same session does not send again on every click
+    fake.outbox = [_person(2)]
+    at.run()
+    assert len(fake.sent) == 2
+
+
+def test_award_emails_stop_at_the_daily_limit():
+    import outbox
+    fake_mooc.CURRENT = fake = fake_mooc.FakeMooc("super")
+    fake.outbox = [_person(0), _person(1), _person(2)]
+    fake.mail_limit = 1
+    import octa_auth
+    real = (octa_auth.client.rpc, octa_auth.mail.send, octa_auth.mail.provider)
+    octa_auth.client.rpc = lambda name, **kw: fake.rpc(name, **kw)
+    octa_auth.mail.provider = lambda: "resend"
+
+    def send(to, subject, paragraphs, button=None, after=()):
+        if len(fake.sent) >= fake.mail_limit:
+            raise octa_auth.mail.MailError("The daily Resend sending limit was reached.")
+        fake.sent.append(to)
+    octa_auth.mail.send = send
+    try:
+        r = outbox.run_once(pause=0)
+    finally:
+        octa_auth.client.rpc, octa_auth.mail.send, octa_auth.mail.provider = real
+    assert r["sent"] == 1 and "limit" in r["stopped"]
+    assert fake.mail_done[1] == dict(ids=["a10", "a20"], ok=False, error="The daily Resend sending limit was reached.", count=False)
+
+
+def test_forgot_password_page_for_students():
+    fake_mooc.CURRENT = fake = fake_mooc.FakeMooc("super")
+    at = AppTest.from_file(SCRIPT, default_timeout=30)
+    at.query_params["mooc"] = "forgot"
+    at.query_params["email"] = "kim@example.org"
+    at.run()
+    assert not at.exception, at.exception
+    assert at.title[0].value == "Choose a new password" and at.text_input[0].value == "kim@example.org"
+    at.button[0].click().run()
+    assert not at.exception, at.exception
+    assert fake.resets == ["kim@example.org"]
+    m = fake.sent[-1]
+    assert m["to"] == "kim@example.org" and m["button"] == ("Choose a new password", "https://octainsight.github.io/mooc/#/welcome?t=" + "t" * 64 + "&r=1")
+    assert "If an Octa account uses **kim@example.org**" in at.success[0].value
+    # an unknown email gets the same answer and no email
+    at2 = AppTest.from_file(SCRIPT, default_timeout=30)
+    at2.query_params["mooc"] = "forgot"
+    at2.run()
+    at2.text_input[0].input("nobody@example.org")
+    at2.button[0].click().run()
+    assert "nobody@example.org" in at2.success[0].value and fake.sent[-1]["to"] == "kim@example.org"

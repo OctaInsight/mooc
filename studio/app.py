@@ -11,7 +11,7 @@ import streamlit as st
 st.set_page_config(page_title="MOOC Studio", page_icon="🎓", layout="wide")
 
 from octa_auth import App, require_login, sidebar, display_name  # noqa: E402
-from octa_auth import mail  # noqa: E402
+from octa_auth import client, mail  # noqa: E402
 import mooc_db as db  # noqa: E402
 import bulk  # noqa: E402
 from mooc_db import MoocError  # noqa: E402
@@ -46,6 +46,76 @@ st.markdown("""<style>
 .mc-pill.archived{background:#f1f0ed;color:#77756f}
 .mc-muted{color:#77756f;font-size:.85rem}
 </style>""", unsafe_allow_html=True)
+
+import outbox  # noqa: E402
+
+if mail.provider():
+    outbox.start_background()          # award emails go out while MOOC Studio is running
+    if not st.session_state.get("mc_outbox_ran"):
+        st.session_state["mc_outbox_ran"] = True
+        try:
+            outbox.run_once(limit=10, pause=0.5)   # and a few at once whenever someone opens the app
+        except Exception:  # noqa: BLE001 - never block the page for this
+            pass
+
+
+def page_forgot() -> None:
+    """Opened from "Forgot your password?" on the MOOC website: emails a one-hour link to choose a new password there.
+    Like the Octa reset, it never says whether an account uses the email."""
+    site = outbox.site_url()
+    _, mid, _ = st.columns([1, 2, 1])
+    with mid:
+        st.title("Choose a new password")
+        st.caption("For your Octa account on the CloudEARTHi MOOC. Enter its email address: we will email you a link to "
+                   "choose a new password and remind you of your username.")
+        if st.session_state.get("mc_forgot_sent"):
+            st.success(f"If an Octa account uses **{st.session_state['mc_forgot_sent']}**, a link to choose a new "
+                       "password is on its way. It works for one hour. Nothing after a few minutes? Look in your spam folder.")
+            st.link_button("Back to the CloudEARTHi MOOC", f"{site}#/signin", type="primary")
+            return
+        with st.form("mc_forgot"):
+            email = st.text_input("Email address", st.query_params.get("email", ""))
+            go = st.form_submit_button("Email me a link", type="primary")
+        st.markdown(f"[Back to the CloudEARTHi MOOC]({site})")
+        if not go:
+            return
+        email = email.strip().lower()
+        if not bulk.EMAIL_RE.match(email):
+            st.error("Enter a valid email address.")
+            return
+        if not mail.provider():
+            st.error("Password emails are not set up yet. Please contact the course organisers.")
+            return
+        try:
+            r = client.rpc("mooc_site_reset_app", p_server_key=client.server_key(), p_email=email)
+        except Exception:  # noqa: BLE001
+            st.error("The MOOC database could not be reached. Please try again in a moment.")
+            return
+        if not r or not r.get("ok"):
+            st.error((r or {}).get("error") if (r or {}).get("error") != "not allowed"
+                     else "Password emails are not set up correctly for this app (server key).")
+            return
+        if r.get("exists"):
+            try:
+                mail.send(r["email"], "Choose a new password for the CloudEARTHi MOOC", [
+                    f"Dear {html.escape(r.get('name') or r['username'], quote=False)},",
+                    "Someone (hopefully you) asked to choose a new password for your Octa account on the CloudEARTHi "
+                    f"MOOC. Your username is <b>{html.escape(r['username'], quote=False)}</b>; you can also sign in "
+                    "with this email address.",
+                    "The link below works for one hour. If you did not ask for it, ignore this email: your password "
+                    "stays as it is.",
+                ], button=("Choose a new password", f"{site}#/welcome?t={r['token']}&r=1"),
+                    after=["The same password works in all Octa Insight apps."])
+            except mail.MailError as e:
+                st.error("The email could not be sent. " + str(e))
+                return
+        st.session_state["mc_forgot_sent"] = email
+        st.rerun()
+
+
+if st.query_params.get("mooc") == "forgot":
+    page_forgot()
+    st.stop()
 
 user = require_login(APP)
 if user is None:
@@ -809,6 +879,22 @@ def page_people():
             st.warning("Emails are still sent through Gmail. To use Resend: " + mail.diagnose())
         else:
             st.warning("Email is not set up. " + mail.diagnose())
+        o = outbox.status()
+        if o.get("ok"):
+            st.caption(f"Award emails (sent automatically when a student earns a badge or certificate): "
+                       f"**{o['pending']}** waiting" + (f", {o['failed']} given up after 5 tries" if o.get("failed") else "")
+                       + (f". Last problem: {o['last_error']}" if o.get("last_error") else "."))
+            if o["pending"] and kind and st.button("Send waiting award emails now"):
+                with st.spinner("Sending…"):
+                    r = outbox.run_once()
+                if r.get("ok"):
+                    st.success(f"Sent {r.get('sent', 0)}." + (f" Not sent: {r['failed']}." if r.get("failed") else "")
+                               + (f" Stopped: {r['stopped']}" if r.get("stopped") else ""))
+                else:
+                    st.error(r.get("error"))
+        else:
+            st.warning("The award-email outbox cannot be read: check [octa_users] server_key in the Streamlit secrets "
+                       "(the same as in the Octa suite).")
         if kind and st.button("Send a test email to me"):
             try:
                 mid = mail.send(user["email"], "MOOC Studio: test email",
