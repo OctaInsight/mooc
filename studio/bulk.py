@@ -257,6 +257,8 @@ def tab_issue(c: dict, flash) -> None:
         dflt = y.text_input("Contribution for people without one in the file", placeholder="Participant",
                             help="Printed on the certificate, e.g. Participant. Leave empty to print none.")
         send = st.checkbox("Email each person their certificate (and, for new accounts, a link to choose a password)", True)
+        again = st.checkbox("Also email people on the list who already have it", False,
+                            help="Normally they are left alone, so nobody gets the same email twice.")
         msg = st.text_area("A few words for the email (optional)", height=80,
                            placeholder="Thank you for taking part in the workshop in Oslo.")
         preview = pd.DataFrame([{"Line": r["line"], "Name": r["name"], "Email": r["email"],
@@ -282,12 +284,14 @@ def tab_issue(c: dict, flash) -> None:
     awards = r["awards"]
     new = [a for a in awards if a["new"]]
     msg_parts = [f"Issued {len(new)} award{'s' * (len(new) != 1)}."]
-    if len(awards) > len(new):
-        msg_parts.append(f"{len(awards) - len(new)} already existed and were left as they were.")
+    had = sorted({a["name"] for a in awards if not a["new"]})
+    if had:
+        msg_parts.append(f"Already had it, so left as it was{'' if send and again else ' and not emailed again'}: "
+                         f"{', '.join(had)}.")
     made = sum(1 for x in accounts.values() if x["created"])
     msg_parts.append(f"All {len(accounts)} are students of this course" + (f"; {made} new account{'s' * (made != 1)} created." if made else "."))
     if send:
-        todo = [a for a in awards if a["new"] or not a.get("email_sent_at")]
+        todo = [a for a in awards if a["new"] or again or not a.get("email_sent_at")]
         sent, failed, stopped = send_emails(todo, c, msg, accounts)
         msg_parts.append(f"Emails sent: {sent}." + (f" Not sent: {failed}." if failed else ""))
         if stopped:
@@ -328,6 +332,14 @@ def _issued_list(c: dict) -> None:
     df.to_excel(buf, index=False, engine="openpyxl")
     y.download_button("Download this list (Excel)", buf.getvalue(), f"{c['slug']}_certificates.xlsx",
                       mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", key=f"dl_{c['id']}")
+    with x.popover("Send an email again"):
+        people = sorted({a["email"] for a in awards if a.get("email") and not a["revoked"]})
+        names = {a["email"]: a["name"] for a in awards}
+        who = st.multiselect("To", people, format_func=lambda e: f"{names.get(e) or e} ({e})", key=f"again_{c['id']}")
+        st.caption("Each person gets one email with links to their certificates and badges from this course.")
+        if st.button("Send", key=f"againb_{c['id']}", disabled=not who):
+            sent, failed, stopped = send_emails([a for a in awards if a.get("email") in who and not a["revoked"]], c)
+            st.success(f"Emails sent: {sent}." + (f" Not sent: {failed}. {stopped or ''}" if failed else ""))
     with z.popover("Withdraw or restore"):
         pick = st.selectbox("Award", [a["award_id"] for a in awards], key=f"wd_{c['id']}",
                             format_func=lambda i: next(f"{a['name']}: {a['title']}{' (withdrawn)' if a['revoked'] else ''}"

@@ -352,3 +352,37 @@ def test_switched_off_certificate_is_named_in_the_issue_tab_and_can_be_switched_
     assert not at.exception, at.exception
     assert fake.badges[cert]["active"] is True
     assert not any("Switched off, so not offered below" in m.value for m in at.markdown)
+
+
+def test_people_who_already_have_it_are_named_and_can_be_emailed_again():
+    import bulk
+    at, fake = fresh("admin")
+    next(t for t in at.text_input if t.label == "Title").input("Mind the Gap workshop")
+    next(c for c in at.checkbox if c.label.startswith("Certificates only")).check()
+    btn(at, "Create").click().run()
+    cid = next(iter(fake.courses))
+    fake("save_badge", course_id=cid, kind="certificate", title="Workshop certificate")
+    people = [dict(name="Tamer Abu-Alam", email="tamer@example.org", contribution="", line=2),
+              dict(name="Nina Sysel", email="nina@example.org", contribution="", line=3)]
+    bulk.st.file_uploader = lambda *a, **k: _Upload("list.xlsx", b"")
+    real = bulk.read_people
+    bulk.read_people = lambda up: (people, [])
+    try:
+        at.run()
+        btn(at, "Issue to 2 people").click().run()
+        assert len(fake.sent) == 2
+        at.run()                                     # the same list again: nobody is emailed twice, and the message says who
+        btn(at, "Issue to 2 people").click().run()
+        assert not at.exception, at.exception
+        assert len(fake.sent) == 2
+        assert any("Already had it, so left as it was and not emailed again: Nina Sysel, Tamer Abu-Alam." in s.value
+                   for s in at.success), [s.value for s in at.success]
+        at.run()                                     # ticked: they are emailed again
+        next(c for c in at.checkbox if c.label.startswith("Also email people")).check()
+        btn(at, "Issue to 2 people").click().run()
+        assert not at.exception, at.exception
+        assert [m["to"] for m in fake.sent[2:]] == ["nina@example.org", "tamer@example.org"] or \
+               sorted(m["to"] for m in fake.sent[2:]) == ["nina@example.org", "tamer@example.org"]
+    finally:
+        bulk.read_people = real
+        bulk.st.file_uploader = lambda *a, **k: None
