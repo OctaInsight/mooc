@@ -76,6 +76,9 @@
 .cem-partner .cem-steps h3{font-size:17px;margin-bottom:6px}
 .cem-partner .cem-steps p{font-size:15.5px;color:var(--quiet)}
 
+/* screen readers only */
+.cem-partner .cem-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
 /* teach */
 .cem-partner .cem-teach{border:1px solid var(--line);border-radius:12px;padding:28px;display:grid;grid-template-columns:1.4fr 1fr;gap:28px;align-items:center}
 .cem-partner .cem-teach p{color:var(--quiet);margin-top:8px}
@@ -159,7 +162,7 @@
         </ul>
         <span class="cem-ask">Contact us</span>
       </a>
-      <a class="cem-plan" href="https://octainsight.com/mooc">
+      <a class="cem-plan" href="https://octainsight.com/mooc" target="_blank" rel="noopener">
         <div class="cem-tag">Offered by Octa Insight</div>
         <h3>Other organisations and courses</h3>
         <p class="cem-for">Universities, training providers, companies, associations, EU-funded projects and events</p>
@@ -170,7 +173,7 @@
           <li>Reduced rates for CloudEARTHi partners, low- and middle-income countries, and non-profits for equality and inclusion</li>
           <li>Course building by our team</li>
         </ul>
-        <span class="cem-ask">See packages on Octa Insight</span>
+        <span class="cem-ask">See packages on Octa Insight<span class="cem-sr"> (opens in a new tab)</span></span>
       </a>
     </div>
     <p class="cem-note">The CloudEARTHi MOOC is an initiative of CloudEARTHi, developed and operated by Octa Insight. Packages for organisations outside CloudEARTHi are offered and invoiced by Octa Insight on octainsight.com.</p>
@@ -194,11 +197,10 @@
       <div>
         <h2 id="cem-teach" style="font-size:24px">Teach on the MOOC</h2>
         <p>Teachers and course admins build and run courses in MOOC Studio, with the same Octa account learners use.
-          Create your account and ask to join a course as a teacher or course admin.</p>
+          Your course admin gives you access to your courses.</p>
       </div>
       <div>
-        <a class="cem-btn cem-btn-main" href="https://mooc.cloudearthi.com/new_mooc.html#/join">Join as a teacher</a>
-        <a class="cem-btn cem-btn-line" href="https://cloudearthi-mooc.streamlit.app/">Open MOOC Studio</a>
+        <a class="cem-btn cem-btn-main" href="https://cloudearthi-mooc.streamlit.app/">Open MOOC Studio</a>
       </div>
     </div>
   </section>
