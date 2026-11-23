@@ -1,0 +1,259 @@
+<!--
+  Octa Insight: "CloudEARTHi MOOC packages" page, for a WordPress "Custom HTML" block on https://octainsight.com/mooc
+  1. Paste everything below into one Custom HTML block.
+  2. Directly under it, add a Shortcode block with the Contact Form 7 form "Request a package"
+     (see wordpress/request-a-package.md). The cards open /mooc/?package=<name>#request, so the form
+     already shows the package the visitor chose.
+  All styles are scoped to .octa-mooc and the theme's own fonts are used. No scripts.
+-->
+<div class="octa-mooc">
+<style>
+.octa-mooc{--g:#127a45;--g-soft:#e8f3dd;--page:#f4f9ef;--line:#d5e6c8;--amber:#e0a21c;--blue:#2a78d6;--ink:#0b0b0b;--quiet:#52514e;
+  color:var(--ink);line-height:1.6;max-width:1080px;margin:0 auto;font-size:17px}
+.octa-mooc *{box-sizing:border-box}
+.octa-mooc h2,.octa-mooc h3{color:var(--ink);line-height:1.25;margin:0}
+.octa-mooc p{margin:0}
+.octa-mooc a{color:var(--blue)}
+.octa-mooc .cem-sec{margin:0 0 64px}
+.octa-mooc .cem-sec>h2{font-size:30px;margin-bottom:10px}
+.octa-mooc .cem-lead{color:var(--quiet);max-width:680px;margin-bottom:28px}
+.octa-mooc .cem-btn{display:inline-block;padding:12px 22px;border-radius:8px;font-weight:600;text-decoration:none;
+  border:2px solid var(--blue);line-height:1.2;margin:0 10px 10px 0}
+.octa-mooc .cem-btn-main{background:var(--blue);color:#fff}
+.octa-mooc .cem-btn-main:hover,.octa-mooc .cem-btn-main:focus{background:#1f63b5;border-color:#1f63b5;color:#fff}
+.octa-mooc .cem-btn-line{background:#fff;color:var(--blue)}
+.octa-mooc .cem-btn-line:hover,.octa-mooc .cem-btn-line:focus{background:#eef5fd}
+.octa-mooc .cem-btn:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+
+/* opening */
+.octa-mooc .cem-hero{background:var(--g-soft);border:1px solid var(--line);border-radius:16px;padding:48px 44px;margin-bottom:64px;
+  display:grid;grid-template-columns:1.35fr 1fr;gap:40px;align-items:center}
+.octa-mooc .cem-hero h2{font-size:40px;margin-bottom:16px}
+.octa-mooc .cem-kicker{display:inline-block;background:#fff;color:var(--g);border:1px solid var(--line);border-radius:999px;
+  padding:4px 14px;font-weight:700;font-size:15px;margin-bottom:14px}
+.octa-mooc .cem-hero p{color:#2f3a2f;margin-bottom:24px;font-size:18px}
+.octa-mooc .cem-free{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px}
+.octa-mooc .cem-free strong{display:block;font-size:22px;color:var(--g);margin-bottom:6px}
+.octa-mooc .cem-free ul{margin:12px 0 0;padding-left:20px;color:var(--quiet)}
+.octa-mooc .cem-free li{margin:4px 0}
+
+/* what providers get */
+.octa-mooc .cem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.octa-mooc .cem-card{border:1px solid var(--line);border-radius:12px;padding:22px;background:#fff;transition:border-color .15s,background-color .15s}
+.octa-mooc .cem-card:hover{border-color:var(--g);background:var(--page)}
+.octa-mooc .cem-card h3{font-size:18px;margin-bottom:8px}
+.octa-mooc .cem-card p{color:var(--quiet);font-size:16px}
+
+/* packages */
+.octa-mooc .cem-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:20px}
+.octa-mooc a.cem-plan{border:1px solid var(--line);border-radius:12px;padding:26px;background:#fff;display:flex;flex-direction:column;
+  color:var(--ink);text-decoration:none;transition:border-color .15s,background-color .15s,box-shadow .15s,transform .15s}
+.octa-mooc a.cem-plan:hover,.octa-mooc a.cem-plan:focus-visible{border-color:var(--g);background:var(--page);
+  box-shadow:0 10px 24px rgba(18,122,69,.14);transform:translateY(-3px)}
+.octa-mooc a.cem-plan:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.octa-mooc a.cem-plan-star{border:2px solid var(--g)}
+.octa-mooc a.cem-plan-free{background:var(--g-soft);border:2px solid var(--g)}
+.octa-mooc a.cem-plan-free:hover,.octa-mooc a.cem-plan-free:focus-visible{background:#dcedcf}
+.octa-mooc .cem-tag{font-size:13px;font-weight:600;color:var(--g);margin-bottom:6px}
+.octa-mooc .cem-plan h3{font-size:21px;margin-bottom:4px}
+.octa-mooc .cem-for{color:var(--quiet);font-size:15px;margin-bottom:12px}
+.octa-mooc .cem-price{font-size:32px;font-weight:700;color:var(--ink);line-height:1.1;margin-top:8px}
+.octa-mooc .cem-plan-free .cem-price{color:var(--g)}
+.octa-mooc .cem-price small{font-size:15px;font-weight:400;color:var(--quiet)}
+.octa-mooc .cem-plan ul{margin:16px 0 18px;padding-left:20px;font-size:15.5px;flex:1}
+.octa-mooc .cem-plan li{margin:5px 0}
+.octa-mooc .cem-ask{display:block;text-align:center;padding:10px 14px;border-radius:8px;border:2px solid var(--blue);
+  color:var(--blue);font-weight:600;transition:background-color .15s,color .15s}
+.octa-mooc a.cem-plan:hover .cem-ask,.octa-mooc a.cem-plan:focus-visible .cem-ask{background:var(--blue);color:#fff}
+@media (prefers-reduced-motion:reduce){.octa-mooc a.cem-plan,.octa-mooc .cem-ask{transition:none}
+  .octa-mooc a.cem-plan:hover,.octa-mooc a.cem-plan:focus-visible{transform:none}}
+.octa-mooc .cem-launch{display:inline-block;vertical-align:middle;margin-left:10px;font-size:14px;font-weight:700;
+  color:#7a5300;background:#fdf3d9;border:1px solid var(--amber);border-radius:999px;padding:3px 12px}
+.octa-mooc .cem-note{font-size:14px;color:var(--quiet);margin-top:14px}
+
+/* how it works */
+.octa-mooc .cem-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;counter-reset:cem}
+.octa-mooc .cem-steps li{counter-increment:cem;border-top:3px solid var(--g);padding-top:14px}
+.octa-mooc .cem-steps li::before{content:counter(cem);display:inline-block;width:30px;height:30px;border-radius:50%;background:var(--g);
+  color:#fff;font-weight:700;text-align:center;line-height:30px;margin-bottom:10px}
+.octa-mooc .cem-steps h3{font-size:17px;margin-bottom:6px}
+.octa-mooc .cem-steps p{font-size:15.5px;color:var(--quiet)}
+
+/* teach */
+.octa-mooc .cem-teach{border:1px solid var(--line);border-radius:12px;padding:28px;display:grid;grid-template-columns:1.4fr 1fr;gap:28px;align-items:center}
+.octa-mooc .cem-teach p{color:var(--quiet);margin-top:8px}
+
+/* questions */
+.octa-mooc details{border-bottom:1px solid var(--line);padding:16px 0}
+.octa-mooc summary{cursor:pointer;font-weight:600;font-size:17px;list-style-position:outside}
+.octa-mooc details p{color:var(--quiet);margin-top:8px;max-width:760px}
+
+/* closing */
+.octa-mooc .cem-end{background:var(--g);color:#fff;border-radius:16px;padding:44px;text-align:center}
+.octa-mooc .cem-end h2{color:#fff;font-size:30px;margin-bottom:10px}
+.octa-mooc .cem-end p{color:#e3f1e8;margin-bottom:22px}
+.octa-mooc .cem-end .cem-btn-main{background:#fff;color:var(--g);border-color:#fff}
+.octa-mooc .cem-end .cem-btn-main:hover,.octa-mooc .cem-end .cem-btn-main:focus{background:var(--g-soft);color:var(--g)}
+.octa-mooc .cem-end .cem-btn-line{background:transparent;color:#fff;border-color:#fff}
+
+@media (max-width:900px){
+  .octa-mooc .cem-hero,.octa-mooc .cem-teach{grid-template-columns:1fr}
+  .octa-mooc .cem-grid,.octa-mooc .cem-plans{grid-template-columns:1fr 1fr}
+  .octa-mooc .cem-steps{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){
+  .octa-mooc{font-size:16px}
+  .octa-mooc .cem-hero{padding:28px 20px}
+  .octa-mooc .cem-hero h2{font-size:30px}
+  .octa-mooc .cem-grid,.octa-mooc .cem-plans,.octa-mooc .cem-steps{grid-template-columns:1fr}
+  .octa-mooc .cem-end{padding:32px 20px}
+}
+.octa-mooc .cem-hero-one{grid-template-columns:1fr}
+.octa-mooc .cem-request{border:2px solid var(--g);border-radius:16px;padding:32px;background:var(--page)}
+.octa-mooc .cem-request h2{font-size:28px;margin-bottom:8px}
+.octa-mooc .cem-request p{color:var(--quiet)}
+</style>
+
+  <!-- opening -->
+  <section class="cem-hero cem-hero-one" aria-labelledby="om-title">
+    <div>
+      <div class="cem-kicker">Learners never pay</div>
+      <h2 id="om-title">Publish your courses on the CloudEARTHi MOOC</h2>
+      <p>Octa Insight develops and operates the CloudEARTHi MOOC. Organisations outside the CloudEARTHi initiative
+        can publish their courses, workshops and project training there, and issue certificates and badges that anyone can check.
+        Learners always join for free; you choose one of the packages below.</p>
+      <a class="cem-btn cem-btn-main" href="#request">Send a request</a>
+      <a class="cem-btn cem-btn-line" href="https://mooc.cloudearthi.com/partner-with-us/">What the MOOC offers</a>
+    </div>
+  </section>
+
+  <!-- packages -->
+  <section class="cem-sec" id="om-packages" aria-labelledby="om-prices">
+    <h2 id="om-prices">Packages and prices <span class="cem-launch">Launch prices 2027</span></h2>
+    <p class="cem-lead">One clear price per package, with no charge per learner. All packages include certificates, badges, verification pages and technical help. Choose a card to send us a request.</p>
+    <div class="cem-plans">
+      <a class="cem-plan" href="https://octainsight.com/mooc/?package=CloudEARTHi+partner#request">
+        <div class="cem-tag">For our partners</div>
+        <h3>CloudEARTHi partners</h3>
+        <div class="cem-price">75% off <small>every package</small></div>
+        <ul>
+          <li>The MOOC is free for CloudEARTHi partners</li>
+          <li>Only a small fee for database hosting and running costs</li>
+          <li>For example Hosting for €170 a year</li>
+          <li>Set-up session and email help, as in Hosting</li>
+        </ul>
+        <span class="cem-ask">Request this package</span>
+      </a>
+      <a class="cem-plan" href="https://octainsight.com/mooc/?package=Hosting#request">
+        <div class="cem-tag">For organisations</div>
+        <h3>Hosting</h3>
+        <p class="cem-for">Universities, training providers, companies, associations</p>
+        <div class="cem-price">€690 <small>per year</small></div>
+        <ul>
+          <li>Up to 10 courses</li>
+          <li>Unlimited learners</li>
+          <li>Certificates on your own design</li>
+          <li>Badges and certificates from a list</li>
+          <li>Yearly figures on learners and certificates</li>
+          <li>A 1-hour set-up session</li>
+          <li>Answers by email within 3 working days</li>
+        </ul>
+        <span class="cem-ask">Request this package</span>
+      </a>
+      <a class="cem-plan cem-plan-star" href="https://octainsight.com/mooc/?package=EU+project+package#request">
+        <div class="cem-tag">For EU-funded projects</div>
+        <h3>EU project package</h3>
+        <p class="cem-for">Erasmus+, Horizon Europe, EIT, Interreg and other consortia</p>
+        <div class="cem-price">€5,900 <small>one payment</small></div>
+        <ul>
+          <li>Hosting for the whole project, plus 3 years after it ends</li>
+          <li>3 courses included (€600 per extra course)</li>
+          <li>Certificates with the project's and funder's logos</li>
+          <li>Reach figures for project reports</li>
+          <li>A set-up session and technical help for your team</li>
+        </ul>
+        <span class="cem-ask">Request this package</span>
+      </a>
+      <a class="cem-plan" href="https://octainsight.com/mooc/?package=Hosting+Plus#request">
+        <div class="cem-tag">For large providers</div>
+        <h3>Hosting Plus</h3>
+        <p class="cem-for">Many courses or whole programmes</p>
+        <div class="cem-price">€1,190 <small>per year</small></div>
+        <ul>
+          <li>Up to 20 courses (€50 per extra course a year)</li>
+          <li>A programme page with its own course list</li>
+          <li>Everything in Hosting</li>
+          <li>Priority technical help</li>
+          <li>More than 50 courses, or special needs? We make you an offer.</li>
+        </ul>
+        <span class="cem-ask">Request this package</span>
+      </a>
+      <a class="cem-plan" href="https://octainsight.com/mooc/?package=Low-+and+middle-income+countries#request">
+        <div class="cem-tag">Fair access</div>
+        <h3>Low- and middle-income countries</h3>
+        <div class="cem-price">75% off <small>every package</small></div>
+        <ul>
+          <li>For organisations in low-income and lower-middle-income countries</li>
+          <li>For example Hosting for €170 a year</li>
+          <li>Countries as listed by the World Bank</li>
+          <li>Set-up session and email help, as in Hosting</li>
+        </ul>
+        <span class="cem-ask">Request this package</span>
+      </a>
+      <a class="cem-plan" href="https://octainsight.com/mooc/?package=Women%2C+equality+and+inclusion#request">
+        <div class="cem-tag">For non-profits</div>
+        <h3>Women, equality and inclusion</h3>
+        <div class="cem-price">50% off <small>every package</small></div>
+        <ul>
+          <li>For non-profit organisations working for women and girls, gender equality, or the inclusion of people with disabilities, refugees and minorities</li>
+          <li>In high-income countries; organisations in low- and middle-income countries get the fair-access rate</li>
+        </ul>
+        <span class="cem-ask">Request this package</span>
+      </a>
+      <a class="cem-plan" href="https://octainsight.com/mooc/?package=Certificates+for+an+event#request">
+        <div class="cem-tag">For conferences and workshops</div>
+        <h3>Certificates for an event</h3>
+        <div class="cem-price">€99 <small>per event</small></div>
+        <ul>
+          <li>Certificates and/or badges for up to 200 participants</li>
+          <li>On your own design, emailed to each person</li>
+          <li>Each certificate checkable on its own CloudEARTHi page</li>
+          <li>Kept on each participant's learner profile</li>
+          <li>Larger events: ask us for a price</li>
+        </ul>
+        <span class="cem-ask">Request this package</span>
+      </a>
+      <a class="cem-plan" href="https://octainsight.com/mooc/?package=Course+building#request">
+        <div class="cem-tag">Done for you</div>
+        <h3>We build the course for you</h3>
+        <div class="cem-price">Per day</div>
+        <ul>
+          <li>Our team turns your material into lectures, videos, quizzes and certificates in MOOC Studio</li>
+          <li>Ask us for a quote</li>
+        </ul>
+        <span class="cem-ask">Request this package</span>
+      </a>
+    </div>
+    <p class="cem-note">Launch prices for 2027. Prices exclude VAT. Technical help covers a 1-hour set-up session and answers by email within 3 working days; further work is charged at our day rate. Projects of the CloudEARTHi initiative publish for free (see <a href="https://mooc.cloudearthi.com/partner-with-us/">the MOOC's own page</a>). Offered and invoiced by Octa Insight AS.</p>
+  </section>
+
+  <!-- questions -->
+  <section class="cem-sec" aria-labelledby="om-faq">
+    <h2 id="om-faq">Questions</h2>
+    <details><summary>Do learners pay anything?</summary>
+      <p>No. Learners join, learn and receive their certificates for free. Only the organisation publishing the course pays for its package.</p></details>
+    <details><summary>What happens when our project ends?</summary>
+      <p>With the EU project package, your courses and certificates stay online for 3 years after the end, already paid. After that you can continue with Hosting.</p></details>
+    <details><summary>Can a project pay from its EU grant?</summary>
+      <p>Often yes, as a service cost, if your grant agreement allows it. We send a quote and an invoice in the form your project needs.</p></details>
+    <details><summary>Who owns the course content?</summary>
+      <p>You do. You keep the rights to your material; we publish it on the MOOC for as long as your package runs.</p></details>
+    <details><summary>How do the reduced rates work?</summary>
+      <p>Say in your request which rate applies to you. CloudEARTHi partners and organisations in low- and lower-middle-income countries (World Bank list) get 75% off; non-profits for women, equality and inclusion in high-income countries get 50% off. Reduced rates cannot be combined.</p></details>
+  </section>
+
+  <!-- request: the Contact Form 7 form goes in a Shortcode block straight after this block -->
+  <section class="cem-request" id="request" aria-labelledby="om-request">
+    <h2 id="om-request">Send a request</h2>
+    <p>Tell us a little about your course, event or project. We reply within two working days, usually with a proposal for a 30-minute online demo.</p>
+  </section>
+</div>

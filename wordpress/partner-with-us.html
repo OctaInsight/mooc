@@ -44,6 +44,7 @@
 
 /* packages */
 .cem-partner .cem-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:20px}
+.cem-partner .cem-plans-two{grid-template-columns:1fr 1fr;max-width:900px}
 .cem-partner a.cem-plan{border:1px solid var(--line);border-radius:12px;padding:26px;background:#fff;display:flex;flex-direction:column;
   color:var(--ink);text-decoration:none;transition:border-color .15s,background-color .15s,box-shadow .15s,transform .15s}
 .cem-partner a.cem-plan:hover,.cem-partner a.cem-plan:focus-visible{border-color:var(--g);background:var(--page);
@@ -65,8 +66,6 @@
 .cem-partner a.cem-plan:hover .cem-ask,.cem-partner a.cem-plan:focus-visible .cem-ask{background:var(--blue);color:#fff}
 @media (prefers-reduced-motion:reduce){.cem-partner a.cem-plan,.cem-partner .cem-ask{transition:none}
   .cem-partner a.cem-plan:hover,.cem-partner a.cem-plan:focus-visible{transform:none}}
-.cem-partner .cem-launch{display:inline-block;vertical-align:middle;margin-left:10px;font-size:14px;font-weight:700;
-  color:#7a5300;background:#fdf3d9;border:1px solid var(--amber);border-radius:999px;padding:3px 12px}
 .cem-partner .cem-note{font-size:14px;color:var(--quiet);margin-top:14px}
 
 /* how it works */
@@ -97,12 +96,12 @@
 @media (max-width:900px){
   .cem-partner .cem-hero,.cem-partner .cem-teach{grid-template-columns:1fr}
   .cem-partner .cem-grid,.cem-partner .cem-plans{grid-template-columns:1fr 1fr}
-  .cem-partner .cem-steps,}
+  .cem-partner .cem-steps{grid-template-columns:1fr 1fr}}
 @media (max-width:600px){
   .cem-partner{font-size:16px}
   .cem-partner .cem-hero{padding:28px 20px}
   .cem-partner .cem-hero h2{font-size:30px}
-  .cem-partner .cem-grid,.cem-partner .cem-plans,.cem-partner .cem-steps{grid-template-columns:1fr}
+  .cem-partner .cem-grid,.cem-partner .cem-plans,.cem-partner .cem-plans-two,.cem-partner .cem-steps{grid-template-columns:1fr}
   .cem-partner .cem-end{padding:32px 20px}
 }
 </style>
@@ -115,12 +114,12 @@
       <p>Bring your courses, workshops and project training to learners worldwide on the CloudEARTHi MOOC, with
         certificates that carry your logos and can be checked by anyone.</p>
       <a class="cem-btn cem-btn-main" href="https://mooc.cloudearthi.com/contact-us/">Book a 30-minute demo</a>
-      <a class="cem-btn cem-btn-line" href="#cem-packages">See packages and prices</a>
+      <a class="cem-btn cem-btn-line" href="#cem-packages">See how to publish</a>
     </div>
     <div class="cem-free">
       <strong>Learners never pay</strong>
-      <span>Every course, certificate and badge is free for learners. Organisations that publish courses or issue
-        certificates choose a package.</span>
+      <span>Every course, certificate and badge is free for learners. CloudEARTHi projects publish for free; other
+        organisations choose a package from Octa Insight.</span>
       <ul>
         <li>Open to learners worldwide</li>
         <li>No limit on the number of learners</li>
@@ -143,12 +142,12 @@
     </div>
   </section>
 
-  <!-- packages -->
-  <section class="cem-sec" id="cem-packages" aria-labelledby="cem-prices">
-    <h2 id="cem-prices">Packages and prices <span class="cem-launch">Launch prices 2027</span></h2>
-    <p class="cem-lead">One clear price per package, with no charge per learner. All packages include certificates, badges, verification pages and technical help. Choose a card to send us a request.</p>
-    <div class="cem-plans">
-      <a class="cem-plan cem-plan-free" href="https://mooc.cloudearthi.com/request-a-package/?package=CloudEARTHi+project">
+  <!-- two ways to publish -->
+  <section class="cem-sec" id="cem-packages" aria-labelledby="cem-ways">
+    <h2 id="cem-ways">Two ways to publish</h2>
+    <p class="cem-lead">Learners never pay, whichever way a course is published. Choose the card that fits your organisation.</p>
+    <div class="cem-plans cem-plans-two">
+      <a class="cem-plan cem-plan-free" href="https://mooc.cloudearthi.com/contact-us/">
         <div class="cem-tag">For the CloudEARTHi initiative</div>
         <h3>CloudEARTHi projects</h3>
         <div class="cem-price">Free</div>
@@ -158,111 +157,23 @@
           <li>Unlimited certificates and badges</li>
           <li>Technical help</li>
         </ul>
-        <span class="cem-ask">Request this package</span>
+        <span class="cem-ask">Contact us</span>
       </a>
-      <a class="cem-plan" href="https://mooc.cloudearthi.com/request-a-package/?package=CloudEARTHi+partner">
-        <div class="cem-tag">For our partners</div>
-        <h3>CloudEARTHi partners</h3>
-        <div class="cem-price">75% off <small>every package</small></div>
+      <a class="cem-plan" href="https://octainsight.com/mooc">
+        <div class="cem-tag">Offered by Octa Insight</div>
+        <h3>Other organisations and courses</h3>
+        <p class="cem-for">Universities, training providers, companies, associations, EU-funded projects and events</p>
         <ul>
-          <li>The MOOC is free for CloudEARTHi partners</li>
-          <li>Only a small fee for database hosting and running costs</li>
-          <li>For example Hosting for €170 a year</li>
-          <li>Set-up session and email help, as in Hosting</li>
+          <li>Hosting for your own courses</li>
+          <li>Packages for EU-funded projects</li>
+          <li>Certificates for conferences and workshops</li>
+          <li>Reduced rates for CloudEARTHi partners, low- and middle-income countries, and non-profits for equality and inclusion</li>
+          <li>Course building by our team</li>
         </ul>
-        <span class="cem-ask">Request this package</span>
-      </a>
-      <a class="cem-plan" href="https://mooc.cloudearthi.com/request-a-package/?package=Hosting">
-        <div class="cem-tag">For organisations</div>
-        <h3>Hosting</h3>
-        <p class="cem-for">Universities, training providers, companies, associations</p>
-        <div class="cem-price">€690 <small>per year</small></div>
-        <ul>
-          <li>Up to 10 courses</li>
-          <li>Unlimited learners</li>
-          <li>Certificates on your own design</li>
-          <li>Badges and certificates from a list</li>
-          <li>Yearly figures on learners and certificates</li>
-          <li>A 1-hour set-up session</li>
-          <li>Answers by email within 3 working days</li>
-        </ul>
-        <span class="cem-ask">Request this package</span>
-      </a>
-      <a class="cem-plan cem-plan-star" href="https://mooc.cloudearthi.com/request-a-package/?package=EU+project+package">
-        <div class="cem-tag">For EU-funded projects</div>
-        <h3>EU project package</h3>
-        <p class="cem-for">Erasmus+, Horizon Europe, EIT, Interreg and other consortia</p>
-        <div class="cem-price">€5,900 <small>one payment</small></div>
-        <ul>
-          <li>Hosting for the whole project, plus 3 years after it ends</li>
-          <li>3 courses included (€600 per extra course)</li>
-          <li>Certificates with the project's and funder's logos</li>
-          <li>Reach figures for project reports</li>
-          <li>A set-up session and technical help for your team</li>
-        </ul>
-        <span class="cem-ask">Request this package</span>
-      </a>
-      <a class="cem-plan" href="https://mooc.cloudearthi.com/request-a-package/?package=Hosting+Plus">
-        <div class="cem-tag">For large providers</div>
-        <h3>Hosting Plus</h3>
-        <p class="cem-for">Many courses or whole programmes</p>
-        <div class="cem-price">€1,190 <small>per year</small></div>
-        <ul>
-          <li>Up to 20 courses (€50 per extra course a year)</li>
-          <li>A programme page with its own course list</li>
-          <li>Everything in Hosting</li>
-          <li>Priority technical help</li>
-          <li>More than 50 courses, or special needs? We make you an offer.</li>
-        </ul>
-        <span class="cem-ask">Request this package</span>
-      </a>
-      <a class="cem-plan" href="https://mooc.cloudearthi.com/request-a-package/?package=Low-+and+middle-income+countries">
-        <div class="cem-tag">Fair access</div>
-        <h3>Low- and middle-income countries</h3>
-        <div class="cem-price">75% off <small>every package</small></div>
-        <ul>
-          <li>For organisations in low-income and lower-middle-income countries</li>
-          <li>For example Hosting for €170 a year</li>
-          <li>Countries as listed by the World Bank</li>
-          <li>Set-up session and email help, as in Hosting</li>
-        </ul>
-        <span class="cem-ask">Request this package</span>
-      </a>
-      <a class="cem-plan" href="https://mooc.cloudearthi.com/request-a-package/?package=Women%2C+equality+and+inclusion">
-        <div class="cem-tag">For non-profits</div>
-        <h3>Women, equality and inclusion</h3>
-        <div class="cem-price">50% off <small>every package</small></div>
-        <ul>
-          <li>For non-profit organisations working for women and girls, gender equality, or the inclusion of people with disabilities, refugees and minorities</li>
-          <li>In high-income countries; organisations in low- and middle-income countries get the fair-access rate</li>
-        </ul>
-        <span class="cem-ask">Request this package</span>
-      </a>
-      <a class="cem-plan" href="https://mooc.cloudearthi.com/request-a-package/?package=Certificates+for+an+event">
-        <div class="cem-tag">For conferences and workshops</div>
-        <h3>Certificates for an event</h3>
-        <div class="cem-price">€99 <small>per event</small></div>
-        <ul>
-          <li>Certificates and/or badges for up to 200 participants</li>
-          <li>On your own design, emailed to each person</li>
-          <li>Each certificate checkable on its own CloudEARTHi page</li>
-          <li>Kept on each participant's learner profile</li>
-          <li>Larger events: ask us for a price</li>
-        </ul>
-        <span class="cem-ask">Request this package</span>
-      </a>
-      <a class="cem-plan" href="https://mooc.cloudearthi.com/request-a-package/?package=Course+building">
-        <div class="cem-tag">Done for you</div>
-        <h3>We build the course for you</h3>
-        <div class="cem-price">Per day</div>
-        <ul>
-          <li>Our team turns your material into lectures, videos, quizzes and certificates in MOOC Studio</li>
-          <li>Ask us for a quote</li>
-        </ul>
-        <span class="cem-ask">Request this package</span>
+        <span class="cem-ask">See packages on Octa Insight</span>
       </a>
     </div>
-    <p class="cem-note">Launch prices for 2027. Prices exclude VAT. Technical help covers a 1-hour set-up session and answers by email within 3 working days; further work is charged at our day rate. Invoiced by Octa Insight AS.</p>
+    <p class="cem-note">The CloudEARTHi MOOC is an initiative of CloudEARTHi, developed and operated by Octa Insight. Packages for organisations outside CloudEARTHi are offered and invoiced by Octa Insight on octainsight.com.</p>
   </section>
 
   <!-- how it works -->
@@ -271,7 +182,7 @@
     <p class="cem-lead">From the first conversation to your first certificates, usually within two weeks.</p>
     <ol class="cem-steps">
       <li><h3>Talk to us</h3><p>A 30-minute online demo of the courses, certificates and MOOC Studio.</p></li>
-      <li><h3>Choose a package</h3><p>We set up your project, your certificate design and your team's access.</p></li>
+      <li><h3>Get set up</h3><p>We set up your project, your certificate design and your team's access.</p></li>
       <li><h3>Build your course</h3><p>Your teachers add lectures and questions in MOOC Studio, or we build it for you.</p></li>
       <li><h3>Learners and certificates</h3><p>Learners join for free; certificates and badges go out automatically.</p></li>
     </ol>
@@ -296,15 +207,15 @@
   <section class="cem-sec" aria-labelledby="cem-faq">
     <h2 id="cem-faq">Questions</h2>
     <details><summary>Do learners pay anything?</summary>
-      <p>No. Learners join, learn and receive their certificates for free. Only the organisation publishing the course chooses a package.</p></details>
+      <p>No. Learners join, learn and receive their certificates for free. CloudEARTHi projects publish for free; other organisations choose a package from Octa Insight.</p></details>
     <details><summary>Can we use our own certificate design and logos?</summary>
       <p>Yes. Upload your design as an image or PDF, mark where the learner's name and details go, and every certificate is made on it.</p></details>
     <details><summary>Can we issue certificates for an event without a course?</summary>
-      <p>Yes. Choose "Certificates for an event", upload an Excel list of participants, and each person receives their own certificate by email.</p></details>
-    <details><summary>What happens when our project ends?</summary>
-      <p>With the EU project package, your courses and certificates stay online for 3 years after the end, already paid. After that you can continue with Hosting.</p></details>
+      <p>Yes. Upload an Excel list of participants, and each person receives their own certificate by email.</p></details>
+    <details><summary>Who runs the MOOC?</summary>
+      <p>The CloudEARTHi MOOC is an initiative of CloudEARTHi, developed and operated by Octa Insight, which also offers the packages for organisations outside CloudEARTHi.</p></details>
     <details><summary>Who owns the course content?</summary>
-      <p>You do. You keep the rights to your material; we publish it on the MOOC for as long as your package runs.</p></details>
+      <p>You do. You keep the rights to your material; we publish it on the MOOC for as long as you wish to keep it there.</p></details>
     <details><summary>How are certificates checked?</summary>
       <p>Each certificate has a number and its own page at mooc.cloudearthi.com, which shows the learner, the course, your project as issuer, and that it was verified by the CloudEARTHi MOOC and Octa Insight.</p></details>
   </section>

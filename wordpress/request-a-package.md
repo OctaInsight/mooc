@@ -1,8 +1,16 @@
-# "Request a package" page (WordPress)
+# "Request a package" form on octainsight.com/mooc (WordPress)
 
-Every card on **Partner with us** opens `https://mooc.cloudearthi.com/request-a-package/?package=<name of the package>`.
-This page holds a short form; the package is already filled in from the link. WordPress emails each request to Octa
-and sends the visitor a confirmation.
+The packages and prices live on Octa Insight's site, at `https://octainsight.com/mooc`
+(`wordpress/octa-mooc-packages.html`). Every card there opens `https://octainsight.com/mooc/?package=<name>#request`:
+the same page, scrolled to the form at the bottom, with the package already filled in. WordPress emails each request
+to Octa and sends the visitor a confirmation.
+
+The MOOC's own **Partner with us** page (`wordpress/partner-with-us.html`) has only two cards: *CloudEARTHi projects*
+(free, opens the MOOC's Contact us page) and *Other organisations and courses* (opens `https://octainsight.com/mooc`).
+No form is needed on the MOOC site for this.
+
+All steps below are done in **Octa Insight's WordPress**. If octainsight.com does not run WordPress, use that site's own
+form tool with the same fields, and read the package from the `package` part of the address.
 
 ## 1. Install two free plugins (Plugins → Add new)
 
@@ -12,7 +20,8 @@ and sends the visitor a confirmation.
   - Mailer: *Other SMTP*
   - SMTP host `smtp.resend.com`, encryption *SSL*, port `465`, authentication *on*
   - Username `resend`, password: your Resend API key (the same as in MOOC Studio's secrets)
-  - From email: an address on your domain verified in Resend (for example `mooc@cloudearthi.com`), from name `CloudEARTHi MOOC`
+  - From email: an address on octainsight.com, with the domain verified in Resend (for example `mooc@octainsight.com`),
+    from name `Octa Insight`
   - Send a test email from the plugin's settings.
 
 ## 2. Make the form (Contact → Add new)
@@ -51,7 +60,7 @@ Title: `Request a package`. Replace the **Form** tab with:
 **Mail** tab (the email to Octa):
 
 - To: `<Octa's email address>`
-- From: `CloudEARTHi MOOC <mooc@cloudearthi.com>` (the address set in WP Mail SMTP)
+- From: `Octa Insight <mooc@octainsight.com>` (the address set in WP Mail SMTP)
 - Subject: `[MOOC request] [package] from [organisation]`
 - Additional headers: `Reply-To: [your-email]` (so you can answer by pressing Reply)
 - Message body:
@@ -72,27 +81,28 @@ Courses or participants: [amount]
 **Mail (2)** (tick *Use Mail (2)*: the confirmation to the visitor):
 
 - To: `[your-email]`
-- From: `CloudEARTHi MOOC <mooc@cloudearthi.com>`
+- From: `Octa Insight <mooc@octainsight.com>`
 - Subject: `We received your request: [package]`
 - Message body:
 
 ```
 Dear [your-name],
 
-Thank you for your interest in the CloudEARTHi MOOC. We received your request for: [package].
+Thank you for your interest in publishing on the CloudEARTHi MOOC. We received your request for: [package].
 We will reply within two working days, usually with a proposal for a 30-minute online demo.
 
 Best regards,
-The CloudEARTHi MOOC team at Octa Insight
-https://mooc.cloudearthi.com/
+Octa Insight, developer and operator of the CloudEARTHi MOOC
+https://octainsight.com/mooc
 ```
 
 Save. Contact Form 7 shows a shortcode such as `[contact-form-7 id="123" title="Request a package"]`.
 
 ## 3. Make the page (Pages → Add new)
 
-- Title: `Request a package`; address (permalink): `request-a-package`.
-- A paragraph: *Tell us a little about your course, event or project. We reply within two working days.*
-- A **Shortcode** block with the shortcode from step 2.
-- Publish, then open `https://mooc.cloudearthi.com/request-a-package/?package=Hosting` to check that "Hosting"
-  is filled in, and send a test request.
+- Title: `CloudEARTHi MOOC`; address (permalink): `mooc`.
+- A **Custom HTML** block with everything in `wordpress/octa-mooc-packages.html`. It ends with the heading
+  "Send a request" (the place the cards jump to).
+- Straight under it, a **Shortcode** block with the shortcode from step 2.
+- Publish, then open `https://octainsight.com/mooc/?package=Hosting#request` to check that the page scrolls to the form
+  with "Hosting" filled in, and send a test request.
