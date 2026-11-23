@@ -37,32 +37,34 @@
 
 /* what providers get */
 .cem-partner .cem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.cem-partner .cem-card{border:1px solid var(--line);border-radius:12px;padding:22px;background:#fff}
+.cem-partner .cem-card{border:1px solid var(--line);border-radius:12px;padding:22px;background:#fff;transition:border-color .15s,background-color .15s}
+.cem-partner .cem-card:hover{border-color:var(--g);background:var(--page)}
 .cem-partner .cem-card h3{font-size:18px;margin-bottom:8px}
 .cem-partner .cem-card p{color:var(--quiet);font-size:16px}
 
 /* packages */
 .cem-partner .cem-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:20px}
-.cem-partner .cem-plan{border:1px solid var(--line);border-radius:12px;padding:26px;background:#fff;display:flex;flex-direction:column}
-.cem-partner .cem-plan-star{border:2px solid var(--g);box-shadow:0 0 0 4px var(--g-soft)}
+.cem-partner a.cem-plan{border:1px solid var(--line);border-radius:12px;padding:26px;background:#fff;display:flex;flex-direction:column;
+  color:var(--ink);text-decoration:none;transition:border-color .15s,background-color .15s,box-shadow .15s,transform .15s}
+.cem-partner a.cem-plan:hover,.cem-partner a.cem-plan:focus-visible{border-color:var(--g);background:var(--page);
+  box-shadow:0 10px 24px rgba(18,122,69,.14);transform:translateY(-3px)}
+.cem-partner a.cem-plan:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.cem-partner a.cem-plan-star{border:2px solid var(--g)}
+.cem-partner a.cem-plan-free{background:var(--g-soft);border:2px solid var(--g)}
+.cem-partner a.cem-plan-free:hover,.cem-partner a.cem-plan-free:focus-visible{background:#dcedcf}
 .cem-partner .cem-tag{font-size:13px;font-weight:600;color:var(--g);margin-bottom:6px}
 .cem-partner .cem-plan h3{font-size:21px;margin-bottom:4px}
-.cem-partner .cem-for{color:var(--quiet);font-size:15px;margin-bottom:16px}
-.cem-partner .cem-price{font-size:34px;font-weight:700;color:var(--ink);line-height:1.1}
+.cem-partner .cem-for{color:var(--quiet);font-size:15px;margin-bottom:12px}
+.cem-partner .cem-price{font-size:32px;font-weight:700;color:var(--ink);line-height:1.1;margin-top:8px}
+.cem-partner .cem-plan-free .cem-price{color:var(--g)}
 .cem-partner .cem-price small{font-size:15px;font-weight:400;color:var(--quiet)}
-.cem-partner .cem-plan ul{margin:16px 0 0;padding-left:20px;font-size:15.5px;flex:1}
+.cem-partner .cem-plan ul{margin:16px 0 18px;padding-left:20px;font-size:15.5px;flex:1}
 .cem-partner .cem-plan li{margin:5px 0}
-.cem-partner .cem-more{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-.cem-partner .cem-sub{font-size:21px;margin:36px 0 14px}
-.cem-partner .cem-rates{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
-.cem-partner .cem-rate{border:1px solid var(--line);border-radius:12px;padding:18px;background:var(--page)}
-.cem-partner .cem-rate h4{font-size:16px;margin:0 0 6px;color:var(--ink);line-height:1.3}
-.cem-partner .cem-rate-price{font-size:22px;font-weight:700;color:var(--g);margin-bottom:8px}
-.cem-partner .cem-rate p{font-size:14.5px;color:var(--quiet);margin:0}
-.cem-partner .cem-rate-free{background:var(--g-soft);border-color:var(--g)}
-.cem-partner .cem-small{border:1px dashed var(--line);border-radius:12px;padding:20px 22px;background:var(--page)}
-.cem-partner .cem-small h3{font-size:17px;margin-bottom:4px}
-.cem-partner .cem-small p{font-size:15.5px;color:var(--quiet)}
+.cem-partner .cem-ask{display:block;text-align:center;padding:10px 14px;border-radius:8px;border:2px solid var(--blue);
+  color:var(--blue);font-weight:600;transition:background-color .15s,color .15s}
+.cem-partner a.cem-plan:hover .cem-ask,.cem-partner a.cem-plan:focus-visible .cem-ask{background:var(--blue);color:#fff}
+@media (prefers-reduced-motion:reduce){.cem-partner a.cem-plan,.cem-partner .cem-ask{transition:none}
+  .cem-partner a.cem-plan:hover,.cem-partner a.cem-plan:focus-visible{transform:none}}
 .cem-partner .cem-note{font-size:14px;color:var(--quiet);margin-top:14px}
 
 /* how it works */
@@ -93,13 +95,12 @@
 @media (max-width:900px){
   .cem-partner .cem-hero,.cem-partner .cem-teach{grid-template-columns:1fr}
   .cem-partner .cem-grid,.cem-partner .cem-plans{grid-template-columns:1fr 1fr}
-  .cem-partner .cem-steps,.cem-partner .cem-rates{grid-template-columns:1fr 1fr}
-}
+  .cem-partner .cem-steps,}
 @media (max-width:600px){
   .cem-partner{font-size:16px}
   .cem-partner .cem-hero{padding:28px 20px}
   .cem-partner .cem-hero h2{font-size:30px}
-  .cem-partner .cem-grid,.cem-partner .cem-plans,.cem-partner .cem-more,.cem-partner .cem-steps,.cem-partner .cem-rates{grid-template-columns:1fr}
+  .cem-partner .cem-grid,.cem-partner .cem-plans,.cem-partner .cem-steps{grid-template-columns:1fr}
   .cem-partner .cem-end{padding:32px 20px}
 }
 </style>
@@ -143,9 +144,33 @@
   <!-- packages -->
   <section class="cem-sec" id="cem-packages" aria-labelledby="cem-prices">
     <h2 id="cem-prices">Packages and prices</h2>
-    <p class="cem-lead">One clear price per package, with no charge per learner. All packages include certificates, badges, verification pages and technical help.</p>
+    <p class="cem-lead">One clear price per package, with no charge per learner. All packages include certificates, badges, verification pages and technical help. Choose a card to send us a request.</p>
     <div class="cem-plans">
-      <div class="cem-plan">
+      <a class="cem-plan cem-plan-free" href="https://mooc.cloudearthi.com/request-a-package/?package=CloudEARTHi+project">
+        <div class="cem-tag">For the CloudEARTHi initiative</div>
+        <h3>CloudEARTHi projects</h3>
+        <div class="cem-price">Free</div>
+        <ul>
+          <li>For every project affiliated with the CloudEARTHi initiative</li>
+          <li>Unlimited courses and learners</li>
+          <li>Unlimited certificates and badges</li>
+          <li>Technical help</li>
+        </ul>
+        <span class="cem-ask">Request this package</span>
+      </a>
+      <a class="cem-plan" href="https://mooc.cloudearthi.com/request-a-package/?package=CloudEARTHi+partner">
+        <div class="cem-tag">For our partners</div>
+        <h3>CloudEARTHi partners</h3>
+        <div class="cem-price">75% off <small>every package</small></div>
+        <ul>
+          <li>The MOOC is free for CloudEARTHi partners</li>
+          <li>Only a small fee for database hosting and running costs</li>
+          <li>For example Hosting for €170 a year</li>
+          <li>Technical help</li>
+        </ul>
+        <span class="cem-ask">Request this package</span>
+      </a>
+      <a class="cem-plan" href="https://mooc.cloudearthi.com/request-a-package/?package=Hosting">
         <div class="cem-tag">For organisations</div>
         <h3>Hosting</h3>
         <p class="cem-for">Universities, training providers, companies, associations</p>
@@ -158,8 +183,9 @@
           <li>Yearly figures on learners and certificates</li>
           <li>Technical help by email</li>
         </ul>
-      </div>
-      <div class="cem-plan cem-plan-star">
+        <span class="cem-ask">Request this package</span>
+      </a>
+      <a class="cem-plan cem-plan-star" href="https://mooc.cloudearthi.com/request-a-package/?package=EU+project+package">
         <div class="cem-tag">For EU-funded projects</div>
         <h3>EU project package</h3>
         <p class="cem-for">Erasmus+, Horizon Europe, EIT, Interreg and other consortia</p>
@@ -171,8 +197,9 @@
           <li>Reach figures for project reports</li>
           <li>A set-up session and technical help for your team</li>
         </ul>
-      </div>
-      <div class="cem-plan">
+        <span class="cem-ask">Request this package</span>
+      </a>
+      <a class="cem-plan" href="https://mooc.cloudearthi.com/request-a-package/?package=Hosting+Plus">
         <div class="cem-tag">For large providers</div>
         <h3>Hosting Plus</h3>
         <p class="cem-for">Many courses or whole programmes</p>
@@ -184,48 +211,52 @@
           <li>Priority technical help</li>
           <li>More than 50 courses, or special needs? We make you an offer.</li>
         </ul>
-      </div>
-    </div>
-
-    <h3 class="cem-sub">Special rates</h3>
-    <div class="cem-rates">
-      <div class="cem-rate cem-rate-free">
-        <h4>CloudEARTHi projects</h4>
-        <div class="cem-rate-price">Free</div>
-        <p>For every project affiliated with the CloudEARTHi initiative: unlimited courses, learners, certificates
-          and badges, with technical help.</p>
-      </div>
-      <div class="cem-rate">
-        <h4>CloudEARTHi partners</h4>
-        <div class="cem-rate-price">50% off</div>
-        <p>For organisations that are partners in CloudEARTHi projects: half price on every package, and your first
-          event's certificates free.</p>
-      </div>
-      <div class="cem-rate">
-        <h4>Low- and middle-income countries</h4>
-        <div class="cem-rate-price">Free or 75% off</div>
-        <p>Hosting is free for organisations in low-income countries and 75% off (€170 a year) in lower-middle-income
-          countries, as listed by the World Bank.</p>
-      </div>
-      <div class="cem-rate">
-        <h4>Women, equality and inclusion</h4>
-        <div class="cem-rate-price">50% off</div>
-        <p>For non-profit organisations working for women and girls, gender equality or the inclusion of people
-          with disabilities, refugees and minorities.</p>
-      </div>
-    </div>
-
-    <div class="cem-more">
-      <div class="cem-small" id="cem-events">
-        <h3>Certificates for an event: €150</h3>
-        <p>For a conference or workshop without a course: certificates and/or badges for up to 200 participants,
-          on your design, emailed to each person, with verification pages. Larger events: ask us for a price.</p>
-      </div>
-      <div class="cem-small">
+        <span class="cem-ask">Request this package</span>
+      </a>
+      <a class="cem-plan" href="https://mooc.cloudearthi.com/request-a-package/?package=Low-+and+middle-income+countries">
+        <div class="cem-tag">Fair access</div>
+        <h3>Low- and middle-income countries</h3>
+        <div class="cem-price">Free or 75% off</div>
+        <ul>
+          <li>Hosting is free for organisations in low-income countries</li>
+          <li>75% off (€170 a year) in lower-middle-income countries</li>
+          <li>Countries as listed by the World Bank</li>
+          <li>Technical help</li>
+        </ul>
+        <span class="cem-ask">Request this package</span>
+      </a>
+      <a class="cem-plan" href="https://mooc.cloudearthi.com/request-a-package/?package=Women%2C+equality+and+inclusion">
+        <div class="cem-tag">For non-profits</div>
+        <h3>Women, equality and inclusion</h3>
+        <div class="cem-price">50% off <small>every package</small></div>
+        <ul>
+          <li>For non-profit organisations working for women and girls, gender equality, or the inclusion of people with disabilities, refugees and minorities</li>
+          <li>In high-income countries; organisations in low- and middle-income countries get the fair-access rate</li>
+        </ul>
+        <span class="cem-ask">Request this package</span>
+      </a>
+      <a class="cem-plan" href="https://mooc.cloudearthi.com/request-a-package/?package=Certificates+for+an+event">
+        <div class="cem-tag">For conferences and workshops</div>
+        <h3>Certificates for an event</h3>
+        <div class="cem-price">€150 <small>per event</small></div>
+        <ul>
+          <li>Certificates and/or badges for up to 200 participants</li>
+          <li>On your own design, emailed to each person</li>
+          <li>Verification pages</li>
+          <li>Larger events: ask us for a price</li>
+        </ul>
+        <span class="cem-ask">Request this package</span>
+      </a>
+      <a class="cem-plan" href="https://mooc.cloudearthi.com/request-a-package/?package=Course+building">
+        <div class="cem-tag">Done for you</div>
         <h3>We build the course for you</h3>
-        <p>Prefer us to do it? Our team turns your material into lectures, videos, quizzes and certificates in MOOC
-          Studio. Priced per day; ask us for a quote.</p>
-      </div>
+        <div class="cem-price">Per day</div>
+        <ul>
+          <li>Our team turns your material into lectures, videos, quizzes and certificates in MOOC Studio</li>
+          <li>Ask us for a quote</li>
+        </ul>
+        <span class="cem-ask">Request this package</span>
+      </a>
     </div>
     <p class="cem-note">Prices exclude VAT. Invoiced by Octa Insight AS.</p>
   </section>
