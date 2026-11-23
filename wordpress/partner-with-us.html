@@ -27,6 +27,8 @@
 .cem-partner .cem-hero{background:var(--g-soft);border:1px solid var(--line);border-radius:16px;padding:48px 44px;margin-bottom:64px;
   display:grid;grid-template-columns:1.35fr 1fr;gap:40px;align-items:center}
 .cem-partner .cem-hero h2{font-size:40px;margin-bottom:16px}
+.cem-partner .cem-kicker{display:inline-block;background:#fff;color:var(--g);border:1px solid var(--line);border-radius:999px;
+  padding:4px 14px;font-weight:700;font-size:15px;margin-bottom:14px}
 .cem-partner .cem-hero p{color:#2f3a2f;margin-bottom:24px;font-size:18px}
 .cem-partner .cem-free{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px}
 .cem-partner .cem-free strong{display:block;font-size:22px;color:var(--g);margin-bottom:6px}
@@ -51,17 +53,17 @@
 .cem-partner .cem-plan ul{margin:16px 0 0;padding-left:20px;font-size:15.5px;flex:1}
 .cem-partner .cem-plan li{margin:5px 0}
 .cem-partner .cem-more{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.cem-partner .cem-sub{font-size:21px;margin:36px 0 14px}
+.cem-partner .cem-rates{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.cem-partner .cem-rate{border:1px solid var(--line);border-radius:12px;padding:18px;background:var(--page)}
+.cem-partner .cem-rate h4{font-size:16px;margin:0 0 6px;color:var(--ink);line-height:1.3}
+.cem-partner .cem-rate-price{font-size:22px;font-weight:700;color:var(--g);margin-bottom:8px}
+.cem-partner .cem-rate p{font-size:14.5px;color:var(--quiet);margin:0}
+.cem-partner .cem-rate-free{background:var(--g-soft);border-color:var(--g)}
 .cem-partner .cem-small{border:1px dashed var(--line);border-radius:12px;padding:20px 22px;background:var(--page)}
 .cem-partner .cem-small h3{font-size:17px;margin-bottom:4px}
 .cem-partner .cem-small p{font-size:15.5px;color:var(--quiet)}
 .cem-partner .cem-note{font-size:14px;color:var(--quiet);margin-top:14px}
-
-/* EU projects */
-.cem-partner .cem-eu{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
-.cem-partner .cem-eu ul{margin:0;padding-left:20px}
-.cem-partner .cem-eu li{margin:8px 0}
-.cem-partner .cem-quote{border-left:4px solid var(--amber);background:#fdf8ec;padding:18px 20px;border-radius:0 10px 10px 0;font-size:15.5px}
-.cem-partner .cem-quote b{display:block;margin-bottom:6px}
 
 /* how it works */
 .cem-partner .cem-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;counter-reset:cem}
@@ -89,15 +91,15 @@
 .cem-partner .cem-end .cem-btn-line{background:transparent;color:#fff;border-color:#fff}
 
 @media (max-width:900px){
-  .cem-partner .cem-hero,.cem-partner .cem-eu,.cem-partner .cem-teach{grid-template-columns:1fr}
+  .cem-partner .cem-hero,.cem-partner .cem-teach{grid-template-columns:1fr}
   .cem-partner .cem-grid,.cem-partner .cem-plans{grid-template-columns:1fr 1fr}
-  .cem-partner .cem-steps{grid-template-columns:1fr 1fr}
+  .cem-partner .cem-steps,.cem-partner .cem-rates{grid-template-columns:1fr 1fr}
 }
 @media (max-width:600px){
   .cem-partner{font-size:16px}
   .cem-partner .cem-hero{padding:28px 20px}
   .cem-partner .cem-hero h2{font-size:30px}
-  .cem-partner .cem-grid,.cem-partner .cem-plans,.cem-partner .cem-more,.cem-partner .cem-steps{grid-template-columns:1fr}
+  .cem-partner .cem-grid,.cem-partner .cem-plans,.cem-partner .cem-more,.cem-partner .cem-steps,.cem-partner .cem-rates{grid-template-columns:1fr}
   .cem-partner .cem-end{padding:32px 20px}
 }
 </style>
@@ -105,19 +107,21 @@
   <!-- opening -->
   <section class="cem-hero" aria-labelledby="cem-title">
     <div>
-      <h2 id="cem-title">Publish your courses on the CloudEARTHi MOOC</h2>
-      <p>Bring your courses, workshops and project training to learners across Europe, with certificates that carry
-        your logos and can be checked by anyone. Learners always take part for free.</p>
+      <div class="cem-kicker">Free for every learner, everywhere</div>
+      <h2 id="cem-title">Learning is free. Publish your courses with us.</h2>
+      <p>Bring your courses, workshops and project training to learners worldwide on the CloudEARTHi MOOC, with
+        certificates that carry your logos and can be checked by anyone.</p>
       <a class="cem-btn cem-btn-main" href="https://mooc.cloudearthi.com/contact-us/">Book a 30-minute demo</a>
       <a class="cem-btn cem-btn-line" href="#cem-packages">See packages and prices</a>
     </div>
     <div class="cem-free">
-      <strong>Learning is always free</strong>
-      <span>Learners never pay. Organisations that publish courses or issue certificates choose a package.</span>
+      <strong>Learners never pay</strong>
+      <span>Every course, certificate and badge is free for learners. Organisations that publish courses or issue
+        certificates choose a package.</span>
       <ul>
+        <li>Open to learners worldwide</li>
         <li>No limit on the number of learners</li>
         <li>Certificates and badges included</li>
-        <li>Run by Octa Insight in Norway</li>
       </ul>
     </div>
   </section>
@@ -125,13 +129,13 @@
   <!-- what providers get -->
   <section class="cem-sec" aria-labelledby="cem-get">
     <h2 id="cem-get">What you get</h2>
-    <p class="cem-lead">Everything a course provider needs, from the first lecture to the certificate a learner shares on LinkedIn.</p>
+    <p class="cem-lead">Everything a course provider needs, from the first lecture to the certificate a learner shares on social media.</p>
     <div class="cem-grid">
       <div class="cem-card"><h3>Your courses online</h3><p>Lectures with video, PDF, text, quizzes, assignments and live sessions, built in MOOC Studio by your own team.</p></div>
       <div class="cem-card"><h3>Certificates on your design</h3><p>Upload your certificate with your funders' and partners' logos; each learner's name and details are placed on it automatically.</p></div>
       <div class="cem-card"><h3>Badges</h3><p>Digital badges for lectures, modules or achievements, awarded automatically when learners meet the rules you set.</p></div>
       <div class="cem-card"><h3>Certificates from a list</h3><p>Upload an Excel list after a conference or workshop; everyone receives their own certificate by email.</p></div>
-      <div class="cem-card"><h3>Checkable by anyone</h3><p>Every certificate has its own page that names your project as issuer and shows it is genuine, ready to add to LinkedIn.</p></div>
+      <div class="cem-card"><h3>Checkable by anyone</h3><p>Every certificate has its own page that names your project as issuer and shows it is genuine, ready to share on LinkedIn and other social media channels.</p></div>
       <div class="cem-card"><h3>Figures for your reports</h3><p>Learners, completions and certificates issued, ready for project reports and dissemination indicators.</p></div>
     </div>
   </section>
@@ -139,19 +143,20 @@
   <!-- packages -->
   <section class="cem-sec" id="cem-packages" aria-labelledby="cem-prices">
     <h2 id="cem-prices">Packages and prices</h2>
-    <p class="cem-lead">One clear price per package, with no charge per learner. All packages include certificates, badges and verification pages.</p>
+    <p class="cem-lead">One clear price per package, with no charge per learner. All packages include certificates, badges, verification pages and technical help.</p>
     <div class="cem-plans">
       <div class="cem-plan">
         <div class="cem-tag">For organisations</div>
         <h3>Hosting</h3>
-        <p class="cem-for">Universities, training providers, companies</p>
+        <p class="cem-for">Universities, training providers, companies, associations</p>
         <div class="cem-price">€690 <small>per year</small></div>
         <ul>
-          <li>Up to 3 courses</li>
+          <li>Up to 10 courses</li>
           <li>Unlimited learners</li>
           <li>Certificates on your own design</li>
           <li>Badges and certificates from a list</li>
           <li>Yearly figures on learners and certificates</li>
+          <li>Technical help by email</li>
         </ul>
       </div>
       <div class="cem-plan cem-plan-star">
@@ -161,30 +166,60 @@
         <div class="cem-price">€4,900 <small>one payment</small></div>
         <ul>
           <li>Hosting for the whole project, plus 3 years after it ends</li>
-          <li>2 courses included (€900 per extra course)</li>
+          <li>3 courses included (€600 per extra course)</li>
           <li>Certificates with the project's and funder's logos</li>
           <li>Reach figures for project reports</li>
-          <li>A set-up session for your team</li>
+          <li>A set-up session and technical help for your team</li>
         </ul>
       </div>
       <div class="cem-plan">
-        <div class="cem-tag">For larger providers</div>
+        <div class="cem-tag">For large providers</div>
         <h3>Hosting Plus</h3>
-        <p class="cem-for">Several courses or programmes</p>
-        <div class="cem-price">€1,490 <small>per year</small></div>
+        <p class="cem-for">Many courses or whole programmes</p>
+        <div class="cem-price">€1,190 <small>per year</small></div>
         <ul>
-          <li>Up to 10 courses</li>
+          <li>Up to 20 courses (€50 per extra course a year)</li>
           <li>A programme page with its own course list</li>
           <li>Everything in Hosting</li>
-          <li>Priority support</li>
+          <li>Priority technical help</li>
+          <li>More than 50 courses, or special needs? We make you an offer.</li>
         </ul>
       </div>
     </div>
+
+    <h3 class="cem-sub">Special rates</h3>
+    <div class="cem-rates">
+      <div class="cem-rate cem-rate-free">
+        <h4>CloudEARTHi projects</h4>
+        <div class="cem-rate-price">Free</div>
+        <p>For every project affiliated with the CloudEARTHi initiative: unlimited courses, learners, certificates
+          and badges, with technical help.</p>
+      </div>
+      <div class="cem-rate">
+        <h4>CloudEARTHi partners</h4>
+        <div class="cem-rate-price">50% off</div>
+        <p>For organisations that are partners in CloudEARTHi projects: half price on every package, and your first
+          event's certificates free.</p>
+      </div>
+      <div class="cem-rate">
+        <h4>Low- and middle-income countries</h4>
+        <div class="cem-rate-price">Free or 75% off</div>
+        <p>Hosting is free for organisations in low-income countries and 75% off (€170 a year) in lower-middle-income
+          countries, as listed by the World Bank.</p>
+      </div>
+      <div class="cem-rate">
+        <h4>Women, equality and inclusion</h4>
+        <div class="cem-rate-price">50% off</div>
+        <p>For non-profit organisations working for women and girls, gender equality or the inclusion of people
+          with disabilities, refugees and minorities.</p>
+      </div>
+    </div>
+
     <div class="cem-more">
       <div class="cem-small" id="cem-events">
         <h3>Certificates for an event: €150</h3>
-        <p>For a conference or workshop without a course: certificates and/or badges for up to 100 participants
-          (then €1 each), on your design, emailed to each person, with verification pages.</p>
+        <p>For a conference or workshop without a course: certificates and/or badges for up to 200 participants,
+          on your design, emailed to each person, with verification pages. Larger events: ask us for a price.</p>
       </div>
       <div class="cem-small">
         <h3>We build the course for you</h3>
@@ -193,26 +228,6 @@
       </div>
     </div>
     <p class="cem-note">Prices exclude VAT. Invoiced by Octa Insight AS.</p>
-  </section>
-
-  <!-- EU projects -->
-  <section class="cem-sec" id="cem-eu-projects" aria-labelledby="cem-eu-title">
-    <h2 id="cem-eu-title">For EU projects and consortia</h2>
-    <p class="cem-lead">Write the MOOC into your proposal, and your training, certificates and sustainability are covered.</p>
-    <div class="cem-eu">
-      <ul>
-        <li><b>Training and dissemination:</b> courses and certificates as project results, with your project named as issuer.</li>
-        <li><b>Proof of reach:</b> learners, completions and certificates for your reports and indicators.</li>
-        <li><b>Sustainability:</b> your courses stay online for 3 years after the project ends, already paid for.</li>
-        <li><b>Funder visibility:</b> your funder's logo and funding statement on the certificates.</li>
-        <li><b>Budget:</b> one fixed amount for your dissemination or training work package.</li>
-      </ul>
-      <div class="cem-quote">
-        <b>Preparing a proposal?</b>
-        Ask us for a ready text for your proposal (training, dissemination and sustainability) and a budget line.
-        We are glad to join consortia as the partner that delivers the training platform.
-      </div>
-    </div>
   </section>
 
   <!-- how it works -->
