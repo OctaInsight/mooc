@@ -46,7 +46,10 @@
 
 /* what you get */
 .octa-mooc .om-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-.octa-mooc .om-card{border:1px solid var(--line);border-radius:14px;padding:22px;background:#fff}
+.octa-mooc .om-card{border:1px solid var(--line);border-radius:14px;padding:22px;background:#fff;border-top:4px solid var(--line);
+  transition:border-color .15s,background-color .15s,box-shadow .15s,transform .15s}
+.octa-mooc .om-card:hover{border-color:var(--accent);background:var(--page);box-shadow:0 12px 26px rgba(15,61,94,.13);transform:translateY(-3px)}
+.octa-mooc .om-card-studio:hover{background:var(--button-hover);border-color:var(--accent)}
 .octa-mooc .om-card h3{font-size:18px;margin-bottom:8px}
 .octa-mooc .om-card p{color:var(--quiet);font-size:15.5px}
 .octa-mooc .om-card-studio{background:var(--brand);border-color:var(--brand)}
@@ -96,8 +99,8 @@
 .octa-mooc .om-request h2{font-size:28px;margin-bottom:8px}
 .octa-mooc .om-request p{color:var(--quiet)}
 
-@media (prefers-reduced-motion:reduce){.octa-mooc a.cem-plan,.octa-mooc .cem-ask,.octa-mooc .om-btn{transition:none}
-  .octa-mooc a.cem-plan:hover,.octa-mooc a.cem-plan:focus-visible{transform:none}}
+@media (prefers-reduced-motion:reduce){.octa-mooc .om-card,.octa-mooc a.cem-plan,.octa-mooc .cem-ask,.octa-mooc .om-btn{transition:none}
+  .octa-mooc .om-card:hover,.octa-mooc a.cem-plan:hover,.octa-mooc a.cem-plan:focus-visible{transform:none}}
 @media (max-width:960px){
   .octa-mooc .om-hero,.octa-mooc .om-partner{grid-template-columns:1fr}
   .octa-mooc .om-grid,.octa-mooc .cem-plans{grid-template-columns:1fr 1fr}}
