@@ -1,0 +1,269 @@
+<!--
+  CloudEARTHi MOOC: "Partner with us" page, for a WordPress "Custom HTML" block.
+  Paste everything below into one Custom HTML block on the page /partner-with-us/.
+  All styles are scoped to .cem-partner, so they do not change the theme, and the theme's own fonts are used.
+  No scripts: WordPress often removes them.
+-->
+<div class="cem-partner">
+<style>
+.cem-partner{--g:#127a45;--g-soft:#e8f3dd;--page:#f4f9ef;--line:#d5e6c8;--amber:#e0a21c;--blue:#2a78d6;--ink:#0b0b0b;--quiet:#52514e;
+  color:var(--ink);line-height:1.6;max-width:1080px;margin:0 auto;font-size:17px}
+.cem-partner *{box-sizing:border-box}
+.cem-partner h2,.cem-partner h3{color:var(--ink);line-height:1.25;margin:0}
+.cem-partner p{margin:0}
+.cem-partner a{color:var(--blue)}
+.cem-partner .cem-sec{margin:0 0 64px}
+.cem-partner .cem-sec>h2{font-size:30px;margin-bottom:10px}
+.cem-partner .cem-lead{color:var(--quiet);max-width:680px;margin-bottom:28px}
+.cem-partner .cem-btn{display:inline-block;padding:12px 22px;border-radius:8px;font-weight:600;text-decoration:none;
+  border:2px solid var(--blue);line-height:1.2;margin:0 10px 10px 0}
+.cem-partner .cem-btn-main{background:var(--blue);color:#fff}
+.cem-partner .cem-btn-main:hover,.cem-partner .cem-btn-main:focus{background:#1f63b5;border-color:#1f63b5;color:#fff}
+.cem-partner .cem-btn-line{background:#fff;color:var(--blue)}
+.cem-partner .cem-btn-line:hover,.cem-partner .cem-btn-line:focus{background:#eef5fd}
+.cem-partner .cem-btn:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+
+/* opening */
+.cem-partner .cem-hero{background:var(--g-soft);border:1px solid var(--line);border-radius:16px;padding:48px 44px;margin-bottom:64px;
+  display:grid;grid-template-columns:1.35fr 1fr;gap:40px;align-items:center}
+.cem-partner .cem-hero h2{font-size:40px;margin-bottom:16px}
+.cem-partner .cem-hero p{color:#2f3a2f;margin-bottom:24px;font-size:18px}
+.cem-partner .cem-free{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px}
+.cem-partner .cem-free strong{display:block;font-size:22px;color:var(--g);margin-bottom:6px}
+.cem-partner .cem-free ul{margin:12px 0 0;padding-left:20px;color:var(--quiet)}
+.cem-partner .cem-free li{margin:4px 0}
+
+/* what providers get */
+.cem-partner .cem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.cem-partner .cem-card{border:1px solid var(--line);border-radius:12px;padding:22px;background:#fff}
+.cem-partner .cem-card h3{font-size:18px;margin-bottom:8px}
+.cem-partner .cem-card p{color:var(--quiet);font-size:16px}
+
+/* packages */
+.cem-partner .cem-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:20px}
+.cem-partner .cem-plan{border:1px solid var(--line);border-radius:12px;padding:26px;background:#fff;display:flex;flex-direction:column}
+.cem-partner .cem-plan-star{border:2px solid var(--g);box-shadow:0 0 0 4px var(--g-soft)}
+.cem-partner .cem-tag{font-size:13px;font-weight:600;color:var(--g);margin-bottom:6px}
+.cem-partner .cem-plan h3{font-size:21px;margin-bottom:4px}
+.cem-partner .cem-for{color:var(--quiet);font-size:15px;margin-bottom:16px}
+.cem-partner .cem-price{font-size:34px;font-weight:700;color:var(--ink);line-height:1.1}
+.cem-partner .cem-price small{font-size:15px;font-weight:400;color:var(--quiet)}
+.cem-partner .cem-plan ul{margin:16px 0 0;padding-left:20px;font-size:15.5px;flex:1}
+.cem-partner .cem-plan li{margin:5px 0}
+.cem-partner .cem-more{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.cem-partner .cem-small{border:1px dashed var(--line);border-radius:12px;padding:20px 22px;background:var(--page)}
+.cem-partner .cem-small h3{font-size:17px;margin-bottom:4px}
+.cem-partner .cem-small p{font-size:15.5px;color:var(--quiet)}
+.cem-partner .cem-note{font-size:14px;color:var(--quiet);margin-top:14px}
+
+/* EU projects */
+.cem-partner .cem-eu{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+.cem-partner .cem-eu ul{margin:0;padding-left:20px}
+.cem-partner .cem-eu li{margin:8px 0}
+.cem-partner .cem-quote{border-left:4px solid var(--amber);background:#fdf8ec;padding:18px 20px;border-radius:0 10px 10px 0;font-size:15.5px}
+.cem-partner .cem-quote b{display:block;margin-bottom:6px}
+
+/* how it works */
+.cem-partner .cem-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;counter-reset:cem}
+.cem-partner .cem-steps li{counter-increment:cem;border-top:3px solid var(--g);padding-top:14px}
+.cem-partner .cem-steps li::before{content:counter(cem);display:inline-block;width:30px;height:30px;border-radius:50%;background:var(--g);
+  color:#fff;font-weight:700;text-align:center;line-height:30px;margin-bottom:10px}
+.cem-partner .cem-steps h3{font-size:17px;margin-bottom:6px}
+.cem-partner .cem-steps p{font-size:15.5px;color:var(--quiet)}
+
+/* teach */
+.cem-partner .cem-teach{border:1px solid var(--line);border-radius:12px;padding:28px;display:grid;grid-template-columns:1.4fr 1fr;gap:28px;align-items:center}
+.cem-partner .cem-teach p{color:var(--quiet);margin-top:8px}
+
+/* questions */
+.cem-partner details{border-bottom:1px solid var(--line);padding:16px 0}
+.cem-partner summary{cursor:pointer;font-weight:600;font-size:17px;list-style-position:outside}
+.cem-partner details p{color:var(--quiet);margin-top:8px;max-width:760px}
+
+/* closing */
+.cem-partner .cem-end{background:var(--g);color:#fff;border-radius:16px;padding:44px;text-align:center}
+.cem-partner .cem-end h2{color:#fff;font-size:30px;margin-bottom:10px}
+.cem-partner .cem-end p{color:#e3f1e8;margin-bottom:22px}
+.cem-partner .cem-end .cem-btn-main{background:#fff;color:var(--g);border-color:#fff}
+.cem-partner .cem-end .cem-btn-main:hover,.cem-partner .cem-end .cem-btn-main:focus{background:var(--g-soft);color:var(--g)}
+.cem-partner .cem-end .cem-btn-line{background:transparent;color:#fff;border-color:#fff}
+
+@media (max-width:900px){
+  .cem-partner .cem-hero,.cem-partner .cem-eu,.cem-partner .cem-teach{grid-template-columns:1fr}
+  .cem-partner .cem-grid,.cem-partner .cem-plans{grid-template-columns:1fr 1fr}
+  .cem-partner .cem-steps{grid-template-columns:1fr 1fr}
+}
+@media (max-width:600px){
+  .cem-partner{font-size:16px}
+  .cem-partner .cem-hero{padding:28px 20px}
+  .cem-partner .cem-hero h2{font-size:30px}
+  .cem-partner .cem-grid,.cem-partner .cem-plans,.cem-partner .cem-more,.cem-partner .cem-steps{grid-template-columns:1fr}
+  .cem-partner .cem-end{padding:32px 20px}
+}
+</style>
+
+  <!-- opening -->
+  <section class="cem-hero" aria-labelledby="cem-title">
+    <div>
+      <h2 id="cem-title">Publish your courses on the CloudEARTHi MOOC</h2>
+      <p>Bring your courses, workshops and project training to learners across Europe, with certificates that carry
+        your logos and can be checked by anyone. Learners always take part for free.</p>
+      <a class="cem-btn cem-btn-main" href="https://mooc.cloudearthi.com/contact-us/">Book a 30-minute demo</a>
+      <a class="cem-btn cem-btn-line" href="#cem-packages">See packages and prices</a>
+    </div>
+    <div class="cem-free">
+      <strong>Learning is always free</strong>
+      <span>Learners never pay. Organisations that publish courses or issue certificates choose a package.</span>
+      <ul>
+        <li>No limit on the number of learners</li>
+        <li>Certificates and badges included</li>
+        <li>Run by Octa Insight in Norway</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- what providers get -->
+  <section class="cem-sec" aria-labelledby="cem-get">
+    <h2 id="cem-get">What you get</h2>
+    <p class="cem-lead">Everything a course provider needs, from the first lecture to the certificate a learner shares on LinkedIn.</p>
+    <div class="cem-grid">
+      <div class="cem-card"><h3>Your courses online</h3><p>Lectures with video, PDF, text, quizzes, assignments and live sessions, built in MOOC Studio by your own team.</p></div>
+      <div class="cem-card"><h3>Certificates on your design</h3><p>Upload your certificate with your funders' and partners' logos; each learner's name and details are placed on it automatically.</p></div>
+      <div class="cem-card"><h3>Badges</h3><p>Digital badges for lectures, modules or achievements, awarded automatically when learners meet the rules you set.</p></div>
+      <div class="cem-card"><h3>Certificates from a list</h3><p>Upload an Excel list after a conference or workshop; everyone receives their own certificate by email.</p></div>
+      <div class="cem-card"><h3>Checkable by anyone</h3><p>Every certificate has its own page that names your project as issuer and shows it is genuine, ready to add to LinkedIn.</p></div>
+      <div class="cem-card"><h3>Figures for your reports</h3><p>Learners, completions and certificates issued, ready for project reports and dissemination indicators.</p></div>
+    </div>
+  </section>
+
+  <!-- packages -->
+  <section class="cem-sec" id="cem-packages" aria-labelledby="cem-prices">
+    <h2 id="cem-prices">Packages and prices</h2>
+    <p class="cem-lead">One clear price per package, with no charge per learner. All packages include certificates, badges and verification pages.</p>
+    <div class="cem-plans">
+      <div class="cem-plan">
+        <div class="cem-tag">For organisations</div>
+        <h3>Hosting</h3>
+        <p class="cem-for">Universities, training providers, companies</p>
+        <div class="cem-price">€690 <small>per year</small></div>
+        <ul>
+          <li>Up to 3 courses</li>
+          <li>Unlimited learners</li>
+          <li>Certificates on your own design</li>
+          <li>Badges and certificates from a list</li>
+          <li>Yearly figures on learners and certificates</li>
+        </ul>
+      </div>
+      <div class="cem-plan cem-plan-star">
+        <div class="cem-tag">For EU-funded projects</div>
+        <h3>EU project package</h3>
+        <p class="cem-for">Erasmus+, Horizon Europe, EIT, Interreg and other consortia</p>
+        <div class="cem-price">€4,900 <small>one payment</small></div>
+        <ul>
+          <li>Hosting for the whole project, plus 3 years after it ends</li>
+          <li>2 courses included (€900 per extra course)</li>
+          <li>Certificates with the project's and funder's logos</li>
+          <li>Reach figures for project reports</li>
+          <li>A set-up session for your team</li>
+        </ul>
+      </div>
+      <div class="cem-plan">
+        <div class="cem-tag">For larger providers</div>
+        <h3>Hosting Plus</h3>
+        <p class="cem-for">Several courses or programmes</p>
+        <div class="cem-price">€1,490 <small>per year</small></div>
+        <ul>
+          <li>Up to 10 courses</li>
+          <li>A programme page with its own course list</li>
+          <li>Everything in Hosting</li>
+          <li>Priority support</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cem-more">
+      <div class="cem-small" id="cem-events">
+        <h3>Certificates for an event: €150</h3>
+        <p>For a conference or workshop without a course: certificates and/or badges for up to 100 participants
+          (then €1 each), on your design, emailed to each person, with verification pages.</p>
+      </div>
+      <div class="cem-small">
+        <h3>We build the course for you</h3>
+        <p>Prefer us to do it? Our team turns your material into lectures, videos, quizzes and certificates in MOOC
+          Studio. Priced per day; ask us for a quote.</p>
+      </div>
+    </div>
+    <p class="cem-note">Prices exclude VAT. Invoiced by Octa Insight AS.</p>
+  </section>
+
+  <!-- EU projects -->
+  <section class="cem-sec" id="cem-eu-projects" aria-labelledby="cem-eu-title">
+    <h2 id="cem-eu-title">For EU projects and consortia</h2>
+    <p class="cem-lead">Write the MOOC into your proposal, and your training, certificates and sustainability are covered.</p>
+    <div class="cem-eu">
+      <ul>
+        <li><b>Training and dissemination:</b> courses and certificates as project results, with your project named as issuer.</li>
+        <li><b>Proof of reach:</b> learners, completions and certificates for your reports and indicators.</li>
+        <li><b>Sustainability:</b> your courses stay online for 3 years after the project ends, already paid for.</li>
+        <li><b>Funder visibility:</b> your funder's logo and funding statement on the certificates.</li>
+        <li><b>Budget:</b> one fixed amount for your dissemination or training work package.</li>
+      </ul>
+      <div class="cem-quote">
+        <b>Preparing a proposal?</b>
+        Ask us for a ready text for your proposal (training, dissemination and sustainability) and a budget line.
+        We are glad to join consortia as the partner that delivers the training platform.
+      </div>
+    </div>
+  </section>
+
+  <!-- how it works -->
+  <section class="cem-sec" aria-labelledby="cem-how">
+    <h2 id="cem-how">How it works</h2>
+    <p class="cem-lead">From the first conversation to your first certificates, usually within two weeks.</p>
+    <ol class="cem-steps">
+      <li><h3>Talk to us</h3><p>A 30-minute online demo of the courses, certificates and MOOC Studio.</p></li>
+      <li><h3>Choose a package</h3><p>We set up your project, your certificate design and your team's access.</p></li>
+      <li><h3>Build your course</h3><p>Your teachers add lectures and questions in MOOC Studio, or we build it for you.</p></li>
+      <li><h3>Learners and certificates</h3><p>Learners join for free; certificates and badges go out automatically.</p></li>
+    </ol>
+  </section>
+
+  <!-- teach -->
+  <section class="cem-sec" aria-labelledby="cem-teach">
+    <div class="cem-teach">
+      <div>
+        <h2 id="cem-teach" style="font-size:24px">Teach on the MOOC</h2>
+        <p>Teachers and course admins build and run courses in MOOC Studio, with the same Octa account learners use.
+          Create your account and ask to join a course as a teacher or course admin.</p>
+      </div>
+      <div>
+        <a class="cem-btn cem-btn-main" href="https://mooc.cloudearthi.com/new_mooc.html#/join">Join as a teacher</a>
+        <a class="cem-btn cem-btn-line" href="https://cloudearthi-mooc.streamlit.app/">Open MOOC Studio</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- questions -->
+  <section class="cem-sec" aria-labelledby="cem-faq">
+    <h2 id="cem-faq">Questions</h2>
+    <details><summary>Do learners pay anything?</summary>
+      <p>No. Learners join, learn and receive their certificates for free. Only the organisation publishing the course chooses a package.</p></details>
+    <details><summary>Can we use our own certificate design and logos?</summary>
+      <p>Yes. Upload your design as an image or PDF, mark where the learner's name and details go, and every certificate is made on it.</p></details>
+    <details><summary>Can we issue certificates for an event without a course?</summary>
+      <p>Yes. Choose "Certificates for an event", upload an Excel list of participants, and each person receives their own certificate by email.</p></details>
+    <details><summary>What happens when our project ends?</summary>
+      <p>With the EU project package, your courses and certificates stay online for 3 years after the end, already paid. After that you can continue with Hosting.</p></details>
+    <details><summary>Who owns the course content?</summary>
+      <p>You do. You keep the rights to your material; we publish it on the MOOC for as long as your package runs.</p></details>
+    <details><summary>How are certificates checked?</summary>
+      <p>Each certificate has a number and its own page at mooc.cloudearthi.com, which shows the learner, the course, your project as issuer, and that it was verified by the CloudEARTHi MOOC and Octa Insight.</p></details>
+  </section>
+
+  <!-- closing -->
+  <section class="cem-end" aria-labelledby="cem-start">
+    <h2 id="cem-start">Ready to publish your course?</h2>
+    <p>Tell us about your course, event or project, and we will show you how it would look on the MOOC.</p>
+    <a class="cem-btn cem-btn-main" href="https://mooc.cloudearthi.com/contact-us/">Book a 30-minute demo</a>
+    <a class="cem-btn cem-btn-line" href="https://mooc.cloudearthi.com/new_mooc.html#/">Browse the courses</a>
+  </section>
+</div>
