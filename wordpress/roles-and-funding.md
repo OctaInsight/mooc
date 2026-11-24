@@ -23,7 +23,7 @@ The agreed facts, in one place. The three web pages use them as follows:
 | Who | Terms |
 |---|---|
 | CloudEARTHi projects | Free, always |
-| CloudEARTHi partners | Free to publish their own free courses that are not linked to a CloudEARTHi project (courses from CloudEARTHi projects fall under the first row); a cost fee of €50 a year covers only database hosting and Octa MOOC Studio (launch price 2027) |
+| CloudEARTHi partners | Free to publish their own free courses that are not linked to a CloudEARTHi project (courses from CloudEARTHi projects fall under the first row); a reduced price of €50 a year covers only database hosting and Octa MOOC Studio, below what they cost Octa (launch price 2027) |
 | Other projects and organisations | May publish free courses; they pay for database hosting and technical help, either through one of Octa's packages (octainsight.com/mooc) or by having Octa Insight as a partner in their project |
 
 Learners never pay on the CloudEARTHi MOOC.
@@ -32,7 +32,7 @@ Learners never pay on the CloudEARTHi MOOC.
 
 - Designed and paid for exclusively by Octa Insight; no project or EU grant has contributed to it.
 - Free of charge for CloudEARTHi projects.
-- At a reduced price (the cost of database hosting and technical time) for CloudEARTHi partners.
+- At a reduced price for CloudEARTHi partners (€50 a year, below the real cost of database hosting and technical time).
 - Other organisations pay for its use.
 
 ## 3. Other MOOCs built by Octa
