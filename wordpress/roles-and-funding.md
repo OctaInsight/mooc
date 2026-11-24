@@ -48,7 +48,7 @@ Learners never pay on the CloudEARTHi MOOC.
   2022-1-NO01-KA220-HED-000087789); from 2026 it is fully covered by Octa Insight's own resources.
 - Octa MOOC Studio and the Octa database are funded only and exclusively by Octa Insight AS, with no contribution from
   any EU project.
-- Courses come from BOOSTalent (EIT HEI Initiative, EIT RawMaterials), Inspiring the Minds (Erasmus+ KA2, Norwegian
+- Courses come from BOOSTalent (EIT HEI Initiative), Inspiring the Minds (Erasmus+ KA2, Norwegian
   Directorate for Higher Education and Skills), SEEDplus (Horizon Europe 101100494, EISMEA) and Mind the Gap
   (Horizon Europe 101215579, EISMEA).
 - Funding statement with the EU emblem: "The CloudEARTHi MOOC website is co-funded by the European Union and hosts
