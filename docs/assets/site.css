@@ -308,3 +308,6 @@ input:focus, textarea:focus { border-color: var(--blue); outline: none; box-shad
   .reading { padding: 20px; }
   .account .btn.ghost { display: none; }
 }
+
+/* images in readings */
+.reading img { display: block; max-width: 100%; height: auto; margin: 6px 0; border-radius: var(--r-sm); }

@@ -611,7 +611,9 @@ function stepPdf(el, slug, step, cfg) {
   record(step, "progressed", 1).catch(() => null);
 }
 function markdown(md) {
-  return esc(md).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\*(.+?)\*/g, "<i>$1</i>")
+  return esc(md)
+    .replace(/!\[([^\]]*)\]\((https?:[^)\s]+)\)/g, '<img src="$2" alt="$1" loading="lazy">')   // images: ![alt](url)
+    .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/(^|[^\w*])\*([^*\s][^*]*?)\*(?![\w*])/g, "$1<i>$2</i>")
     .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
     .split(/\n\s*\n/).map(p => /^- /m.test(p) ? `<ul>${p.split(/\n/).map(x => `<li>${x.replace(/^- /, "")}</li>`).join("")}</ul>` : `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
 }
