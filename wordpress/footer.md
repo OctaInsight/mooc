@@ -57,3 +57,13 @@ The footer above was put in place directly on mooc.cloudearthi.com: Footer One a
 block-15), the old Footer Three/Four blocks were moved to *Inactive widgets* (block-16, block-10, block-17), and the
 Customizer layout and colours were set as described. The theme's "Neve | Powered by WordPress" line is hidden by a CSS
 rule in `footer-bottom.html`. The previous widgets and settings are saved in `wordpress/backup/` to go back if needed.
+
+## Home page and menu bar (24 Nov 2026)
+
+- **Home page**: mooc.cloudearthi.com sends visitors to `/allcourses/` with a temporary (302) redirect from the
+  Redirection plugin (Tools → Redirection, rule "Home page goes to All Courses"). Only the plain home address is
+  redirected; searches and other addresses are not. Logging and IP storage are off. To undo: disable that rule.
+  (Setting All Courses as the WordPress front page does not work: Academy LMS shows its course list only at the page's
+  own address.)
+- **Menu bar**: white with dark green text (`#0f3d27`), a 3 px dark green line underneath, and `#127a45` for hover and
+  the current page, matching the footer. Previous values are in `backup/header-customizer-2026-11-24.json`.
