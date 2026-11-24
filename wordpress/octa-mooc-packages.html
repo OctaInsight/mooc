@@ -1,5 +1,5 @@
 <!--
-  Octa Insight: "CloudEARTHi MOOC" page, for a WordPress "Custom HTML" block on https://octainsight.com/mooc
+  Octa Insight: "CloudEARTHi MOOC and your own MOOC" page, for a WordPress "Custom HTML" block on https://octainsight.com/mooc
   1. Paste everything below into one Custom HTML block.
   2. Directly under it, add a Shortcode block with the Contact Form 7 form "Request a package"
      (see wordpress/request-a-package.md). The cards open /mooc/?package=<name>#request, so the form
@@ -79,6 +79,21 @@
   color:#6b4a00;background:#fff4d6;border:1px solid var(--focus);border-radius:999px;padding:3px 12px}
 .octa-mooc .om-note{font-size:14px;color:var(--quiet);margin-top:14px}
 
+/* two ways */
+.octa-mooc .om-ways{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.octa-mooc a.om-way{display:block;border:2px solid var(--line);border-radius:18px;padding:30px;background:#fff;color:var(--ink);
+  text-decoration:none;transition:border-color .15s,background-color .15s,box-shadow .15s,transform .15s}
+.octa-mooc a.om-way:hover,.octa-mooc a.om-way:focus-visible{border-color:var(--accent);background:var(--page);
+  box-shadow:0 12px 26px rgba(15,61,94,.13);transform:translateY(-3px)}
+.octa-mooc .om-way h3{font-size:24px;margin:4px 0 10px}
+.octa-mooc .om-way p{color:var(--quiet);margin-bottom:16px}
+.octa-mooc .om-way .cem-ask{display:inline-block;padding:10px 20px}
+.octa-mooc a.om-way:hover .cem-ask,.octa-mooc a.om-way:focus-visible .cem-ask{background:var(--button);color:#fff}
+.octa-mooc .om-part{font-size:15px;font-weight:700;color:var(--accent);margin-bottom:4px}
+.octa-mooc .om-pay{border-left:4px solid var(--accent);background:var(--page);border-radius:0 14px 14px 0;padding:20px 24px;margin-top:22px}
+.octa-mooc .om-pay h3{font-size:19px;margin-bottom:6px}
+.octa-mooc .om-pay p{color:var(--quiet)}
+
 /* Octa as project partner */
 .octa-mooc .om-partner{background:var(--brand);color:#fff;border-radius:20px;padding:44px 48px;display:grid;
   grid-template-columns:1.3fr 1fr;gap:40px;align-items:center}
@@ -99,11 +114,12 @@
 .octa-mooc .om-request h2{font-size:28px;margin-bottom:8px}
 .octa-mooc .om-request p{color:var(--quiet)}
 
-@media (prefers-reduced-motion:reduce){.octa-mooc .om-card,.octa-mooc a.cem-plan,.octa-mooc .cem-ask,.octa-mooc .om-btn{transition:none}
-  .octa-mooc .om-card:hover,.octa-mooc a.cem-plan:hover,.octa-mooc a.cem-plan:focus-visible{transform:none}}
+@media (prefers-reduced-motion:reduce){.octa-mooc .om-card,.octa-mooc a.om-way,.octa-mooc a.cem-plan,.octa-mooc .cem-ask,.octa-mooc .om-btn{transition:none}
+  .octa-mooc a.om-way:hover,.octa-mooc .om-card:hover,.octa-mooc a.cem-plan:hover,.octa-mooc a.cem-plan:focus-visible{transform:none}}
 @media (max-width:960px){
   .octa-mooc .om-hero,.octa-mooc .om-partner{grid-template-columns:1fr}
-  .octa-mooc .om-grid,.octa-mooc .cem-plans{grid-template-columns:1fr 1fr}}
+  .octa-mooc .om-grid,.octa-mooc .cem-plans{grid-template-columns:1fr 1fr}
+  .octa-mooc .om-ways{grid-template-columns:1fr}}
 @media (max-width:600px){
   .octa-mooc{font-size:16px}
   .octa-mooc .om-hero,.octa-mooc .om-partner{padding:30px 20px}
@@ -116,15 +132,16 @@
     <div>
       <div class="om-kicker">Free for every learner, everywhere</div>
       <h2 id="om-title">Learning is free. Publish your courses with us.</h2>
-      <p>Bring your courses, workshops and project training to learners worldwide on the CloudEARTHi MOOC, developed
-        and operated by Octa Insight, with certificates that carry your logos and can be checked by anyone.</p>
+      <p>Octa Insight develops and operates the CloudEARTHi MOOC. Publish your courses, workshops and project training
+        there for learners worldwide, or let us build a MOOC of your own, with your name, colours and web address.
+        Either way, certificates carry your logos and can be checked by anyone.</p>
       <a class="om-btn om-btn-main" href="#request">Send a request</a>
-      <a class="om-btn om-btn-line" href="#om-packages">See packages and prices</a>
+      <a class="om-btn om-btn-line" href="#om-ways">See the two ways</a>
     </div>
     <div class="om-free">
-      <strong>Learners never pay</strong>
-      <span>Every course, certificate and badge is free for learners. Organisations that publish courses or issue
-        certificates choose a package.</span>
+      <strong>Learners never pay on the CloudEARTHi MOOC</strong>
+      <span>Every course, certificate and badge there is free for learners. On a MOOC of your own, you decide
+        whether courses are free or paid.</span>
       <ul>
         <li>Open to learners worldwide</li>
         <li>No limit on the number of learners</li>
@@ -149,10 +166,33 @@
     </div>
   </section>
 
-  <!-- packages -->
+  <!-- two ways -->
+  <section class="om-sec" id="om-ways" aria-labelledby="om-ways-title">
+    <h2 id="om-ways-title">Two ways to work with us</h2>
+    <p class="om-lead">Both run on the same platform and MOOC Studio, with the same certificates, badges and verification pages.</p>
+    <div class="om-ways">
+      <a class="om-way" href="#om-packages">
+        <div class="om-part">Way 1</div>
+        <h3>Publish on the CloudEARTHi MOOC</h3>
+        <p>Your courses sit next to other courses on Earth observation, climate, data and innovation, on mooc.cloudearthi.com.
+          Learners always join for free. You pay a yearly or one-time package.</p>
+        <span class="cem-ask">See the packages</span>
+      </a>
+      <a class="om-way" href="#om-own">
+        <div class="om-part">Way 2</div>
+        <h3>Your own MOOC, built by Octa</h3>
+        <p>For organisations and projects outside CloudEARTHi, or that want their own brand: a MOOC with your name, logo,
+          colours and web address. Your courses can be free, or paid with the money going straight to you.</p>
+        <span class="cem-ask">See your own MOOC</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- way 1: packages on the CloudEARTHi MOOC -->
   <section class="om-sec" id="om-packages" aria-labelledby="om-prices">
-    <h2 id="om-prices">Packages and prices <span class="om-launch">Launch prices 2027</span></h2>
-    <p class="om-lead">One clear price per package, with no charge per learner. All packages include certificates, badges, verification pages and technical help. Choose a card to send us a request.</p>
+    <div class="om-part">Way 1</div>
+    <h2 id="om-prices">Publish on the CloudEARTHi MOOC <span class="om-launch">Launch prices 2027</span></h2>
+    <p class="om-lead">Learners always join for free. One clear price per package, with no charge per learner. All packages include certificates, badges, verification pages and technical help. Choose a card to send us a request.</p>
     <div class="cem-plans">
       <a class="cem-plan cem-plan-free" href="https://mooc.cloudearthi.com/contact-us/" target="_blank" rel="noopener">
         <div class="cem-tag">For the CloudEARTHi initiative</div>
@@ -272,6 +312,67 @@
     <p class="om-note">Launch prices for 2027. Prices exclude VAT. Technical help covers a 1-hour set-up session and answers by email within 3 working days; further work is charged at our day rate. Offered and invoiced by Octa Insight AS.</p>
   </section>
 
+  <!-- way 2: your own MOOC -->
+  <section class="om-sec" id="om-own" aria-labelledby="om-own-title">
+    <div class="om-part">Way 2</div>
+    <h2 id="om-own-title">Your own MOOC, built by Octa <span class="om-launch">Launch prices 2027</span></h2>
+    <p class="om-lead">The same platform as the CloudEARTHi MOOC, with your name, logo, colours and web address. Your team builds courses in MOOC Studio; we set everything up, host it and keep it running.</p>
+    <div class="cem-plans">
+      <a class="cem-plan" href="https://octainsight.com/mooc/?package=Own+MOOC#request">
+        <div class="cem-tag">For organisations</div>
+        <h3>Own MOOC</h3>
+        <p class="cem-for">Universities, training providers, companies, networks</p>
+        <div class="cem-price">€4,900 <small>to set up</small></div>
+        <div class="cem-price" style="font-size:24px">+ €2,400 <small>per year</small></div>
+        <ul>
+          <li>Your name, logo, colours and web address</li>
+          <li>Up to 20 courses, unlimited learners</li>
+          <li>MOOC Studio for your team</li>
+          <li>Certificates and badges on your own designs</li>
+          <li>Hosting, updates and backups</li>
+          <li>Training for your team, and answers by email within 3 working days</li>
+        </ul>
+        <span class="cem-ask">Request this package</span>
+      </a>
+      <a class="cem-plan cem-plan-star" href="https://octainsight.com/mooc/?package=Project+MOOC#request">
+        <div class="cem-tag">For EU-funded and other projects</div>
+        <h3>Project MOOC</h3>
+        <p class="cem-for">A MOOC under your project's own name</p>
+        <div class="cem-price">€12,900 <small>one payment</small></div>
+        <ul>
+          <li>Everything in Own MOOC</li>
+          <li>Hosting for the whole project, plus 3 years after it ends</li>
+          <li>Up to 5 courses (€600 per extra course)</li>
+          <li>Your project's and funder's logos, and the funding statement</li>
+          <li>Reach figures for project reports</li>
+        </ul>
+        <span class="cem-ask">Request this package</span>
+      </a>
+      <a class="cem-plan" href="https://octainsight.com/mooc/?package=Own+MOOC+Plus#request">
+        <div class="cem-tag">For large providers</div>
+        <h3>Own MOOC Plus</h3>
+        <p class="cem-for">Many courses or whole programmes</p>
+        <div class="cem-price">€6,900 <small>to set up</small></div>
+        <div class="cem-price" style="font-size:24px">+ €3,900 <small>per year</small></div>
+        <ul>
+          <li>Everything in Own MOOC</li>
+          <li>Up to 60 courses, and programme pages</li>
+          <li>Priority technical help</li>
+          <li>A yearly review of your MOOC with our team</li>
+          <li>More courses or special needs? We make you an offer.</li>
+        </ul>
+        <span class="cem-ask">Request this package</span>
+      </a>
+    </div>
+    <div class="om-pay">
+      <h3>Free or paid courses: your choice</h3>
+      <p>If learners pay for your courses, we set up online payment in your own payment account for a one-time €900.
+        The money goes straight to you; Octa takes no share. You sell the courses, so you charge and pay the VAT on
+        those sales. Octa invoices only for building and running your MOOC.</p>
+    </div>
+    <p class="om-note">Launch prices for 2027. Prices exclude VAT. Reduced rates for CloudEARTHi partners, low- and middle-income countries and non-profits for equality and inclusion also apply here. We can also build the courses for you, at our day rate. Offered and invoiced by Octa Insight AS.</p>
+  </section>
+
   <!-- Octa as project partner -->
   <section class="om-sec om-partner" aria-labelledby="om-join">
     <div>
@@ -293,9 +394,13 @@
   <section class="om-sec" aria-labelledby="om-faq">
     <h2 id="om-faq">Questions</h2>
     <details><summary>Do learners pay anything?</summary>
-      <p>No. Learners join, learn and receive their certificates for free. Only the organisation publishing the course pays for its package.</p></details>
+      <p>Not on the CloudEARTHi MOOC: learners join, learn and receive their certificates for free there. On your own MOOC, you decide whether courses are free or paid.</p></details>
+    <details><summary>What is the difference between the two ways?</summary>
+      <p>On the CloudEARTHi MOOC, your courses sit on a shared site with other courses, under the CloudEARTHi name, and learners never pay. Your own MOOC has your name, colours and web address, and only your courses.</p></details>
+    <details><summary>If learners pay, who receives the money?</summary>
+      <p>You do. We connect online payment to your own account, so payments go straight to you and Octa takes no share. As the seller, you charge and pay the VAT on course sales.</p></details>
     <details><summary>What happens when our project ends?</summary>
-      <p>With the EU project package, your courses and certificates stay online for 3 years after the end, already paid. After that you can continue with Hosting.</p></details>
+      <p>With the EU project package or the Project MOOC, your courses and certificates stay online for 3 years after the end, already paid. After that you can continue with Hosting or Own MOOC.</p></details>
     <details><summary>Can a project pay from its EU grant?</summary>
       <p>Often yes, as a service cost, if your grant agreement allows it. We send a quote and an invoice in the form your project needs. Even better: invite Octa into the consortium while you write the proposal.</p></details>
     <details><summary>Who owns the course content?</summary>
@@ -307,6 +412,6 @@
   <!-- request: the Contact Form 7 form goes in a Shortcode block straight after this block -->
   <section class="om-request" id="request" aria-labelledby="om-request">
     <h2 id="om-request">Send a request</h2>
-    <p>Tell us a little about your course, event or project. We reply within two working days, usually with a proposal for a 30-minute online demo.</p>
+    <p>Tell us a little about your course, event, project or the MOOC you have in mind. We reply within two working days, usually with a proposal for a 30-minute online demo.</p>
   </section>
 </div>
