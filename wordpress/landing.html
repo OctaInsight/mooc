@@ -3,11 +3,15 @@
   Text on the left, the MOOC logo large on the right; on phones the text comes first. No buttons, no scripts.
 -->
 <div class="cem-land">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..600&display=swap" rel="stylesheet">
 <style>
 .cem-land{--green:#0f3d27;--soft:#e8f3dd;display:grid;grid-template-columns:1.15fr 1fr;gap:56px;align-items:center;
   min-height:62vh;padding:56px 0 64px;max-width:1140px;margin:0 auto}
 .cem-land *{box-sizing:border-box}
-.cem-land p{margin:0;color:var(--green);font-size:clamp(19px,1.1rem + .6vw,25px);line-height:1.6;max-width:34em}
+.cem-land p{margin:0;color:var(--green);font-family:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;font-weight:450;
+  font-size:clamp(20px,1.1rem + .75vw,28px);line-height:1.5;letter-spacing:-.005em;max-width:30em}
 .cem-land figure{margin:0;display:flex;justify-content:center}
 .cem-land img{display:block;width:100%;max-width:440px;height:auto}
 @media (max-width:820px){
