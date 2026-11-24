@@ -1,5 +1,18 @@
 # Clean-up of mooc.cloudearthi.com (24 Nov 2026)
 
+## Done (Tamer's decisions, 24 Nov 2026)
+
+- Plugins deleted: Akismet, Elementor, Academy Elementor Addons, Divi Dash, Add From Server, LearnDash LMS and its 11
+  add-ons, WP Remote Users Sync.
+- Site Kit by Google: deleted by mistake, then reinstalled and switched on again. It still has to be connected to
+  Google (Site Kit → Dashboard → Sign in with Google).
+- Kept: Ninja Forms, Academy LMS, Academy Certificates, Duplicator, Limit Login Attempts Reloaded, Redirection.
+- Pages moved to the Trash (recoverable for 30 days): 128 old home page, 445 Special programs, 50 Contribute & upload
+  your course, 25 Linked websites, 70 Log in, 632–638 LearnDash pages.
+- Kept for later: Partners page (67). No media deleted; some will be used later.
+
+The sections below are the review made before these decisions.
+
 ## Plugins
 
 Removed (deleted): Akismet, Elementor, Academy Elementor Addons (needed Elementor, did nothing), Divi Dash (for the
