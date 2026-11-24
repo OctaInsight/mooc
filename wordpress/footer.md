@@ -65,5 +65,5 @@ rule in `footer-bottom.html`. The previous widgets and settings are saved in `wo
   redirected; searches and other addresses are not. Logging and IP storage are off. To undo: disable that rule.
   (Setting All Courses as the WordPress front page does not work: Academy LMS shows its course list only at the page's
   own address.)
-- **Menu bar**: white with dark green text (`#0f3d27`), a 3 px dark green line underneath, and `#127a45` for hover and
+- **Menu bar**: light green (`#e8f3dd`) with dark green text (`#0f3d27`), a 3 px dark green line underneath, and `#127a45` for hover and
   the current page, matching the footer. Previous values are in `backup/header-customizer-2026-11-24.json`.
