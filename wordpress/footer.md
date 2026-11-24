@@ -67,3 +67,10 @@ rule in `footer-bottom.html`. The previous widgets and settings are saved in `wo
   own address.)
 - **Header and menu bar**: the whole header light green (`#e8f3dd`), with dark green text (`#0f3d27`), a 3 px dark green line underneath, and `#127a45` for hover and
   the current page, matching the footer. Previous values are in `backup/header-customizer-2026-11-24.json`.
+
+## Landing page (24 Nov 2026)
+
+- The home page of mooc.cloudearthi.com is now the page "Welcome" (id 711, `wordpress/landing.html`): the text on the
+  left and the MOOC logo on the right (on phones the text comes first). Its title is hidden (Neve page setting).
+- The redirect from the home page to `/allcourses/` (Redirection rule 1) is switched off, not deleted.
+- The logo on the new MOOC, award and profile pages links to `https://mooc.cloudearthi.com/`.
