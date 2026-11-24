@@ -423,7 +423,7 @@ def _forgot_form(app: App):
         missing = (["the [email] settings"] if not mail.enabled() else []) + \
                   (["the server_key in [octa_users]"] if client.server_key_looks_unset() else [])
         st.error(f"Password reset by email is not set up for this app yet ({' and '.join(missing)} missing in its "
-                 "Streamlit secrets). Please contact sales@octainsight.com.")
+                 "Streamlit secrets). Please contact octainsight@gmail.com.")
         return
     base = _base_url(app)
     try:
@@ -456,10 +456,10 @@ def _forgot_form(app: App):
         st.error(str(e))
         return
     except mail.MailError as e:
-        st.error(f"The email could not be sent. {e} If this keeps happening, please contact sales@octainsight.com.")
+        st.error(f"The email could not be sent. {e} If this keeps happening, please contact octainsight@gmail.com.")
         return
     except Exception:
-        st.error("The email could not be sent. Please try again later or contact sales@octainsight.com.")
+        st.error("The email could not be sent. Please try again later or contact octainsight@gmail.com.")
         return
     st.success(f"We have sent an email to **{email}**. Please check your inbox (and the spam folder).")
 
