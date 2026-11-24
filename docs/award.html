@@ -16,9 +16,6 @@
 :root{--blue:#2a78d6;--blue-dark:#1d5fae;--bg:#ffffff;--side:#f4f3ef;--line:#e4e3df;--text:#0b0b0b;--muted:#6b6a66;--ok:#1d6b3a;--ok-soft:#e7f5ec;--bad:#a3261b;--bad-soft:#fdecea}
 *{box-sizing:border-box}
 body{margin:0;background:var(--side);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
-header{display:flex;align-items:center;gap:12px;padding:12px 20px;background:#e8f3dd;border-bottom:3px solid #0f3d27}
-header .brand{font-weight:700}
-header .brand span{color:var(--blue)}
 main{max-width:1060px;margin:0 auto;padding:24px 16px 48px}
 .stage{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 10px 40px rgba(20,30,50,.06)}
 .stage img{display:block;width:100%;height:auto;border-radius:6px}
@@ -45,16 +42,86 @@ dd{margin:0;word-break:break-all}
 @media print{
   @page{size:A4 landscape;margin:0}
   body{background:#fff}
-  header,.no-print,.grid,h1,.sub{display:none!important}
+  #cem-head,.no-print,.grid,h1,.sub{display:none!important}
   main{padding:0;max-width:none}
   .stage{border:0;box-shadow:none;padding:0;border-radius:0}
   .stage img{border-radius:0;width:100vw;height:100vh;object-fit:contain}
 }
 </style>
 <link rel="stylesheet" href="assets/sitefoot.css">
+<link rel="stylesheet" href="assets/sitehead.css">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap" rel="stylesheet">
 </head>
 <body>
-<header><a class="brand" href="https://mooc.cloudearthi.com/" style="text-decoration:none;color:inherit"><img src="assets/logo.png" alt="" style="height:34px;width:auto;display:inline-block;vertical-align:middle;margin-right:8px">CloudEARTHi <span>MOOC</span></a><span class="muted" style="margin-left:auto;font-size:.9rem">Verified award</span></header>
+<!-- site header: start -->
+<header class="cem-head" id="cem-head">
+  <div class="cem-head-in">
+    <a class="cem-brand" href="https://mooc.cloudearthi.com/" aria-label="CloudEARTHi MOOC home">
+      <img src="assets/logo.png" alt="" width="44" height="40"><span>CloudEARTHi <b>MOOC</b></span>
+    </a>
+    <button class="cem-burger" type="button" aria-expanded="false" aria-controls="cem-nav"
+      onclick="var h=document.getElementById('cem-head'),o=h.classList.toggle('open');this.setAttribute('aria-expanded',o)">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <span>Menu</span>
+    </button>
+    <nav class="cem-nav" id="cem-nav" aria-label="Main">
+      <details class="cem-dd" data-nav="courses">
+        <summary>Explore courses</summary>
+        <div class="cem-panel" id="cem-projects">
+          <a href="https://mooc.cloudearthi.com/mooc.html#/">All courses</a>
+          <span class="cem-group">Projects</span>
+          <a href="https://mooc.cloudearthi.com/mooc.html#/project/seedplus">SEEDplus</a>
+          <a href="https://mooc.cloudearthi.com/mooc.html#/project/boostalent">BOOSTalent</a>
+          <a href="https://mooc.cloudearthi.com/mooc.html#/project/inspiring-the-minds">Inspiring the Minds</a>
+          <a href="https://mooc.cloudearthi.com/mooc.html#/project/mind-the-gap">Mind the Gap</a>
+        </div>
+      </details>
+      <a class="cem-link" data-nav="my" href="https://mooc.cloudearthi.com/mooc.html#/my">My learning</a>
+      <a class="cem-link" href="https://mooc.cloudearthi.com/partner-with-us/">Partner with us</a>
+      <details class="cem-dd">
+        <summary>About</summary>
+        <div class="cem-panel cem-panel-about">
+          <a href="https://cloudearthi.com/" target="_blank" rel="noopener">CloudEARTHi Initiative</a>
+          <a href="https://mooc.cloudearthi.com/partners/">Partners</a>
+          <a href="https://mooc.cloudearthi.com/acknowledgment/">Acknowledgment</a>
+          <span class="cem-group">Linked websites</span>
+          <a href="https://boostalent.cloudearthi.com/" target="_blank" rel="noopener">BOOSTalent</a>
+          <a href="https://seedplus.cloudearthi.com/" target="_blank" rel="noopener">SEEDplus</a>
+          <a href="https://inspiringtheminds.cloudearthi.com/" target="_blank" rel="noopener">Inspiring the Minds</a>
+          <a href="https://seenproject.eu/" target="_blank" rel="noopener">SEEN</a>
+          <a href="https://scale2connect.eu/" target="_blank" rel="noopener">Scale2Connect</a>
+          <a href="https://mindthegap.cloudearthi.com/" target="_blank" rel="noopener">Mind the Gap</a>
+          <a href="https://leadin.pwr.edu.pl/" target="_blank" rel="noopener">LEAD-IN</a>
+          <a href="https://conference.cloudearthi.com/" target="_blank" rel="noopener">CloudEARTHi Conference series</a>
+          <a href="https://knowledgehub.cloudearthi.com/" target="_blank" rel="noopener">CloudEARTHi Knowledge Hub</a>
+        </div>
+      </details>
+      <a class="cem-link" href="https://mooc.cloudearthi.com/contact-us/">Contact us</a>
+    </nav>
+    <div class="account cem-account" id="account">
+      <a class="cem-signin" href="https://mooc.cloudearthi.com/mooc.html#/signin">Sign in</a>
+    </div>
+  </div>
+</header>
+<script>
+(function () {
+  var head = document.getElementById("cem-head"), dds = head.querySelectorAll(".cem-dd");
+  dds.forEach(function (d) {                                   // one dropdown open at a time
+    d.addEventListener("toggle", function () { if (d.open) dds.forEach(function (o) { if (o !== d) o.open = false; }); });
+  });
+  document.addEventListener("click", function (e) { if (!head.contains(e.target)) dds.forEach(function (d) { d.open = false; }); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") dds.forEach(function (d) { d.open = false; }); });
+  head.addEventListener("click", function (e) {                // close menus after choosing a link
+    if (e.target.closest("a")) { dds.forEach(function (d) { d.open = false; }); head.classList.remove("open"); }
+  });
+  try {                                                        // award and profile pages: "My learning" instead of "Sign in" when signed in
+    if (!document.getElementById("view") && localStorage.getItem("cloudearthi_mooc_session")) {
+      var a = head.querySelector(".cem-signin"); a.textContent = "My learning"; a.href = a.href.replace("#/signin", "#/my");
+    }
+  } catch (e) { /* storage blocked */ }
+})();
+</script>
+<!-- site header: end -->
 <main>
   <div id="msg" class="card hidden"></div>
   <div id="page" class="hidden">
@@ -325,10 +392,9 @@ function drawBadge(a, im, name, date) {
   <nav aria-label="Learn">
     <h3>Learn</h3>
     <ul>
-      <li><a href="https://mooc.cloudearthi.com/new_mooc.html#/">All courses</a></li>
-      <li><a href="https://mooc.cloudearthi.com/allcourses/">Course archive</a></li>
-      <li><a href="https://mooc.cloudearthi.com/new_mooc.html#/my">My learning</a></li>
-      <li><a href="https://mooc.cloudearthi.com/new_mooc.html#/signin">Sign in</a></li>
+      <li><a href="https://mooc.cloudearthi.com/mooc.html#/">Explore courses</a></li>
+      <li><a href="https://mooc.cloudearthi.com/mooc.html#/my">My learning</a></li>
+      <li><a href="https://mooc.cloudearthi.com/mooc.html#/signin">Sign in</a></li>
     </ul>
   </nav>
   <nav aria-label="Work with us">

@@ -2,7 +2,7 @@
 
     python tools/build_single_page.py
 
-    upload/new_mooc.html          ->  https://mooc.cloudearthi.com/new_mooc.html     (the student website)
+    upload/mooc.html          ->  https://mooc.cloudearthi.com/mooc.html     (the student website)
     upload/award.html             ->  https://mooc.cloudearthi.com/award.html        (each certificate/badge;
                                                                                       its verification address)
     upload/profile.html           ->  https://mooc.cloudearthi.com/profile.html      (a student's awards)
@@ -18,7 +18,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
 UPLOAD = ROOT / "upload"
 PUBLIC = "https://mooc.cloudearthi.com/"          # where the three files are uploaded
-SITE_FILE = "new_mooc.html"                         # the name the student website has there
+SITE_FILE = "mooc.html"                         # the name the student website has there
 
 
 def data_uri(path: pathlib.Path) -> str:
@@ -26,8 +26,9 @@ def data_uri(path: pathlib.Path) -> str:
 
 
 def inline_common(html: str) -> str:
-    foot = (DOCS / "assets" / "sitefoot.css").read_text(encoding="utf-8")
-    html = html.replace('<link rel="stylesheet" href="assets/sitefoot.css">', f"<style>\n{foot}\n</style>")
+    for name in ("sitehead.css", "sitefoot.css"):
+        css = (DOCS / "assets" / name).read_text(encoding="utf-8")
+        html = html.replace(f'<link rel="stylesheet" href="assets/{name}">', f"<style>\n{css}\n</style>")
     logo, icon = data_uri(DOCS / "assets" / "logo.png"), data_uri(DOCS / "assets" / "favicon.png")
     html = html.replace('src="assets/logo.png"', f'src="{logo}"')
     html = html.replace('href="assets/favicon.png"', f'href="{icon}"').replace('href="assets/apple-touch-icon.png"', f'href="{icon}"')

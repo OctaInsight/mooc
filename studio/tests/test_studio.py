@@ -216,8 +216,8 @@ def test_course_admin_issues_certificates_for_a_workshop():
     assert all(fake.members[(cid, "u-" + p["email"])] == "student" for p in people)
     m = fake.sent[0]
     assert m["to"] == "p0@example.org" and "Dear Person 0," in m["paragraphs"][0]
-    assert m["button"][0] == "Set your password" and m["button"][1].startswith("https://mooc.cloudearthi.com/new_mooc.html#/welcome?t="), m["button"]
-    assert any("<a href='https://mooc.cloudearthi.com/new_mooc.html#/signin'>https://mooc.cloudearthi.com/new_mooc.html#/signin</a>" in x for x in m["paragraphs"]), m["paragraphs"]
+    assert m["button"][0] == "Set your password" and m["button"][1].startswith("https://mooc.cloudearthi.com/mooc.html#/welcome?t="), m["button"]
+    assert any("<a href='https://mooc.cloudearthi.com/mooc.html#/signin'>https://mooc.cloudearthi.com/mooc.html#/signin</a>" in x for x in m["paragraphs"]), m["paragraphs"]
     assert any("https://mooc.cloudearthi.com/award.html?id=" in x for x in m["after"]), "award pages on the MOOC domain"
     assert any("award.html?id=" in x for x in m["after"]) and any("<b>p0</b>" in x for x in m["paragraphs"])
     assert any("Issued 3 awards" in s.value and "Emails sent: 3" in s.value and "3 new accounts created" in s.value
@@ -260,8 +260,8 @@ def test_existing_account_gets_the_certificate_link():
     to, paragraphs, button, after = sent[0]
     assert paragraphs[0] == "Dear Kim &lt;K&gt;," and "W &amp; S" in paragraphs[1]
     assert button == ("View and share your certificate", "https://mooc.cloudearthi.com/award.html?id=a1") and any("My learning" in x for x in paragraphs)
-    assert any("usual Octa password" in x for x in paragraphs) and any("https://mooc.cloudearthi.com/new_mooc.html#/forgot?email=k%40x.org" in x for x in paragraphs)
-    assert any("<a href='https://mooc.cloudearthi.com/new_mooc.html#/signin'>" in x for x in paragraphs) and not any("next=/my" in x for x in paragraphs)
+    assert any("usual Octa password" in x for x in paragraphs) and any("https://mooc.cloudearthi.com/mooc.html#/forgot?email=k%40x.org" in x for x in paragraphs)
+    assert any("<a href='https://mooc.cloudearthi.com/mooc.html#/signin'>" in x for x in paragraphs) and not any("next=/my" in x for x in paragraphs)
     assert any("linkedin.com/sharing" in x for x in after)
 
 
@@ -282,8 +282,8 @@ def test_award_emails_are_sent_by_studio_when_it_opens():
     assert m["subject"] == "You earned new certificate and badges: EO basics", m["subject"]
     assert "Dear Student 0," == m["paragraphs"][0] and "<b>EO basics</b>" in m["paragraphs"][1]
     assert m["button"][0] == "View and share your certificate" and m["button"][1].endswith("award.html?id=a00")
-    assert sum("linkedin.com/sharing" in x for x in m["after"]) == 2 and "https://mooc.cloudearthi.com/new_mooc.html#/forgot?email=s0%40example.org" in m["after"][-1]
-    assert any("https://mooc.cloudearthi.com/new_mooc.html#/signin" in x for x in m["paragraphs"])
+    assert sum("linkedin.com/sharing" in x for x in m["after"]) == 2 and "https://mooc.cloudearthi.com/mooc.html#/forgot?email=s0%40example.org" in m["after"][-1]
+    assert any("https://mooc.cloudearthi.com/mooc.html#/signin" in x for x in m["paragraphs"])
     assert fake.sent[1]["paragraphs"][0] == "Dear s1," and fake.sent[1]["subject"] == 'You earned the certificate "Badge 0"'
     assert [d["ok"] for d in fake.mail_done] == [True, True]
     # the same session does not send again on every click
@@ -327,7 +327,7 @@ def test_forgot_password_page_for_students():
     assert not at.exception, at.exception
     assert fake.resets == ["kim@example.org"]
     m = fake.sent[-1]
-    assert m["to"] == "kim@example.org" and m["button"] == ("Choose a new password", "https://mooc.cloudearthi.com/new_mooc.html#/welcome?t=" + "t" * 64 + "&r=1")
+    assert m["to"] == "kim@example.org" and m["button"] == ("Choose a new password", "https://mooc.cloudearthi.com/mooc.html#/welcome?t=" + "t" * 64 + "&r=1")
     assert "If an Octa account uses **kim@example.org**" in at.success[0].value
     # an unknown email gets the same answer and no email
     at2 = AppTest.from_file(SCRIPT, default_timeout=30)

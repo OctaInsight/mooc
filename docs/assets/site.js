@@ -112,10 +112,9 @@ async function myLearning(force = false) {
   S.mine = r; return r;
 }
 function header() {
-  $("#nav-my").classList.toggle("hidden", !S.me);
   const box = $("#account");
   if (!S.me) {
-    box.innerHTML = `<a class="btn ghost" href="#/join">Create account</a><a class="btn" href="#/signin">Sign in</a>`;
+    box.innerHTML = `<a class="cem-signin" href="#/signin">Sign in</a>`;
     return;
   }
   box.innerHTML = `<div class="menu"><button class="avatar" aria-haspopup="true" aria-expanded="false" title="${esc(fullName(S.me))}">${esc(initials(S.me))}</button>
@@ -134,26 +133,15 @@ function header() {
 }
 
 async function projectsMenu(current) {
-  const box = $("#nav-projects");
+  // fills "Explore courses" in the shared header with the live list of projects and course numbers
+  const box = $("#cem-projects");
   if (!box) return;
   let cat;
-  try { cat = await catalogue(); } catch (e) { box.innerHTML = ""; return; }
+  try { cat = await catalogue(); } catch (e) { return; }
   const list = projectList(cat);
-  if (!list.length) { box.innerHTML = ""; return; }
-  box.innerHTML = `<button class="navbtn${current ? " on" : ""}" aria-haspopup="true" aria-expanded="false">Projects
-      <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
-    <div class="menu-panel left hidden" role="menu">
-      <a href="#/" role="menuitem">All courses <span class="muted">${cat.courses.length}</span></a>
-      ${list.map(p => `<a href="#/project/${encodeURIComponent(p.slug)}" role="menuitem" ${current === p.slug ? 'aria-current="page"' : ""}>${esc(p.title)} <span class="muted">${p.n}</span></a>`).join("")}</div>`;
-  const btn = $("button", box), panel = $(".menu-panel", box);
-  const close = () => { panel.classList.add("hidden"); btn.setAttribute("aria-expanded", "false"); };
-  btn.onclick = e => {
-    e.stopPropagation(); const open = panel.classList.toggle("hidden") === false;
-    btn.setAttribute("aria-expanded", String(open));
-    if (open) { $("a", panel).focus(); document.addEventListener("click", close, { once: true }); }
-  };
-  panel.onkeydown = e => { if (e.key === "Escape") { close(); btn.focus(); } };
-  $$("a", panel).forEach(a => (a.onclick = close));
+  box.innerHTML = `<a href="#/" ${!current ? 'aria-current="page"' : ""}>All courses <span class="n">${cat.courses.length}</span></a>`
+    + (list.length ? `<span class="cem-group">Projects</span>` : "")
+    + list.map(p => `<a href="#/project/${encodeURIComponent(p.slug)}" ${current === p.slug ? 'aria-current="page"' : ""}>${esc(p.title)} <span class="n">${p.n}</span></a>`).join("");
 }
 
 // ------------------------------------------------------------------------------------------------ router
@@ -167,7 +155,8 @@ async function route() {
   if (cleanup) { cleanup(); cleanup = null; }
   const { parts, q } = parseHash();
   const view = $("#view");
-  $$(".nav a").forEach(a => a.classList.toggle("on", (a.dataset.nav === "home" && !parts.length) || (a.dataset.nav === "my" && parts[0] === "my")));
+  const inCourses = !parts.length || ["course", "project", "learn"].includes(parts[0]);
+  $$("#cem-head [data-nav]").forEach(el => el.classList.toggle("on", (el.dataset.nav === "courses" && inCourses) || (el.dataset.nav === "my" && parts[0] === "my")));
   header();
   projectsMenu(parts[0] === "project" ? parts[1] : null);
   try {

@@ -1,0 +1,44 @@
+/* Site header: the same menu as the WordPress site (Explore courses, My learning, Partner with us, About, Contact us). */
+.cem-head{position:sticky;top:0;z-index:40;background:rgba(232,243,221,.97);border-bottom:3px solid #0f3d27;
+  font-family:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.4}
+.cem-head *{box-sizing:border-box}
+.cem-head-in{max-width:1180px;margin:0 auto;padding:0 20px;min-height:66px;display:flex;align-items:center;gap:18px}
+.cem-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#0f3d27;font:700 1.12rem "Bricolage Grotesque","Segoe UI",system-ui,sans-serif;white-space:nowrap}
+.cem-brand img{height:42px;width:auto}
+.cem-brand b{color:#127a45}
+.cem-nav{display:flex;align-items:center;gap:2px;margin-left:8px}
+.cem-link,.cem-dd>summary{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;color:#0f3d27;
+  font-weight:600;text-decoration:none;cursor:pointer;white-space:nowrap}
+.cem-dd{position:relative}
+.cem-dd>summary{list-style:none}
+.cem-dd>summary::-webkit-details-marker{display:none}
+.cem-dd>summary::after{content:"";width:7px;height:7px;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg);margin:-3px 0 0 2px}
+.cem-dd[open]>summary::after{transform:rotate(-135deg);margin-top:3px}
+.cem-link:hover,.cem-dd>summary:hover,.cem-dd[open]>summary{background:#fff}
+.cem-link.on,.cem-dd.on>summary{background:#fff;color:#127a45}
+.cem-link:focus-visible,.cem-dd>summary:focus-visible,.cem-panel a:focus-visible,.cem-burger:focus-visible,.cem-signin:focus-visible{outline:3px solid #e0a21c;outline-offset:2px}
+.cem-panel{position:absolute;left:0;top:calc(100% + 8px);min-width:240px;background:#fff;border:1px solid #d5e6c8;border-radius:12px;
+  box-shadow:0 10px 28px rgba(15,61,39,.14);padding:8px;display:flex;flex-direction:column}
+.cem-panel-about{max-height:70vh;overflow:auto}
+.cem-panel a{display:flex;justify-content:space-between;gap:16px;padding:8px 10px;border-radius:8px;color:#0f3d27;text-decoration:none;font-weight:500}
+.cem-panel a:hover{background:#e8f3dd}
+.cem-panel a[aria-current]{font-weight:700;color:#127a45}
+.cem-panel a .n{color:#5b6b60;font-weight:400}
+.cem-group{display:block;padding:10px 10px 4px;margin-top:4px;border-top:1px solid #e3eedb;font-size:.78rem;font-weight:700;color:#5b6b60}
+.cem-account{margin-left:auto;display:flex;align-items:center;gap:10px}
+.cem-signin{display:inline-block;padding:8px 18px;border-radius:999px;background:#2a78d6;color:#fff;font-weight:600;text-decoration:none}
+.cem-signin:hover{background:#1b5fb0;color:#fff}
+.cem-burger{display:none;align-items:center;gap:6px;margin-left:auto;padding:8px 12px;border:1.5px solid #0f3d27;border-radius:10px;
+  background:transparent;color:#0f3d27;font:600 15px inherit;cursor:pointer}
+@media (max-width:1020px){
+  .cem-burger{display:inline-flex}
+  .cem-account{margin-left:0}
+  .cem-nav{display:none;position:absolute;left:0;right:0;top:100%;margin:0;flex-direction:column;align-items:stretch;gap:0;
+    background:#f4f9ef;border-bottom:3px solid #0f3d27;padding:8px 16px 14px;max-height:calc(100vh - 70px);overflow:auto}
+  .cem-head.open .cem-nav{display:flex}
+  .cem-link,.cem-dd>summary{border-radius:8px;padding:11px 10px;justify-content:space-between;width:100%}
+  .cem-panel{position:static;box-shadow:none;border:0;background:transparent;padding:0 0 6px 12px;min-width:0}
+  .cem-panel-about{max-height:none}
+}
+@media (max-width:520px){ .cem-brand span{display:none} .cem-burger span{display:none} .cem-head-in{gap:10px} }
+@media print{ .cem-head{display:none!important} }

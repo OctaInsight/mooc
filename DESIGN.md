@@ -95,7 +95,7 @@ same code as the preview. Certificates already issued show the new design too.
 
 Each certificate's and badge's page is `https://mooc.cloudearthi.com/award.html?id=…`, which is also the address
 printed on it for verification and shared on LinkedIn. `tools/build_single_page.py` makes three files to upload into the
-same folder on mooc.cloudearthi.com, with the same names: `upload/new_mooc.html`, `upload/award.html` and
+same folder on mooc.cloudearthi.com, with the same names: `upload/mooc.html`, `upload/award.html` and
 `upload/profile.html`.
 
 On every award page, **Issuer** is the course's project (for example BOOSTalent), or the CloudEARTHi MOOC when the
@@ -104,7 +104,7 @@ certificate and on badges. Badges show their emblem large, so text on an uploade
 
 ## Emails
 
-Links in emails go to the student website at **https://mooc.cloudearthi.com/new_mooc.html** (sign in, My learning,
+Links in emails go to the student website at **https://mooc.cloudearthi.com/mooc.html** (sign in, My learning,
 set or reset the password); each award's own page is `https://mooc.cloudearthi.com/award.html`. Both addresses are set in
 `studio/links.py` and can be changed in the Streamlit secrets (`[mooc] site`, `[mooc] pages`).
 

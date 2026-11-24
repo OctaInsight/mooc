@@ -74,3 +74,14 @@ rule in `footer-bottom.html`. The previous widgets and settings are saved in `wo
   left and the MOOC logo on the right (on phones the text comes first). Its title is hidden (Neve page setting).
 - The redirect from the home page to `/allcourses/` (Redirection rule 1) is switched off, not deleted.
 - The logo on the new MOOC, award and profile pages links to `https://mooc.cloudearthi.com/`.
+
+## Shared menu and mooc.html (24 Nov 2026)
+
+- The student website is now `mooc.html` (was `new_mooc.html`). All links on the WordPress site (menu, footer, Contact
+  us, Partner with us) point to it. Redirection rule 2 sends `/new_mooc.html` to `/mooc.html` (301), so old links in
+  emails keep working once the old file is deleted from the server.
+- The new MOOC, award and profile pages use the same menu as WordPress: Explore courses (All courses and the
+  projects), My learning, Partner with us, About (with Linked websites), Contact us. It lives in
+  `docs/assets/sitehead.html` and `sitehead.css`; `tools/sync_footer.py` copies header and footer into the pages.
+- The WordPress menu "Explore courses" has the same sub-items: All courses, SEEDplus, BOOSTalent, Inspiring the Minds,
+  Mind the Gap.

@@ -26,7 +26,7 @@ Served by GitHub Pages at https://octainsight.github.io/mooc/. To serve it at mo
 Settings → Pages → Custom domain and a CNAME record `mooc` → `octainsight.github.io` at the domain provider.
 
 ### One-file version to upload to another website
-`python tools/build_single_page.py` writes `upload/new_mooc.html` (with `upload/award.html` and `upload/profile.html`): the whole student website in one file (styles,
+`python tools/build_single_page.py` writes `upload/mooc.html` (with `upload/award.html` and `upload/profile.html`): the whole student website in one file (styles,
 script and logo inside). Upload all three with these names into the same folder on mooc.cloudearthi.com; certificate
 and profile links point to https://mooc.cloudearthi.com/award.html and profile.html. Run it again after changing the site.
 
