@@ -1,0 +1,74 @@
+<!--
+  CloudEARTHi MOOC "Contact us" page, for one WordPress "Custom HTML" block (replaces the old Ninja Forms form).
+  The email addresses are written as HTML character codes, so simple spam robots cannot read them; people see and
+  click them normally. No scripts.
+-->
+<div class="cem-contact">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&display=swap" rel="stylesheet">
+<style>
+.cem-contact{--green:#0f3d27;--mid:#127a45;--soft:#e8f3dd;--page:#f4f9ef;--line:#d5e6c8;--quiet:#4a5a4f;
+  max-width:980px;margin:0 auto;padding:8px 0 56px;color:var(--green);font-size:17px;line-height:1.6}
+.cem-contact *{box-sizing:border-box}
+.cem-contact h2,.cem-contact h3{font-family:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;color:var(--green);margin:0;line-height:1.25}
+.cem-contact .cem-lead{font-family:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;font-size:clamp(19px,1rem + .6vw,24px);
+  max-width:34em;margin:0 0 32px}
+.cem-contact .cem-cards{display:grid;grid-template-columns:1.2fr 1fr;gap:22px;margin-bottom:36px}
+.cem-contact .cem-card{background:#fff;border:1px solid var(--line);border-top:5px solid var(--green);border-radius:16px;padding:26px 28px}
+.cem-contact .cem-card.cem-tech{border-top-color:var(--mid)}
+.cem-contact .cem-for{font-size:14px;font-weight:700;color:var(--mid);margin:0 0 6px}
+.cem-contact .cem-card h2{font-size:24px;margin-bottom:4px}
+.cem-contact .cem-role{color:var(--quiet);margin:0 0 18px}
+.cem-contact .cem-topics{margin:0 0 20px;padding-left:20px;color:var(--quiet)}
+.cem-contact .cem-topics li{margin:3px 0}
+.cem-contact a.cem-mail{display:inline-block;background:var(--green);color:#fff;text-decoration:none;font-weight:600;
+  padding:11px 20px;border-radius:999px;word-break:break-all;transition:background-color .15s}
+.cem-contact .cem-tech a.cem-mail{background:var(--mid)}
+.cem-contact a.cem-mail:hover,.cem-contact a.cem-mail:focus{background:#0b2d1d;color:#fff}
+.cem-contact a:focus-visible{outline:3px solid #e0a21c;outline-offset:2px}
+.cem-contact .cem-before{background:var(--soft);border-radius:16px;padding:24px 28px}
+.cem-contact .cem-before h3{font-size:20px;margin-bottom:10px}
+.cem-contact .cem-before ul{margin:0;padding-left:20px}
+.cem-contact .cem-before li{margin:6px 0}
+.cem-contact .cem-before a{color:var(--mid)}
+.cem-contact .cem-reply{margin:22px 0 0;color:var(--quiet)}
+@media (max-width:760px){.cem-contact .cem-cards{grid-template-columns:1fr}.cem-contact .cem-card,.cem-contact .cem-before{padding:22px}}
+</style>
+  <p class="cem-lead">The CloudEARTHi MOOC is coordinated by the CloudEARTHi initiative. Write to us about courses,
+    partnerships or publishing a course, or to Octa Insight for technical help with the platform.</p>
+
+  <div class="cem-cards">
+    <div class="cem-card">
+      <p class="cem-for">Courses, partnerships and publishing</p>
+      <h2>Dr. Tamer Abu-Alam</h2>
+      <p class="cem-role">Coordinator of the CloudEARTHi initiative</p>
+      <ul class="cem-topics">
+        <li>Questions about courses and certificates</li>
+        <li>Publishing a course on the MOOC</li>
+        <li>Partnerships and project cooperation</li>
+      </ul>
+      <a class="cem-mail" href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#116;&#97;&#109;&#101;&#114;&#64;&#99;&#108;&#111;&#117;&#100;&#101;&#97;&#114;&#116;&#104;&#105;&#46;&#99;&#111;&#109;">&#116;&#97;&#109;&#101;&#114;&#64;&#99;&#108;&#111;&#117;&#100;&#101;&#97;&#114;&#116;&#104;&#105;&#46;&#99;&#111;&#109;</a>
+    </div>
+    <div class="cem-card cem-tech">
+      <p class="cem-for">Technical help</p>
+      <h2>Octa Insight</h2>
+      <p class="cem-role">Developer and operator of the platform</p>
+      <ul class="cem-topics">
+        <li>Problems with the website or your account</li>
+        <li>Octa MOOC Studio for teachers and course admins</li>
+      </ul>
+      <a class="cem-mail" href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#111;&#99;&#116;&#97;&#105;&#110;&#115;&#105;&#103;&#104;&#116;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#111;&#99;&#116;&#97;&#105;&#110;&#115;&#105;&#103;&#104;&#116;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a>
+    </div>
+  </div>
+
+  <div class="cem-before">
+    <h3>Before you write</h3>
+    <ul>
+      <li>Can't sign in? Use <a href="https://mooc.cloudearthi.com/new_mooc.html#/forgot">Forgot password</a> to set a new one.</li>
+      <li>Want to check a certificate? Open the link printed on it; every certificate has its own verification page.</li>
+      <li>Thinking of publishing a course? See <a href="https://mooc.cloudearthi.com/partner-with-us/">Partner with us</a> first.</li>
+    </ul>
+  </div>
+  <p class="cem-reply">We usually reply within two working days.</p>
+</div>
