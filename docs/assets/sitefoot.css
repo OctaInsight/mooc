@@ -1,0 +1,48 @@
+/* Site footer: the same as the footer of the WordPress site (wordpress/footer-main.html and footer-bottom.html). */
+/* keep the footer at the bottom of the window on short pages */
+body{min-height:100vh;display:flex;flex-direction:column}
+body>*{flex-shrink:0}
+.cem-site-foot{font-family:Arial,Helvetica,sans-serif;margin-top:auto;padding-top:48px}
+.cem-site-foot>div:first-child{margin-top:0}
+.cem-site-foot .cem-band{background:#0f3d27}
+.cem-site-foot .cem-band-white{background:#ffffff;border-top:0}
+.cem-site-foot .cem-wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+@media print{.cem-site-foot{display:none!important}}
+.cem-foot{--fg:#ffffff;--soft:#cfe6d6;--line:rgba(255,255,255,.18);--hover:#ffd166;font-size:15px;line-height:1.6}
+.cem-foot *{box-sizing:border-box}
+.cem-foot-main{color:var(--fg);padding:44px 0 34px;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:36px}
+.cem-foot-main h2{color:var(--fg);font-size:20px;margin:0 0 8px;line-height:1.3}
+.cem-foot-main h3{color:var(--fg);font-size:15px;font-weight:700;margin:0 0 10px}
+.cem-foot-main p{color:var(--soft);margin:0 0 16px;max-width:320px}
+.cem-foot-main ul{list-style:none;margin:0;padding:0}
+.cem-foot-main li{margin:0 0 7px}
+.cem-foot-main a{color:var(--soft);text-decoration:none}
+.cem-foot-main a:hover,.cem-foot-main a:focus{color:var(--hover);text-decoration:underline}
+.cem-foot-main a:focus-visible{outline:2px solid var(--hover);outline-offset:2px}
+.cem-foot .cem-social{display:flex;gap:10px}
+.cem-foot .cem-social a{display:inline-flex;width:38px;height:38px;border-radius:50%;align-items:center;justify-content:center;
+  border:1px solid var(--line);color:var(--fg);transition:background-color .15s,border-color .15s}
+.cem-foot .cem-social a:hover,.cem-foot .cem-social a:focus{background:var(--fg);border-color:var(--fg);color:#0f3d27;text-decoration:none}
+.cem-foot .cem-social svg{width:18px;height:18px;fill:currentColor}
+.cem-foot .cem-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.cem-foot .cem-studio{display:inline-block;margin-top:6px;padding:7px 14px;border:1px solid var(--soft);border-radius:999px;color:var(--fg)}
+@media (max-width:900px){.cem-foot-main{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.cem-foot-main{grid-template-columns:1fr;gap:26px;padding:32px 0 24px}}
+.cem-foot-bottom{color:#2f3a2f;font-size:14px;line-height:1.55;padding:28px 0 20px}
+.cem-foot-bottom *{box-sizing:border-box}
+.cem-foot-bottom .cem-who{display:grid;grid-template-columns:0.8fr 0.8fr 2.4fr;gap:28px;align-items:start;padding-bottom:22px;border-bottom:1px solid #d5e6c8}
+.cem-foot-bottom .cem-lbl{display:block;font-size:13px;color:#52514e;margin-bottom:6px}
+.cem-foot-bottom img{display:block;height:auto}
+.cem-foot-bottom .cem-ce img{width:150px}
+.cem-foot-bottom .cem-oi img{width:120px}
+.cem-foot-bottom .cem-eu{display:flex;gap:14px;align-items:flex-start}
+.cem-foot-bottom .cem-eu img{width:200px;flex:none}
+.cem-foot-bottom .cem-eu a{flex:none}
+.cem-foot-bottom .cem-eu p{margin:0;font-size:12.5px;color:#52514e}
+.cem-foot-bottom .cem-note{margin:16px 0 0;color:#52514e;max-width:900px}
+.cem-foot-bottom .cem-legal{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:14px;align-items:center}
+.cem-foot-bottom a{color:#127a45}
+.cem-foot-bottom a:hover,.cem-foot-bottom a:focus{color:#0b5a32}
+.cem-foot-bottom a:focus-visible{outline:2px solid #e0a21c;outline-offset:2px}
+@media (max-width:900px){.cem-foot-bottom .cem-who{grid-template-columns:1fr 1fr}.cem-foot-bottom .cem-eu{grid-column:1/-1}}
+@media (max-width:520px){.cem-foot-bottom .cem-who{grid-template-columns:1fr}.cem-foot-bottom .cem-eu{flex-direction:column}}

@@ -16,7 +16,7 @@
 :root{--blue:#2a78d6;--blue-dark:#1d5fae;--bg:#ffffff;--side:#f4f3ef;--line:#e4e3df;--text:#0b0b0b;--muted:#6b6a66;--ok:#1d6b3a;--ok-soft:#e7f5ec;--bad:#a3261b;--bad-soft:#fdecea}
 *{box-sizing:border-box}
 body{margin:0;background:var(--side);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
-header{display:flex;align-items:center;gap:12px;padding:12px 20px;background:#fff;border-bottom:1px solid var(--line)}
+header{display:flex;align-items:center;gap:12px;padding:12px 20px;background:#e8f3dd;border-bottom:3px solid #0f3d27}
 header .brand{font-weight:700}
 header .brand span{color:var(--blue)}
 main{max-width:1060px;margin:0 auto;padding:24px 16px 48px}
@@ -51,6 +51,7 @@ dd{margin:0;word-break:break-all}
   .stage img{border-radius:0;width:100vw;height:100vh;object-fit:contain}
 }
 </style>
+<link rel="stylesheet" href="assets/sitefoot.css">
 </head>
 <body>
 <header><a class="brand" href="index.html" style="text-decoration:none;color:inherit"><img src="assets/logo.png" alt="" style="height:34px;width:auto;display:inline-block;vertical-align:middle;margin-right:8px">CloudEARTHi <span>MOOC</span></a><span class="muted" style="margin-left:auto;font-size:.9rem">Verified award</span></header>
@@ -308,5 +309,75 @@ function drawBadge(a, im, name, date) {
   $("page").classList.remove("hidden");
 })();
 </script>
+<!-- site footer: start -->
+<footer class="cem-site-foot">
+  <div class="cem-band"><div class="cem-wrap"><div class="cem-foot cem-foot-main">
+  <div>
+    <h2>CloudEARTHi MOOC</h2>
+    <p>The online teaching platform of the CloudEARTHi initiative. Every course, certificate and badge is free for learners.</p>
+    <div class="cem-social">
+      <a href="https://www.facebook.com/CloudEARTHi" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.5 2 2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 17 22 12c0-5.5-4.5-10-10-10z"/></svg><span class="cem-sr">CloudEARTHi on Facebook</span></a>
+      <a href="https://x.com/CloudEARTHi" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.8 3h3.1l-6.8 7.7 8 10.3h-6.2l-4.9-6.3L5.4 21H2.3l7.2-8.3L1.8 3h6.4l4.4 5.8L17.8 3zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5z"/></svg><span class="cem-sr">CloudEARTHi on X</span></a>
+      <a href="https://www.linkedin.com/company/80352164" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.7 3H4.3C3.6 3 3 3.6 3 4.3v15.4c0 .7.6 1.3 1.3 1.3h15.4c.7 0 1.3-.6 1.3-1.3V4.3C21 3.6 20.4 3 19.7 3zM8.3 18.3H5.7V9.7h2.7v8.6zM7 8.6c-.9 0-1.5-.7-1.5-1.5S6.1 5.5 7 5.5s1.5.7 1.5 1.5S7.9 8.6 7 8.6zm11.3 9.7h-2.7v-4.2c0-1 0-2.3-1.4-2.3s-1.6 1.1-1.6 2.2v4.2H10V9.7h2.6v1.2c.4-.7 1.2-1.4 2.5-1.4 2.7 0 3.2 1.8 3.2 4.1v4.7z"/></svg><span class="cem-sr">CloudEARTHi on LinkedIn</span></a>
+      <a href="https://www.youtube.com/channel/UC1knTFauWtTuScpfki_Szsg" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.8 8s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.8C16.2 5 12 5 12 5s-4.2 0-7 .2c-.4 0-1.2 0-2 .8-.6.6-.8 2-.8 2S2 9.6 2 11.2v1.5c0 1.6.2 3.2.2 3.2s.2 1.4.8 2c.8.8 1.8.8 2.2.9 1.6.2 6.8.2 6.8.2s4.2 0 7-.2c.4 0 1.2 0 2-.8.6-.6.8-2 .8-2s.2-1.6.2-3.2v-1.5C22 9.6 21.8 8 21.8 8zM9.9 14.6V9l5.4 2.8-5.4 2.8z"/></svg><span class="cem-sr">CloudEARTHi on YouTube</span></a>
+    </div>
+  </div>
+  <nav aria-label="Learn">
+    <h3>Learn</h3>
+    <ul>
+      <li><a href="https://mooc.cloudearthi.com/new_mooc.html#/">All courses</a></li>
+      <li><a href="https://mooc.cloudearthi.com/allcourses/">Course archive</a></li>
+      <li><a href="https://mooc.cloudearthi.com/new_mooc.html#/my">My learning</a></li>
+      <li><a href="https://mooc.cloudearthi.com/new_mooc.html#/signin">Sign in</a></li>
+    </ul>
+  </nav>
+  <nav aria-label="Work with us">
+    <h3>Work with us</h3>
+    <ul>
+      <li><a href="https://mooc.cloudearthi.com/partner-with-us/">Partner with us</a></li>
+      <li><a href="https://mooc.cloudearthi.com/contact-us/">Contact us</a></li>
+      <li><a class="cem-studio" href="https://cloudearthi-mooc.streamlit.app/" target="_blank" rel="noopener">Open Octa MOOC Studio<span class="cem-sr"> (opens in a new tab)</span></a></li>
+    </ul>
+  </nav>
+  <nav aria-label="About">
+    <h3>About</h3>
+    <ul>
+      <li><a href="https://mooc.cloudearthi.com/about-cloudearthi/">CloudEARTHi</a></li>
+      <li><a href="https://mooc.cloudearthi.com/acknowledgment/">Acknowledgment</a></li>
+      <li><a href="https://mooc.cloudearthi.com/partners/">Partners</a></li>
+    </ul>
+  </nav>
+  </div></div></div>
+  <div class="cem-band-white"><div class="cem-wrap"><div class="cem-foot-bottom">
+  <div class="cem-who">
+    <div class="cem-ce">
+      <span class="cem-lbl">Part of the</span>
+      <a href="https://cloudearthi.com/" target="_blank" rel="noopener"><img src="https://cloudearthi.com/wp-content/uploads/2025/04/new-logo.png" alt="CloudEARTHi initiative" width="150" height="30"></a>
+    </div>
+    <div class="cem-oi">
+      <span class="cem-lbl">Runs on Octa MOOC Studio by</span>
+      <a href="https://octainsight.com/mooc" target="_blank" rel="noopener"><img src="https://octainsight.com/wp-content/uploads/2025/03/OctaInsight-Logo.png" alt="Octa Insight" width="120" height="39"></a>
+    </div>
+    <div class="cem-eu">
+      <a href="https://mooc.cloudearthi.com/acknowledgment/"><img src="https://mooc.cloudearthi.com/wp-content/uploads/2026/11/EN_Co-fundedbytheEU_RGB_POS-768x171.png" alt="Co-funded by the European Union" width="200" height="45"></a>
+      <p>The CloudEARTHi MOOC website is co-funded by the European Union and hosts courses developed by different
+        organisations with support from various funders, including the EU (see
+        <a href="https://mooc.cloudearthi.com/acknowledgment/">Acknowledgment</a>). Views and opinions expressed are
+        solely those of the course authors and do not necessarily reflect those of the European Union, the relevant
+        granting authorities, or the CloudEARTHi Initiative and its partner institutions. None of these bodies can be
+        held responsible for those views and opinions.</p>
+    </div>
+  </div>
+  <p class="cem-note">The CloudEARTHi MOOC is the MOOC of the CloudEARTHi initiative (free to use). It runs on Octa MOOC
+    Studio and the Octa database.</p>
+  <div class="cem-legal">
+    <span>© 2023–2026 CloudEARTHi</span>
+    <a href="https://mooc.cloudearthi.com/lp-term-conditions/">Terms and conditions</a>
+    <a href="https://mooc.cloudearthi.com/privacy-policy-2/">Privacy policy</a>
+    <a href="https://mooc.cloudearthi.com/contact-us/">Contact us</a>
+  </div>
+  </div></div></div>
+</footer>
+<!-- site footer: end -->
 </body>
 </html>

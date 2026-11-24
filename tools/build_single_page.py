@@ -26,6 +26,8 @@ def data_uri(path: pathlib.Path) -> str:
 
 
 def inline_common(html: str) -> str:
+    foot = (DOCS / "assets" / "sitefoot.css").read_text(encoding="utf-8")
+    html = html.replace('<link rel="stylesheet" href="assets/sitefoot.css">', f"<style>\n{foot}\n</style>")
     logo, icon = data_uri(DOCS / "assets" / "logo.png"), data_uri(DOCS / "assets" / "favicon.png")
     html = html.replace('src="assets/logo.png"', f'src="{logo}"')
     html = html.replace('href="assets/favicon.png"', f'href="{icon}"').replace('href="assets/apple-touch-icon.png"', f'href="{icon}"')

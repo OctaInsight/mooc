@@ -64,16 +64,16 @@ input:focus, textarea:focus { border-color: var(--blue); outline: none; box-shad
 .msg.note { background: var(--glacier); color: var(--ink); }
 
 /* ------------------------------------------------------------------ header */
-.top { position: sticky; top: 0; z-index: 30; background: rgba(255, 255, 255, .92); backdrop-filter: saturate(1.4) blur(10px);
-  border-bottom: 1px solid var(--line); }
+.top { position: sticky; top: 0; z-index: 30; background: rgba(232, 243, 221, .96); backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom: 3px solid #0f3d27; }
 .top .wrap { display: flex; align-items: center; gap: 22px; height: 66px; }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font: 700 1.12rem var(--display); }
 .brand img { width: auto; height: 42px; }
 .brand b { color: var(--blue); font-weight: 700; }
 .nav { display: flex; gap: 4px; }
 .nav a { text-decoration: none; color: var(--ink-soft); font-weight: 600; padding: 8px 12px; border-radius: 999px; }
-.nav a:hover { color: var(--ink); background: var(--glacier); }
-.nav a.on { color: var(--blue); background: var(--glacier); }
+.nav a:hover { color: var(--ink); background: #ffffff; }
+.nav a.on { color: var(--blue); background: #ffffff; }
 .account { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 .avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center;
   font: 700 .95rem var(--display); border: 0; cursor: pointer; }
