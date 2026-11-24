@@ -1,11 +1,24 @@
-{"hfg_header_layout_bottom_background":{"colorValue":"#606f54","type":"color"},
- "hfg_header_layout_bottom_new_text_color":"var(--nv-site-bg)",
- "hfg_header_layout_bottom_bottom_border":"{ \"mobile\": \"0\", \"tablet\": \"0\", \"desktop\": \"0\" }",
- "hfg_header_layout_bottom_border_color":"#6e7565",
- "hfg_header_layout_main_background":{"colorValue":"#606f54","type":"color"},
- "hfg_header_layout_main_new_text_color":"#000000",
- "hfg_header_layout_main_bottom_border":"{ \"mobile\": \"0\", \"tablet\": \"0\", \"desktop\": \"0\" }",
- "hfg_header_layout_main_border_color":"var(--nv-light-bg)",
- "primary-menu_active_color":"var(--nv-primary-accent)",
- "primary-menu_hover_color":"var(--nv-secondary-accent)",
- "page_on_front":445, "redirection_rule":"id 1: / -> /allcourses/ (302), plugin Redirection 5.10.1 installed 24 Nov 2026"}
+{
+ "hfg_header_layout_bottom_background": {
+  "colorValue": "#606f54",
+  "type": "color"
+ },
+ "hfg_header_layout_bottom_new_text_color": "var(--nv-site-bg)",
+ "hfg_header_layout_bottom_bottom_border": "{ \"mobile\": \"0\", \"tablet\": \"0\", \"desktop\": \"0\" }",
+ "hfg_header_layout_bottom_border_color": "#6e7565",
+ "hfg_header_layout_main_background": {
+  "colorValue": "#606f54",
+  "type": "color"
+ },
+ "hfg_header_layout_main_new_text_color": "#000000",
+ "hfg_header_layout_main_bottom_border": "{ \"mobile\": \"0\", \"tablet\": \"0\", \"desktop\": \"0\" }",
+ "hfg_header_layout_main_border_color": "var(--nv-light-bg)",
+ "primary-menu_active_color": "var(--nv-primary-accent)",
+ "primary-menu_hover_color": "var(--nv-secondary-accent)",
+ "page_on_front": 445,
+ "redirection_rule": "id 1: / -> /allcourses/ (302), plugin Redirection 5.10.1 installed 24 Nov 2026",
+ "hfg_header_layout_top_background": {
+  "colorValue": "var(--nv-site-bg)",
+  "type": "color"
+ }
+}
