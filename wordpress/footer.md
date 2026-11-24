@@ -50,3 +50,10 @@ other on a phone), and a white part with the logos, the EU statement and the leg
 - The year in "© 2023–2026 CloudEARTHi" is plain text: change it at the start of each year.
 - The EU emblem now comes with its disclaimer and the explanation that it applies to courses from EU-funded projects,
   as the EU's rules require, and links to the Acknowledgment page.
+
+## Done on 24 Nov 2026
+
+The footer above was put in place directly on mooc.cloudearthi.com: Footer One and Two hold the new HTML (block-9 and
+block-15), the old Footer Three/Four blocks were moved to *Inactive widgets* (block-16, block-10, block-17), and the
+Customizer layout and colours were set as described. The theme's "Neve | Powered by WordPress" line is hidden by a CSS
+rule in `footer-bottom.html`. The previous widgets and settings are saved in `wordpress/backup/` to go back if needed.
