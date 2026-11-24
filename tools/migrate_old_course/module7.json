@@ -1,0 +1,220 @@
+{
+ "source": "mooc.cloudearthi.com, Academy LMS course 373, read 24 Nov 2026",
+ "course": {
+  "old_id": 373,
+  "title": "Financial analysis – part 1 (Module7)",
+  "category": "SEEDplus courses",
+  "description_html": "<p>Welcome to this module, where we delve into the intricate art and science of financial analysis within an organization. Financial analysis is the cornerstone of business decision-making, guiding executives, managers, and investors in understanding a company's health and potential for growth. Here's a brief overview of what you can expect from this module:</p>\n<ol><li><strong>Organizational Blueprint for Financial Analysis</strong>: Before diving deep into the analysis itself, it's essential to have a structured plan. This module will introduce you to the foundational frameworks and strategies companies employ to conduct robust financial assessments.</li>\n<li><strong>Key Business Indicators</strong>: It's vital to know which metrics and indicators provide a genuine reflection of a company's state and activities. We'll explore these crucial indicators, helping you decipher what they reveal about a business's performance and potential.</li>\n<li><strong>Interdependencies of Key Indicators</strong>: In the business world, nothing operates in isolation. The various metrics and indicators are interlinked, with shifts in one often influencing others. Through practical examples and case studies, we will illustrate these relationships and dependencies, offering you a holistic view of business finance.</li>\n<li><strong>Start-up Companies - A Unique Investment Perspective</strong>: The modern business landscape is teeming with start-ups, each promising innovation and growth. But how do you assess their viability as an investment opportunity? This module will shine a light on the unique challenges and potentials of start-ups, equipping you with the knowledge to make rational and informed investment decisions.</li></ol>\n<p>By the end of this module, you'll be equipped with a comprehensive understanding of financial analysis, its importance in today's business environment, and its application in assessing both established and emerging companies. Let's embark on this enlightening journey together!</p>",
+  "image_url": "https://mooc.cloudearthi.com/wp-content/uploads/2023/10/Financial-planning.jpg",
+  "topic_title": "Criteria for classifying costs by type",
+  "topic_summary": "The module examines the criteria for classifying costs by type. The features of the classified costs are considered. The types of cost, as well as their formation, are presented. Funds and opportunities for investing in start-up companies were examined."
+ },
+ "lessons": [
+  {
+   "old_id": 118,
+   "title": "Calculation of costs and cost of the product or service",
+   "html": "\n<p>In order to proceed with costing and costing, it is first necessary to clarify their nature and classification.</p>\n<p><strong><em>Classification of costs</em></strong></p>\n<p>Costs considered in general, as an economic category, are always associated with a certain period of time and the reduction in economic benefit that occurred during it - a decrease in assets, an increase in liabilities, which in turn leads to a decrease in the equity capital of the business organization [1]. In order to be able to classify the indicated reduction in economic benefit (costs over a period of time) it is necessary to apply different criteria, as follows [1]:</p>\n<ol type=\"1\">\n<li>Costs related to the activity:</li>\n</ol>\n<ul>\n<li>Costs for the main activity, which include: costs of economic elements; financial costs; Adjustment amounts; </li>\n<li>Exceptional costs.</li>\n</ul>\n<p></p>\n<p>Costs of economic elements are a type of cost that the Republic of Bulgaria companies are obliged to report. These costs are grouped according to their nature, such as: depreciation costs; costs for external services; costs of materials and others. The criteria by which these costs are grouped are determined independently by each enterprise.</p>\n<p></p>\n<p>Financial expenses are grouped into the following groups: negative differences from operations with financial assets; negative differences from changes in exchange rates; interest expenses and others.</p>\n<p></p>\n<p>The amounts of a corrective nature are grouped into the following groups: balance sheet values of the assets sold; costs for the acquisition and liquidation of fixed assets in an economic manner, changes in stocks of production and work in progress, and others [1].</p>\n<p></p>\n<p>Extraordinary expenses of an unusual nature and they arise not at the will of the entrepreneur. These are incidental expenses that are usually the result of natural disasters or other similar unusual situations.</p>\n<p></p>\n<p>A. According to the way in which costs are present in the cost of production or service:</p>\n<ul>\n<li><strong>Direct costs</strong>: are included directly in the cost of production;</li>\n<li><strong>Indirect costs</strong>: do not directly participate in the formation of the cost of production. These costs are included in the cost of production, being previously distributed by applying criteria – production quanitity; types of production.</li>\n</ul>\n<p></p>\n<p>B. According to the period to which they refer, the costs are divided into:</p>\n<ul>\n<li><strong>Actual</strong>: actually reported values of costs;</li>\n<li><strong>Estimated</strong>: are defined as a value at the beginning of the reporting period. Their value is used to control and manage the reported cost figures.</li>\n</ul>\n<p></p>\n<p>C. According to the value expression of the expenditure:</p>\n<ul type=\"A\">\n<li><strong>Full</strong>: this is a total amount of a given type of expense;</li>\n<li><strong>Average</strong>: these are costs per unit of production;</li>\n<li><strong>Marginal</strong>: costs resulting from the production of one additional unit of production, after the volume of production has already been reached.</li>\n</ul>\n<p></p>\n<p>D. According to their relationship with the output:</p>\n<ul>\n<li><strong>Variables</strong>: they do not depend on whether production is produced or not, as well as on the increase in the volume of the latter;</li>\n<li><strong>Permanent</strong>: their amount depends on the volume of production, such as: materials, wages of workers.</li>\n</ul>\n<p></p>\n<p>The distribution of fixed and varying costs in the cost price of each manufactured product is carried out on the basis of the normal capacity (average production under normal conditions over several periods of time) of production. According to the accounting standards in force in Bulgaria, variable and fixed costs are distributed as follows:</p>\n<ol type=\"1\">\n<li><strong>When a low production volume is reached</strong>: In this situation, it is possible that high fixed costs will lead to an increase in the cost of production. This results in fixed costs reaching a significant share of total costs or even possibly exceeding the volume of variable costs. In order to avoid this increase, it is accepted that fixed costs are accounted for in accounting, as other current costs for the accounting period;</li>\n<li><strong>When a high volume of production is reached during the reporting period</strong>: Here we have the reverse of the previous situation – the share of fixed costs decreases, as well as its value in each produced unit of output. For this reason and in this situation, fixed costs are assumed to be distributed over the units of output produced for the accounting period.</li>\n</ol>\n<p></p>\n<p><em>In Bulgaria, it is regulated that the distribution of variable costs is carried out on the basis of the actual use of the production facilities.</em></p>\n<p></p>\n<p>The total costs (variable and fixed) are distributed over the produced units of production, using as a basis the relative share of the sales value of each unit of production in the total fair value of the production based on previously developed coefficients. It is necessary to consider the determination of the value of the by-products as well. Their assessment is based on net market value, which is reduced by the formed value of the main products.</p>\n"
+  },
+  {
+   "old_id": 119,
+   "title": "Cost",
+   "html": "\n<p>Cost is defined as an assessment of the assets produced in the business organization, which does not include the following costs: administrative costs; cost of sales; financial costs and extraordinary costs [1]. The specified costs are reported as current for the period in which they are incurred.</p>\n<p></p>\n<p>The cost price of the services provided by the business organization is determined by the labor and insurance costs of the employees engaged in providing the service, and to these costs is added the corresponding part of the total costs incurred for the service.</p>\n<p></p>\n<p>In Bulgaria, business organizations have the freedom to create their own cost accounting organization, as well as the way in which they will form their cost price, but this must be done within the framework of the accounting standards in force in the country. The opportunity thus provided allows the business to take into account the specifics of its activities and the manufactured products. It is a mandatory condition that the cost accounting organization created by the business is described in the accounting policy of the enterprise, which cannot be changed in the next accounting period.</p>\n<p></p>\n<p>The cost price presented so far is the basis for calculating the commercial and full cost price. The commercial cost is formed by adding the cost of sales to the cost formed so far, and the full cost is formed by adding the administrative costs to the commercial cost. The total cost formed in this way is the basis for the formation and analysis of numerous indicators that are part of the financial analysis.</p>\n"
+  },
+  {
+   "old_id": 120,
+   "title": "Investments that a startup can receive",
+   "html": "\n<p><strong><em>Business angels</em></strong></p>\n<p>These are individuals who invest in early stages of start-up development. The invested funds are the property of the business angel. In addition to the invested funds, the business angel is directly involved in the development of the company, providing mentoring and participating in the management and.</p>\n<p></p>\n<p><strong><em>Startup Accelerator</em></strong></p>\n<p>These are programs supporting start-up companies. The support is expressed in the provision of initial capital, mentoring and partnership. This support is extremely useful for tech startups, but this support is from a program and is tied to a time period and other conditions.</p>\n<p></p>\n<p><strong><em>Venture and private equity funds</em></strong></p>\n<p>These funds have significant opportunities to support startups. When providing financing, these funds enter into equity participation for a certain period of time. In addition to financing, the funds offer mentorship and direct involvement in the company's management, thereby further supporting the company's development. The funds primarily finance start-up companies that have not yet been listed on the stock exchanges and have not started issuing shares.</p>\n<p></p>\n<p>So far there were common features between the two funds, let's now present the specific ones:</p>\n<p>A. Venture capital funds:</p>\n<ul>\n<li>Invest in start-up companies at a very early stage of their development;</li>\n<li>They invest in a large number of companies, but not in large shares. In this way, they form a venture portfolio of start-up companies. It is assumed that the portfolio is sufficiently well balanced and the few successful startups will bring a benefit that will cover and exceed the investments made in failed startups. First of all, it invests in start-up companies that have the potential and expectation of extremely fast growth, which is also one of the characteristic features of start-up companies;</li>\n</ul>\n<p></p>\n<p>B. Private equity funds:</p>\n<ul>\n<li>These funds invest at a later stage of the development of start-up companies, which implies investments with lower risk;</li>\n<li>Private equity funds invest in a smaller number of companies by investing in larger shares;</li>\n<li>The more advanced stage of development of the companies in which these funds invest suggests that rapid/explosive growth is impossible and cannot be expected as a result of the investment;</li>\n<li>With these funds, the investment is not primarily invested in technological companies, but companies with the necessary potential for success from various industries and branches are considered.</li>\n</ul>\n<p></p>\n<p><strong><em>Fund of funds</em></strong></p>\n<p>According to information published on the website of the Fund of Funds, the funds it provides for Bulgaria, under operational programs for the last program period, amount to BGN 1.2 billion [2]. Funds are provided under operational programs: \"Innovation and Competitiveness\", \"Human Resources Development\", \"Environment\", \"Growth Regions\", \"Rural Development Programme\", \"Maritime and Fisheries Programme\". Part of these funds are for grant funding, which makes the Fund of Funds a financing instrument with a significant impact on the development of business, the environment and the regions. Funds are directed to projects that can develop sustainability over time, i.e. have the potential to become self-sustaining after the completion of the project and program support.</p>\n<p></p>\n<p>The funds from the fund are provided through various financial institutions, which manage to attract additional private capital (loans, leases, etc.) into the financing, which leads to synergy in terms of the achieved financing effect.</p>\n<p></p>\n<p><strong><em>Acceleration and Seed Fund - part of the Fund of Funds</em></strong></p>\n<p>This fund focuses on supporting start-up companies that are newly established and have not yet established themselves on the market. Entrepreneurial business models based on knowledge and ensuring sustainability are supported. The fund functions as an instrument providing equity financing. The funds provided by the fund through the operational program \"Innovations and Competitiveness\" amount to BGN 103.3 million.</p>\n<p></p>\n<p><strong><em>Venture capital fund</em></strong></p>\n<p>This fund manages and provides public funds in the amount of BGN 47.1 million. The specifics of funding through this type of background requires applicants to also provide private funding. For this purpose, the Fund of Funds can provide through the financial intermediaries this financing, both for the funds and for the final recipients of the funds.</p>\n<p></p>\n<p>Equity financing provided by the fund is focused on high-tech small and medium-sized enterprises that are now starting up and starting to develop their activities. The fund provides its support during the first five years of the start-up of the business, and the aim is to provide support during the most critical years for the survival of the business.</p>\n<p></p>\n<p><strong><em>Municipal Guarantee Fund</em></strong> This fund functions as a guarantee, providing loan guarantees to small and medium-sized enterprises with good innovative projects. The fund was created by the Sofia Municipality and supports small and medium-sized enterprises on the territory of the municipality. According to data from the fund's website, the following support for businesses is currently provided [3]:</p>\n<ul>\n<li>Number of supported small and medium enterprises – 635;</li>\n<li>Guaranteed loans worth BGN 117 million;</li>\n<li>Guaranteed commitment of BGN 31 million.</li>\n</ul>\n<p></p>\n<p><strong><em>Other funds and programs operating on the territory of the Republic of Bulgaria</em></strong></p>\n<p>The number of funds and programs that support start-up and developing businesses is increasing. Some of these funds are:</p>\n<ul>\n<li>https://launchub.com/</li>\n<li>https://www.morningsidehill.com/home-bg</li>\n<li>https://www.vitosha.vc/</li>\n<li>https://www.usegforce.com/companies</li>\n<li>https://fasttrack.vc/</li>\n<li>https://lisbon.impacthub.net/</li>\n<li>https://hubcriativobeato.com/en/home/#</li>\n</ul>\n"
+  },
+  {
+   "old_id": 121,
+   "title": "Self-reflection",
+   "html": "\n<p><strong>Open questions</strong><strong>:</strong></p>\n<ol type=\"1\">\n<li>What do you understand by the term cost?</li>\n<li>What types of cost do you know?</li>\n<li>What criteria for classifying costs do you know?</li>\n<li>What do you understand by Strat up Accelerator?</li>\n<li>What do you understand by venture capital fund?</li>\n<li>What role does a fund of funds play?</li>\n</ol>\n"
+  },
+  {
+   "old_id": 122,
+   "title": "Literature:",
+   "html": "\n<ol type=\"1\">\n<li>Rosica, I., Liubomir, T.”Financial and economic analysis”, Trakia-M, 2008, p. 623</li>\n<li>https://www.fmfib.bg/ (Date of access: 25.09.2023)</li>\n<li>https://ogf-sofia.com/ (Date of access: 25.09.2023)</li>\n</ol>\n"
+  }
+ ],
+ "quiz": {
+  "old_id": 374,
+  "passing_grade": 60,
+  "questions": [
+   {
+    "q": "1. What types of expenses are the expenses related to the company's activity divided into?",
+    "answers": [
+     {
+      "t": "d) Costs of main activity and extraordinary costs;",
+      "ok": true
+     },
+     {
+      "t": "e) All of the above.",
+      "ok": false
+     },
+     {
+      "t": "b) Operating expenses and extraordinary expenses;",
+      "ok": false
+     },
+     {
+      "t": "a) Costs for basic processing and extraordinary costs;",
+      "ok": false
+     },
+     {
+      "t": "c) Expenses for services and main activity;",
+      "ok": false
+     }
+    ]
+   },
+   {
+    "q": "2. Which of the mentioned costs can be included in the production cost?",
+    "answers": [
+     {
+      "t": "d) Indirect and direct costs;",
+      "ok": true
+     },
+     {
+      "t": "b) Direct and marginal;",
+      "ok": false
+     },
+     {
+      "t": "a) Direct and permanent;",
+      "ok": false
+     },
+     {
+      "t": "e) None of the above.",
+      "ok": false
+     },
+     {
+      "t": "c) Direct and average costs;",
+      "ok": false
+     }
+    ]
+   },
+   {
+    "q": "3. What types of expenses do you know, according to the period to which they relate?",
+    "answers": [
+     {
+      "t": "a) Predictive and long-term;",
+      "ok": false
+     },
+     {
+      "t": "d) Predictive and factual;",
+      "ok": true
+     },
+     {
+      "t": "c) Short-term and those with immediate effect;",
+      "ok": false
+     },
+     {
+      "t": "b) Short-term and long-term;",
+      "ok": false
+     },
+     {
+      "t": "e) None of the above.",
+      "ok": false
+     }
+    ]
+   },
+   {
+    "q": "4. What types of expenses do you know according to their value expression?",
+    "answers": [
+     {
+      "t": "a) Full, average and marginal;",
+      "ok": true
+     },
+     {
+      "t": "e) None of the above.",
+      "ok": false
+     },
+     {
+      "t": "d) Average, marginal and constant;",
+      "ok": false
+     },
+     {
+      "t": "b) Full, indirect and marginal;",
+      "ok": false
+     },
+     {
+      "t": "c) Full, marginal and factual;",
+      "ok": false
+     }
+    ]
+   },
+   {
+    "q": "5. What types of costs do you know according to their relationship with the output?",
+    "answers": [
+     {
+      "t": "a) Variables and conditional variables;",
+      "ok": false
+     },
+     {
+      "t": "c) Costs related to production capacity;",
+      "ok": false
+     },
+     {
+      "t": "d) Variables and marginals;",
+      "ok": false
+     },
+     {
+      "t": "e) Variables and constants.",
+      "ok": true
+     },
+     {
+      "t": "b) Permanent and marginal;",
+      "ok": false
+     }
+    ]
+   },
+   {
+    "q": "6. How is the full cost formed?",
+    "answers": [
+     {
+      "t": "b) By adding fixed costs to the commercial cost;",
+      "ok": false
+     },
+     {
+      "t": "d) By adding the cost of services to the commercial prime cost;",
+      "ok": false
+     },
+     {
+      "t": "a) As the commercial cost is divided by the output;",
+      "ok": false
+     },
+     {
+      "t": "c) By adding service and repair costs to the cost price;",
+      "ok": false
+     },
+     {
+      "t": "e) By adding administrative costs to the commercial prime cost.",
+      "ok": true
+     }
+    ]
+   },
+   {
+    "q": "7. What does the Strat up Accelerator provide to startups?",
+    "answers": [
+     {
+      "t": "d) Share capital;",
+      "ok": false
+     },
+     {
+      "t": "e) None of the above.;",
+      "ok": false
+     },
+     {
+      "t": "b) Mentoring only;",
+      "ok": false
+     },
+     {
+      "t": "a) Seed capital, mentoring and partnership;",
+      "ok": true
+     },
+     {
+      "t": "c) Joint entry into new markets;",
+      "ok": false
+     }
+    ]
+   }
+  ]
+ }
+}
