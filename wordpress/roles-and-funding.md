@@ -41,11 +41,21 @@ Learners never pay on the CloudEARTHi MOOC.
 - The organisation decides whether learners pay. Payments go straight to the organisation, which as the seller
   charges and pays the VAT on course sales. Octa invoices only for building and running the MOOC.
 
-## 4. EU funding
+## 4. EU funding and history (as on the Acknowledgment page)
 
-- Courses made in EU-funded projects carry the EU emblem, "Co-funded by the European Union" and the disclaimer,
-  on the course, its project pages and the Acknowledgement page. They stay free for learners.
-- The platform itself (Octa MOOC Studio and the running of the MOOC) is not EU-funded; it is paid for by Octa Insight.
+- The CloudEARTHi MOOC student website was established in 2023–2024 with funding from BOOSTalent (project 10048,
+  EIT HEI Initiative); its operating costs in 2025 were covered by Inspiring the Minds (Erasmus+ KA2,
+  2022-1-NO01-KA220-HED-000087789); from 2026 it is fully covered by Octa Insight's own resources.
+- Octa MOOC Studio and the Octa database are funded only and exclusively by Octa Insight AS, with no contribution from
+  any EU project.
+- Courses come from BOOSTalent (EIT HEI Initiative, EIT RawMaterials), Inspiring the Minds (Erasmus+ KA2, Norwegian
+  Directorate for Higher Education and Skills), SEEDplus (Horizon Europe 101100494, EISMEA) and Mind the Gap
+  (Horizon Europe 101215579, EISMEA).
+- Funding statement with the EU emblem: "The CloudEARTHi MOOC website is co-funded by the European Union and hosts
+  courses developed by different organisations with support from various funders, including the EU. Views and
+  opinions expressed are solely those of the course authors and do not necessarily reflect those of the European
+  Union, the relevant granting authorities, or the CloudEARTHi Initiative and its partner institutions. None of these
+  bodies can be held responsible for those views and opinions."
 
 ## Short statement (footer, page notes)
 

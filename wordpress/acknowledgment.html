@@ -1,0 +1,101 @@
+<!--
+  CloudEARTHi MOOC "Acknowledgment" page, for one WordPress "Custom HTML" block (page /acknowledgment/).
+-->
+<div class="cem-legal-page">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..700&display=swap" rel="stylesheet">
+<style>
+.cem-legal-page{--green:#0f3d27;--mid:#127a45;--soft:#e8f3dd;--line:#d5e6c8;--quiet:#4a5a4f;
+  max-width:780px;margin:0 auto;padding:8px 0 64px;color:#1d2a22;
+  font-family:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;font-size:17.5px;line-height:1.65}
+.cem-legal-page *{box-sizing:border-box}
+.cem-legal-page h1,.cem-legal-page h2,.cem-legal-page h3{font-family:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  color:var(--green);line-height:1.25;margin:0}
+.cem-legal-page h1{font-size:clamp(30px,1.4rem + 1.6vw,42px);margin:8px 0 6px}
+.cem-legal-page .cem-updated{color:var(--quiet);margin:0 0 26px;font-size:15px}
+.cem-legal-page .cem-intro{background:var(--soft);border-radius:14px;padding:20px 24px;margin:0 0 34px}
+.cem-legal-page .cem-intro p{margin:0 0 10px}.cem-legal-page .cem-intro p:last-child{margin:0}
+.cem-legal-page h2{font-size:23px;margin:38px 0 10px;padding-top:6px;border-top:1px solid var(--line)}
+.cem-legal-page h3{font-size:18px;margin:20px 0 6px}
+.cem-legal-page p{margin:0 0 12px}
+.cem-legal-page ul{margin:0 0 14px;padding-left:22px}.cem-legal-page li{margin:5px 0}
+.cem-legal-page a{color:var(--mid)}
+.cem-legal-page a:focus-visible{outline:3px solid #e0a21c;outline-offset:2px}
+.cem-legal-page table{width:100%;border-collapse:collapse;margin:6px 0 16px;font-size:16px}
+.cem-legal-page th,.cem-legal-page td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+.cem-legal-page th{font-family:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;color:var(--green);background:var(--soft)}
+@media (max-width:640px){.cem-legal-page{font-size:16.5px}.cem-legal-page table,.cem-legal-page tbody,.cem-legal-page tr,
+  .cem-legal-page td{display:block}.cem-legal-page thead{display:none}
+  .cem-legal-page td{border:0;padding:4px 0}.cem-legal-page tr{border-bottom:1px solid var(--line);padding:10px 0}
+  .cem-legal-page td:first-child{font-weight:700;color:var(--green)}}
+.cem-legal-page .cem-parts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:14px 0 18px}
+.cem-legal-page .cem-part{border:1px solid var(--line);border-top:4px solid var(--mid);border-radius:12px;padding:16px 18px;background:#fff}
+.cem-legal-page .cem-part h3{margin:0 0 6px;font-size:17px}
+.cem-legal-page .cem-part p{margin:0;font-size:15.5px;color:var(--quiet)}
+.cem-legal-page .cem-part.cem-octa{border-top-color:var(--green)}
+.cem-legal-page .cem-time{list-style:none;padding:0;margin:10px 0 16px;border-left:3px solid var(--line)}
+.cem-legal-page .cem-time li{position:relative;padding:4px 0 14px 22px;margin:0}
+.cem-legal-page .cem-time li::before{content:"";position:absolute;left:-8px;top:10px;width:13px;height:13px;border-radius:50%;background:var(--mid);border:2px solid #fff}
+.cem-legal-page .cem-time b{display:block;font-family:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;color:var(--green);font-size:18px}
+.cem-legal-page .cem-funders li{margin:10px 0}
+.cem-legal-page .cem-eu{display:flex;gap:18px;align-items:flex-start;background:var(--soft);border-radius:14px;padding:20px 22px;margin-top:10px}
+.cem-legal-page .cem-eu img{width:220px;max-width:40%;height:auto;flex:none}
+.cem-legal-page .cem-eu p{margin:0}
+@media (max-width:700px){.cem-legal-page .cem-parts{grid-template-columns:1fr}.cem-legal-page .cem-eu{flex-direction:column}.cem-legal-page .cem-eu img{max-width:220px}}
+</style>
+<h1>Acknowledgment</h1>
+
+<div class="cem-intro">
+  <p>We thank the funders and partners whose support built the CloudEARTHi MOOC and its courses. This page explains how
+    the MOOC is made up, who has funded each part over the years, and which projects funded the courses it hosts.</p>
+</div>
+
+<h2>1. How the CloudEARTHi MOOC is built</h2>
+<p>The CloudEARTHi MOOC is made up of three parts:</p>
+<div class="cem-parts">
+  <div class="cem-part"><h3>CloudEARTHi MOOC</h3><p>The student website where learners join courses, learn and receive
+    certificates and badges. It runs on the Octa database and is managed with Octa MOOC Studio.</p></div>
+  <div class="cem-part cem-octa"><h3>Octa MOOC Studio</h3><p>The tool used to build the courses and run the MOOC: courses,
+    learners, teachers, certificates and badges.</p></div>
+  <div class="cem-part cem-octa"><h3>Octa database</h3><p>The database that stores the courses, learners, progress and
+    awards behind the MOOC.</p></div>
+</div>
+<p><strong>The Octa database and Octa MOOC Studio are funded only and exclusively by Octa Insight AS, with no contribution
+  from any EU project.</strong> The CloudEARTHi MOOC student website has a longer history, set out below.</p>
+
+<h2>2. History of the CloudEARTHi MOOC student website</h2>
+<ul class="cem-time">
+  <li><b>2023–2024</b>The CloudEARTHi MOOC was established with funding from the BOOSTalent project (project number
+    10048, EIT HEI Initiative).</li>
+  <li><b>2025</b>The operating costs of the MOOC were covered by the Inspiring the Minds project (project number
+    2022-1-NO01-KA220-HED-000087789), funded by Erasmus+ under Key Action 2.</li>
+  <li><b>2026</b>The MOOC is fully covered by Octa Insight's own resources, with no contribution from any project.</li>
+</ul>
+
+<h2>3. Funding of the courses</h2>
+<p>The courses on the CloudEARTHi MOOC were developed in different projects, funded as follows:</p>
+<ul class="cem-funders">
+  <li><strong>BOOSTalent</strong> (project number 10048) was funded by the EIT HEI Initiative, under the administration
+    and support of EIT RawMaterials.</li>
+  <li><strong>Inspiring the Minds</strong> (project number 2022-1-NO01-KA220-HED-000087789) is funded by Erasmus+ under
+    Key Action 2 (Cooperation among organisations and institutions). It is administered and supported by the Norwegian
+    Directorate for Higher Education and Skills.</li>
+  <li><strong>SEEDplus</strong> is funded by Horizon Europe (grant agreement ID 101100494) and falls under the
+    administration of EISMEA, the European Innovation Council and SMEs Executive Agency.</li>
+  <li><strong>Mind the Gap</strong> is funded by Horizon Europe (grant agreement ID 101215579) and falls under the
+    administration of EISMEA, the European Innovation Council and SMEs Executive Agency.</li>
+</ul>
+<p>Each course names the project it comes from on its course page.</p>
+
+<h2>4. Funding statement and disclaimer</h2>
+<div class="cem-eu">
+  <img src="https://mooc.cloudearthi.com/wp-content/uploads/2026/11/EN_Co-fundedbytheEU_RGB_POS-768x171.png"
+    alt="Co-funded by the European Union" width="220" height="49">
+  <p>The CloudEARTHi MOOC website is co-funded by the European Union and hosts courses developed by different
+    organisations with support from various funders, including the EU. Views and opinions expressed are solely those of
+    the course authors and do not necessarily reflect those of the European Union, the relevant granting authorities,
+    or the CloudEARTHi Initiative and its partner institutions. None of these bodies can be held responsible for those
+    views and opinions.</p>
+</div>
+</div>
