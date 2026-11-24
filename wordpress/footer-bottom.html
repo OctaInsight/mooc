@@ -1,0 +1,52 @@
+<!--
+  CloudEARTHi MOOC footer, part 2 of 2: the white part (who runs the MOOC, EU funding, legal links).
+  Goes into the "Footer Two" widget area as a Custom HTML block (Appearance -> Widgets). See wordpress/footer.md.
+  Styles are scoped to .cem-foot-bottom. No scripts.
+-->
+<div class="cem-foot-bottom">
+<style>
+.cem-foot-bottom{color:#2f3a2f;font-size:14px;line-height:1.55;padding:28px 0 20px}
+.cem-foot-bottom *{box-sizing:border-box}
+.cem-foot-bottom .cem-who{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:28px;align-items:start;padding-bottom:22px;border-bottom:1px solid #d5e6c8}
+.cem-foot-bottom .cem-lbl{display:block;font-size:13px;color:#52514e;margin-bottom:6px}
+.cem-foot-bottom img{display:block;height:auto}
+.cem-foot-bottom .cem-ce img{width:150px}
+.cem-foot-bottom .cem-oi img{width:120px}
+.cem-foot-bottom .cem-eu{display:flex;gap:14px;align-items:flex-start}
+.cem-foot-bottom .cem-eu img{width:170px;flex:none}
+.cem-foot-bottom .cem-eu p{margin:0;font-size:12.5px;color:#52514e}
+.cem-foot-bottom .cem-note{margin:16px 0 0;color:#52514e;max-width:900px}
+.cem-foot-bottom .cem-legal{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:14px;align-items:center}
+.cem-foot-bottom a{color:#127a45}
+.cem-foot-bottom a:hover,.cem-foot-bottom a:focus{color:#0b5a32}
+.cem-foot-bottom a:focus-visible{outline:2px solid #e0a21c;outline-offset:2px}
+@media (max-width:900px){.cem-foot-bottom .cem-who{grid-template-columns:1fr 1fr}.cem-foot-bottom .cem-eu{grid-column:1/-1}}
+@media (max-width:520px){.cem-foot-bottom .cem-who{grid-template-columns:1fr}.cem-foot-bottom .cem-eu{flex-direction:column}}
+</style>
+  <div class="cem-who">
+    <div class="cem-ce">
+      <span class="cem-lbl">Part of the</span>
+      <a href="https://cloudearthi.com/" target="_blank" rel="noopener"><img src="https://cloudearthi.com/wp-content/uploads/2025/04/new-logo.png" alt="CloudEARTHi initiative" width="150" height="30"></a>
+    </div>
+    <div class="cem-oi">
+      <span class="cem-lbl">Runs on Octa MOOC Studio by</span>
+      <a href="https://octainsight.com/mooc" target="_blank" rel="noopener"><img src="https://octainsight.com/wp-content/uploads/2025/03/OctaInsight-Logo.png" alt="Octa Insight" width="120" height="39"></a>
+    </div>
+    <div class="cem-eu">
+      <a href="https://mooc.cloudearthi.com/acknowledgment/"><img src="https://mooc.cloudearthi.com/wp-content/uploads/2026/11/EN_Co-fundedbytheEU_RGB_POS.png" alt="Co-funded by the European Union" width="170" height="38"></a>
+      <p>Courses from EU-funded projects are co-funded by the European Union; each such course names its project and
+        funding (see <a href="https://mooc.cloudearthi.com/acknowledgment/">Acknowledgment</a>). Views and opinions
+        expressed are those of the author(s) only and do not necessarily reflect those of the European Union or the
+        granting authority. Neither the European Union nor the granting authority can be held responsible for them.</p>
+    </div>
+  </div>
+  <p class="cem-note">The CloudEARTHi MOOC is the MOOC of the CloudEARTHi initiative (free to use). It runs on Octa MOOC
+    Studio and the Octa database, which were designed and are paid for exclusively by Octa Insight, with no contribution
+    from any project.</p>
+  <div class="cem-legal">
+    <span>© 2023–2026 CloudEARTHi</span>
+    <a href="https://mooc.cloudearthi.com/lp-term-conditions/">Terms and conditions</a>
+    <a href="https://mooc.cloudearthi.com/privacy-policy-2/">Privacy policy</a>
+    <a href="https://mooc.cloudearthi.com/contact-us/">Contact us</a>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+<!--
+  CloudEARTHi MOOC footer, part 1 of 2: the green part (links and social media).
+  Goes into the "Footer One" widget area as a Custom HTML block (Appearance -> Widgets). See wordpress/footer.md.
+  Styles are scoped to .cem-foot. No scripts.
+-->
+<div class="cem-foot cem-foot-main">
+<style>
+.cem-foot{--fg:#ffffff;--soft:#cfe6d6;--line:rgba(255,255,255,.18);--hover:#ffd166;font-size:15px;line-height:1.6}
+.cem-foot *{box-sizing:border-box}
+.cem-foot-main{color:var(--fg);padding:44px 0 34px;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:36px}
+.cem-foot-main h2{color:var(--fg);font-size:20px;margin:0 0 8px;line-height:1.3}
+.cem-foot-main h3{color:var(--fg);font-size:15px;font-weight:700;margin:0 0 10px}
+.cem-foot-main p{color:var(--soft);margin:0 0 16px;max-width:320px}
+.cem-foot-main ul{list-style:none;margin:0;padding:0}
+.cem-foot-main li{margin:0 0 7px}
+.cem-foot-main a{color:var(--soft);text-decoration:none}
+.cem-foot-main a:hover,.cem-foot-main a:focus{color:var(--hover);text-decoration:underline}
+.cem-foot-main a:focus-visible{outline:2px solid var(--hover);outline-offset:2px}
+.cem-foot .cem-social{display:flex;gap:10px}
+.cem-foot .cem-social a{display:inline-flex;width:38px;height:38px;border-radius:50%;align-items:center;justify-content:center;
+  border:1px solid var(--line);color:var(--fg);transition:background-color .15s,border-color .15s}
+.cem-foot .cem-social a:hover,.cem-foot .cem-social a:focus{background:var(--fg);border-color:var(--fg);color:#0f3d27;text-decoration:none}
+.cem-foot .cem-social svg{width:18px;height:18px;fill:currentColor}
+.cem-foot .cem-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.cem-foot .cem-studio{display:inline-block;margin-top:6px;padding:7px 14px;border:1px solid var(--soft);border-radius:999px;color:var(--fg)}
+@media (max-width:900px){.cem-foot-main{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.cem-foot-main{grid-template-columns:1fr;gap:26px;padding:32px 0 24px}}
+</style>
+  <div>
+    <h2>CloudEARTHi MOOC</h2>
+    <p>The online teaching platform of the CloudEARTHi initiative. Every course, certificate and badge is free for learners.</p>
+    <div class="cem-social">
+      <a href="https://www.facebook.com/CloudEARTHi" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.5 2 2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 17 22 12c0-5.5-4.5-10-10-10z"/></svg><span class="cem-sr">CloudEARTHi on Facebook</span></a>
+      <a href="https://x.com/CloudEARTHi" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.8 3h3.1l-6.8 7.7 8 10.3h-6.2l-4.9-6.3L5.4 21H2.3l7.2-8.3L1.8 3h6.4l4.4 5.8L17.8 3zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5z"/></svg><span class="cem-sr">CloudEARTHi on X</span></a>
+      <a href="https://www.linkedin.com/company/80352164" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.7 3H4.3C3.6 3 3 3.6 3 4.3v15.4c0 .7.6 1.3 1.3 1.3h15.4c.7 0 1.3-.6 1.3-1.3V4.3C21 3.6 20.4 3 19.7 3zM8.3 18.3H5.7V9.7h2.7v8.6zM7 8.6c-.9 0-1.5-.7-1.5-1.5S6.1 5.5 7 5.5s1.5.7 1.5 1.5S7.9 8.6 7 8.6zm11.3 9.7h-2.7v-4.2c0-1 0-2.3-1.4-2.3s-1.6 1.1-1.6 2.2v4.2H10V9.7h2.6v1.2c.4-.7 1.2-1.4 2.5-1.4 2.7 0 3.2 1.8 3.2 4.1v4.7z"/></svg><span class="cem-sr">CloudEARTHi on LinkedIn</span></a>
+      <a href="https://www.youtube.com/channel/UC1knTFauWtTuScpfki_Szsg" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.8 8s-.2-1.4-.8-2c-.8-.8-1.6-.8-2-.8C16.2 5 12 5 12 5s-4.2 0-7 .2c-.4 0-1.2 0-2 .8-.6.6-.8 2-.8 2S2 9.6 2 11.2v1.5c0 1.6.2 3.2.2 3.2s.2 1.4.8 2c.8.8 1.8.8 2.2.9 1.6.2 6.8.2 6.8.2s4.2 0 7-.2c.4 0 1.2 0 2-.8.6-.6.8-2 .8-2s.2-1.6.2-3.2v-1.5C22 9.6 21.8 8 21.8 8zM9.9 14.6V9l5.4 2.8-5.4 2.8z"/></svg><span class="cem-sr">CloudEARTHi on YouTube</span></a>
+    </div>
+  </div>
+  <nav aria-label="Learn">
+    <h3>Learn</h3>
+    <ul>
+      <li><a href="https://mooc.cloudearthi.com/new_mooc.html#/">All courses</a></li>
+      <li><a href="https://mooc.cloudearthi.com/allcourses/">Course archive</a></li>
+      <li><a href="https://mooc.cloudearthi.com/new_mooc.html#/my">My learning</a></li>
+      <li><a href="https://mooc.cloudearthi.com/new_mooc.html#/signin">Sign in</a></li>
+    </ul>
+  </nav>
+  <nav aria-label="Work with us">
+    <h3>Work with us</h3>
+    <ul>
+      <li><a href="https://mooc.cloudearthi.com/partner-with-us/">Partner with us</a></li>
+      <li><a href="https://mooc.cloudearthi.com/contact-us/">Contact us</a></li>
+      <li><a class="cem-studio" href="https://cloudearthi-mooc.streamlit.app/" target="_blank" rel="noopener">Open Octa MOOC Studio<span class="cem-sr"> (opens in a new tab)</span></a></li>
+    </ul>
+  </nav>
+  <nav aria-label="About">
+    <h3>About</h3>
+    <ul>
+      <li><a href="https://mooc.cloudearthi.com/about-cloudearthi/">CloudEARTHi</a></li>
+      <li><a href="https://mooc.cloudearthi.com/acknowledgment/">Acknowledgment</a></li>
+      <li><a href="https://mooc.cloudearthi.com/linked-websites/">Linked websites</a></li>
+      <li><a href="https://mooc.cloudearthi.com/partners/">Partners</a></li>
+    </ul>
+  </nav>
+</div>
