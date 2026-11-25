@@ -120,6 +120,36 @@
 .octa-mooc summary{cursor:pointer;font-weight:600;font-size:17px;color:var(--brand)}
 .octa-mooc details p{color:var(--quiet);margin-top:8px;max-width:760px}
 
+/* fold-out sections: technology and coming next */
+.octa-mooc details.om-fold{border:1px solid var(--line);border-radius:20px;background:#fff;padding:0;overflow:hidden}
+.octa-mooc details.om-fold>summary{list-style:none;padding:28px 32px;display:grid;grid-template-columns:1fr auto;gap:6px 24px;align-items:center}
+.octa-mooc details.om-fold>summary::-webkit-details-marker{display:none}
+.octa-mooc details.om-fold>summary:hover{background:var(--page)}
+.octa-mooc details.om-fold>summary:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
+.octa-mooc .om-fold-kicker{font-size:14px;font-weight:700;color:var(--accent);grid-column:1}
+.octa-mooc .om-fold-title{font-size:28px;font-weight:700;color:var(--brand);line-height:1.25;grid-column:1}
+.octa-mooc .om-fold-teaser{font-weight:400;color:var(--quiet);font-size:17px;grid-column:1;max-width:720px}
+.octa-mooc .om-fold-more{grid-column:2;grid-row:1/4;font-size:15px;font-weight:600;color:var(--button);border:2px solid var(--button);
+  border-radius:999px;padding:9px 18px;white-space:nowrap}
+.octa-mooc .om-fold-more::after{content:" \25BE"}
+.octa-mooc details.om-fold[open] .om-fold-more::after{content:" \25B4"}
+.octa-mooc details.om-fold[open] .om-fold-more .om-open{display:none}
+.octa-mooc details.om-fold:not([open]) .om-fold-more .om-close{display:none}
+.octa-mooc .om-fold-body{padding:4px 32px 32px;border-top:1px solid var(--line)}
+.octa-mooc .om-fold-body>p{color:var(--quiet);max-width:760px;margin:22px 0 0}
+.octa-mooc .om-feats{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:22px}
+.octa-mooc .om-feat{background:var(--page);border-radius:14px;padding:20px 22px;border-left:4px solid var(--accent)}
+.octa-mooc .om-feat h3{font-size:18px;margin-bottom:6px}
+.octa-mooc .om-feat p{color:var(--quiet);font-size:16px;margin:0}
+.octa-mooc .om-feat.om-plan{border-left-color:var(--line);background:#fff;border:1px dashed var(--line);border-left:4px dashed var(--accent)}
+.octa-mooc .om-fold-note{font-size:15px;color:var(--quiet);margin-top:20px}
+.octa-mooc .om-soon{display:inline-block;font-size:13px;font-weight:700;color:var(--brand);background:var(--accent-soft);
+  border-radius:999px;padding:3px 10px;margin-left:8px;vertical-align:middle}
+@media (max-width:700px){.octa-mooc details.om-fold>summary{grid-template-columns:1fr;padding:22px 20px}
+  .octa-mooc .om-fold-more{grid-column:1;grid-row:auto;justify-self:start;margin-top:8px}
+  .octa-mooc .om-fold-title{font-size:23px}.octa-mooc .om-fold-body{padding:4px 20px 24px}
+  .octa-mooc .om-feats{grid-template-columns:1fr}}
+
 /* request */
 .octa-mooc .om-request{border:2px solid var(--accent);border-radius:20px;padding:32px;background:var(--page)}
 .octa-mooc .om-request h2{font-size:28px;margin-bottom:8px}
@@ -200,6 +230,56 @@
       <div class="om-card"><h3>Figures for your reports</h3><p>Learners, completions and certificates issued, ready for project reports and dissemination indicators.</p></div>
       <div class="om-card"><h3>Free for learners</h3><p>Learners sign up once with an Octa account and keep all their certificates and badges on their own learner profile.</p></div>
     </div>
+  </section>
+
+  <!-- technology (fold-out) -->
+  <section class="om-sec" id="om-tech" aria-label="The technology behind Octa MOOC Studio">
+    <details class="om-fold">
+      <summary>
+        <span class="om-fold-kicker">The technology behind Octa MOOC Studio</span>
+        <span class="om-fold-title">Octa Proof of Learning: online learning that checks itself</span>
+        <span class="om-fold-teaser">Learners move forward only when the system has confirmed that the learning took place.</span>
+        <span class="om-fold-more"><span class="om-open">Read more</span><span class="om-close">Close</span></span>
+      </summary>
+      <div class="om-fold-body">
+        <p>Most online courses can be clicked through: play the video, scroll the PDF, move on. Octa MOOC Studio, designed
+          and built by Octa Insight, works differently. It combines interactive video and documents, steps that cannot be
+          skipped, answers checked on our side, automatic awards and verifiable certificates, all in one tool.</p>
+        <div class="om-feats">
+        <div class="om-feat"><h3>Questions inside the video</h3><p>Teachers place questions at chosen moments in a YouTube video. The video pauses and waits for the answer. Skipping ahead brings the learner back to the question, and jumping forward does not count as watching.</p></div>
+        <div class="om-feat"><h3>Questions inside the documents</h3><p>The same works for reading. Questions sit on specific pages of a PDF, so a document is read and understood, not just opened.</p></div>
+        <div class="om-feat"><h3>Progress the learner earns</h3><p>Each lecture is a path of steps: watch, read, answer, hand in, join a live session. Key questions must be answered correctly before the next step opens. Answers are checked on our side, never in the learner's browser, so the right answers cannot be found in advance. Scores count first-try answers, a fair picture of what was understood.</p></div>
+        <div class="om-feat"><h3>A second chance, with a full record</h3><p>Learners can retake a lecture to improve, within the limit the teacher sets. Every earlier attempt is kept, so teachers and organisations see the whole learning journey, not just the last try.</p></div>
+        <div class="om-feat"><h3>Certificates anyone can verify</h3><p>Certificates and badges are awarded automatically when a learner meets the course's rules, such as the lectures finished and the minimum score. Each one has its own permanent verification page that employers, universities and funders can open to confirm it is genuine. Learners add it to LinkedIn in one click, and the organisation can withdraw a certificate at any time.</p></div>
+        <div class="om-feat"><h3>A public learning profile</h3><p>Each learner can have a public profile that shows all their certificates and badges in one place: a portfolio of verified learning to share with employers.</p></div>
+        <div class="om-feat"><h3>Your design, our verification</h3><p>Courses and projects can use their own certificate design, with their funders' and partners' logos. The Studio places the learner's name, the course and the verification address on it, with no design software needed.</p></div>
+        <div class="om-feat"><h3>Certificates for events, from a list</h3><p>For conferences, workshops and training days, organisers upload a participant list. Each person receives a verifiable certificate by email, with their role (speaker, participant, organiser), and a learner account is created for anyone who does not have one.</p></div>
+        <div class="om-feat"><h3>Evidence for your reports</h3><p>Every learning step is recorded, so projects can report real figures: learners, completions, scores and certificates, rather than page views.</p></div>
+        </div>
+        <p class="om-fold-note">Octa MOOC Studio and Octa Proof of Learning are developed and owned by Octa Insight AS.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- coming next (fold-out) -->
+  <section class="om-sec" id="om-next" aria-label="Coming next">
+    <details class="om-fold">
+      <summary>
+        <span class="om-fold-kicker">Coming next</span>
+        <span class="om-fold-title">What we are working on</span>
+        <span class="om-fold-teaser">Octa MOOC Studio keeps growing with the projects that use it. These are the next steps on our roadmap.</span>
+        <span class="om-fold-more"><span class="om-open">Read more</span><span class="om-close">Close</span></span>
+      </summary>
+      <div class="om-fold-body">
+        <div class="om-feats">
+        <div class="om-feat om-plan"><h3>AI-assisted questions <span class="om-soon">Planned</span></h3><p>The Studio suggests questions from a video or document; the teacher reviews and approves them before learners see them.</p></div>
+        <div class="om-feat om-plan"><h3>Feedback on assignments <span class="om-soon">Planned</span></h3><p>First feedback on written work in minutes, while the teacher keeps the final grade.</p></div>
+        <div class="om-feat om-plan"><h3>A dashboard for funders <span class="om-soon">Planned</span></h3><p>Live figures on reach, completion and results, ready to use in project reports.</p></div>
+        <div class="om-feat om-plan"><h3>Courses in more languages <span class="om-soon">Planned</span></h3><p>One course in several languages, with the learner's progress kept when switching.</p></div>
+        </div>
+        <p class="om-fold-note">Have an idea or a need in your project? <a href="#request">Tell us</a>, and it may shape what we build next.</p>
+      </div>
+    </details>
   </section>
 
   <!-- two ways -->
