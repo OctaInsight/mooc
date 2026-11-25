@@ -306,6 +306,17 @@ async function viewHome(view) {
 
 // ------------------------------------------------------------------------------------------------ course page
 let VIEW = null;                // the mooc_course_view answer for the open course
+// sections (optional): the lectures come in reading order; a heading goes before the first lecture of each section
+function partsOf(v) {
+  const byId = Object.fromEntries((v.sections || []).map(x => [x.id, x]));
+  const heads = {}; let n = 0, prev = null;
+  (v.lectures || []).forEach(l => {
+    const sec = byId[l.section_id];
+    if (sec && l.section_id !== prev) heads[l.id] = { ...sec, n: ++n };
+    prev = l.section_id || null;
+  });
+  return { heads, count: n };
+}
 const allSteps = () => (VIEW?.lectures || []).flatMap(l => l.steps.map(s => ({ ...s, lecture: l })));
 const stepById = id => allSteps().find(s => s.id === id);
 const isDone = s => !!(s.progress && s.progress.completed);
@@ -333,15 +344,18 @@ async function viewCourse(view, slug) {
   else action = `<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px"><b>Your progress</b><span class="muted">${done} of ${steps.length} steps</span></div>
       <div class="bar ${pct === 100 ? "done" : ""}" style="margin-bottom:16px"><i style="width:${pct}%"></i></div>
       ${first ? `<a class="btn big block" href="#/learn/${encodeURIComponent(slug)}/${first.id}">${done ? (pct === 100 ? "Review the course" : "Continue learning") : "Start the first lecture"}</a>` : ""}`;
-  const facts = [c.level && c.level[0].toUpperCase() + c.level.slice(1), v.lectures.length && plural(v.lectures.length, "lecture"),
+  const parts = partsOf(v);
+  const facts = [c.level && c.level[0].toUpperCase() + c.level.slice(1), parts.count && plural(parts.count, "section"),
+    v.lectures.length && plural(v.lectures.length, "lecture"),
     c.hours && `${+c.hours} hours`, c.language].filter(Boolean).map(f => `<span class="fact">${esc(f)}</span>`).join("");
   const prizes = (v.badges || []).map(b => `<div class="prize-row"><div class="seal">${b.image_url ? `<img src="${esc(b.image_url)}" alt="">` : (b.kind === "certificate" ? "📜" : "🏅")}</div>
       <div><b>${esc(b.title)}</b><div class="small muted">${b.award_id ? `<a href="award.html?id=${b.award_id}" target="_blank" rel="noopener">You earned it: see and share</a>` : badgeNeeds(b)}</div></div></div>`).join("");
   const paragraphs = (c.description || "").split(/\n\s*\n/).map(s => s.trim()).filter(Boolean).map(s => `<p>${esc(s).replace(/\n/g, "<br>")}</p>`).join("");
   const outcomes = (c.outcomes || []).map(o => `<li>${ICON.check}<span>${esc(o)}</span></li>`).join("");
   const stages = v.lectures.map((l, i) => {
-    const ldone = l.steps.length && l.steps.every(isDone);
-    return `<li class="stage ${ldone ? "done" : ""}"><div class="marker">${ldone ? "✓" : i + 1}</div>
+    const ldone = l.steps.length && l.steps.every(isDone), head = parts.heads[l.id];
+    return (head ? `<li class="part"><div class="part-n">Section ${head.n}</div><h3>${esc(head.title)}</h3>${head.summary ? `<p>${esc(head.summary)}</p>` : ""}</li>` : "")
+      + `<li class="stage ${ldone ? "done" : ""}"><div class="marker">${ldone ? "✓" : i + 1}</div>
       <h3>${esc(l.title)}</h3>${l.summary ? `<div class="about">${esc(l.summary)}</div>` : ""}
       <ul class="steps">${l.steps.map(s => `<li class="${isDone(s) ? "done" : ""} ${v.enrolled ? "link" : ""}" ${v.enrolled ? `data-go="${s.id}" tabindex="0"` : ""}>
         ${isDone(s) ? ICON.check.replace("<svg", '<svg class="ic"') : ICON[s.kind] || ""}<span>${esc(s.title)}</span><span class="kind">${KIND[s.kind] || ""}</span></li>`).join("")}</ul></li>`;
@@ -435,13 +449,14 @@ async function viewLearn(view, slug, stepId) {
 }
 function drawRail(slug, currentId) {
   const steps = allSteps(), done = steps.filter(isDone).length, pct = Math.round(100 * done / Math.max(steps.length, 1));
-  const max = VIEW.course.max_retakes || 0;
+  const max = VIEW.course.max_retakes || 0, parts = partsOf(VIEW);
   $(".rail").innerHTML = `<a class="ctitle" href="#/course/${encodeURIComponent(slug)}">${esc(VIEW.course.title)}</a>
     <div class="bar ${pct === 100 ? "done" : ""}"><i style="width:${pct}%"></i></div>
     <div class="small muted" style="margin-top:6px">${done} of ${steps.length} steps done</div>
     ${VIEW.lectures.map((l, i) => {
       const started = l.steps.some(s => s.progress), left = max ? Math.max(0, max - (l.retakes_used || 0)) : Infinity;
-      return `<div class="lec"><div class="lec-t">${i + 1}. ${esc(l.title)}</div><ul class="way">
+      const head = parts.heads[l.id];
+      return (head ? `<div class="rail-part"><span>Section ${head.n}</span>${esc(head.title)}</div>` : "") + `<div class="lec"><div class="lec-t">${i + 1}. ${esc(l.title)}</div><ul class="way">
         ${l.steps.map(s => `<li class="${isDone(s) ? "done" : ""} ${s.id === currentId ? "on" : ""}"><span class="dot"></span>
           <button data-step="${s.id}" ${s.id === currentId ? 'aria-current="step"' : ""}>${esc(s.title)}<span class="k">${KIND[s.kind] || ""}${isDone(s) ? ", done" : ""}</span></button></li>`).join("")}
         </ul>${started || l.retakes_used ? `<div class="redo"><button data-redo="${l.id}" ${left === 0 || !started ? "disabled" : ""}>Redo this lecture</button>

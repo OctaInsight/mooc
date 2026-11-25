@@ -28,7 +28,12 @@ Giving someone a role in a course's Team tab needs no request.
 - **Course** (`Mooc_courses`): title, summary, description, learning outcomes, level, language, hours, cover,
   pass score, status draft / published / archived. `kind` = `course` (lectures, listed on the website) or `event`
   (certificates only: a conference, workshop or course without content here; not listed on the website).
-- **Lecture** (`Mooc_lectures`): ordered, with its own learning outcomes; draft or published.
+- **Section** (`Mooc_sections`, optional): a course can be a plain series of lectures, or be split into sections
+  (for example "Part 1: Basics") that each hold several lectures. Lectures without a section come first, then each
+  section in order. Deleting a section keeps its lectures, outside any section. The website shows sections as headings
+  in the course route and in the learning rail; lecture numbers run through the whole course.
+- **Lecture** (`Mooc_lectures`): ordered, with its own learning outcomes; draft or published; optionally in a section
+  (`section_id`).
 - **Step** (`Mooc_steps`), in order inside a lecture:
   - video (YouTube), pdf (uploaded), text, quiz, assignment (graded by a teacher or "handing in is enough"),
     live session (link to an online lecture or study group).

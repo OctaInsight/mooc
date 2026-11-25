@@ -198,6 +198,12 @@ input:focus, textarea:focus { border-color: var(--blue); outline: none; box-shad
 .stage.done .marker { background: var(--moss); border-color: var(--moss); color: #fff; }
 .stage h3 { font-size: 1.15rem; padding-top: 3px; }
 .stage .about { color: var(--ink-soft); margin: 4px 0 8px; font-size: .97rem; }
+.route .part { padding: 6px 0 18px; margin-top: 6px; }
+.route .part:not(:first-child) { border-top: 1px solid var(--line); padding-top: 22px; }
+.route .part .part-n { font: 700 .8rem var(--display); color: var(--moss); letter-spacing: .02em; }
+.route .part h3 { font-size: 1.3rem; margin-top: 2px; }
+.route .part p { color: var(--ink-soft); margin: 4px 0 0; font-size: .97rem; }
+.stage:has(+ .part)::before { display: none; }
 .steps { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 4px; }
 .steps li { display: flex; gap: 10px; align-items: center; font-size: .96rem; padding: 6px 10px; border-radius: var(--r-sm); }
 .steps li .kind { color: var(--ink-soft); font-size: .85rem; margin-left: auto; }
@@ -212,6 +218,9 @@ input:focus, textarea:focus { border-color: var(--blue); outline: none; box-shad
   height: calc(100vh - 66px); overflow: auto; }
 .rail .ctitle { font: 650 1.08rem var(--display); color: var(--ink); text-decoration: none; display: block; margin-bottom: 10px; }
 .rail .lec { margin-top: 20px; }
+.rail .rail-part { margin-top: 26px; padding-top: 14px; border-top: 1px solid var(--line); font: 700 1rem var(--display); color: var(--ink); }
+.rail .rail-part span { display: block; font-size: .78rem; color: var(--moss); }
+.rail .rail-part + .lec { margin-top: 10px; }
 .rail .lec-t { font: 650 .98rem var(--display); margin-bottom: 6px; }
 .way { list-style: none; margin: 0; padding: 0; }
 .way li { position: relative; padding-left: 30px; }

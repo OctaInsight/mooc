@@ -386,3 +386,63 @@ def test_people_who_already_have_it_are_named_and_can_be_emailed_again():
     finally:
         bulk.read_people = real
         bulk.st.file_uploader = lambda *a, **k: None
+
+
+def test_course_without_sections_is_a_plain_series_of_lectures():
+    at, fake = fresh()
+    cid = fake("save_course", title="Plain")["id"]
+    fake("save_lecture", course_id=cid, title="One")
+    fake("save_lecture", course_id=cid, title="Two")
+    at.session_state["mc_course"] = cid
+    at.run()
+    assert not at.exception, at.exception
+    heads = [e.label for e in at.expander]
+    assert "📑 Sections (optional)" in heads
+    assert [h.split("  ·")[0] for h in heads if h.startswith("Lecture")] == ["Lecture 1: One", "Lecture 2: Two"]
+    assert not any(m.value.startswith("#### Section") for m in at.markdown)
+    assert "In section" not in [s.label for s in at.selectbox]
+
+
+def test_teacher_splits_a_course_into_sections():
+    at, fake = fresh()
+    cid = fake("save_course", title="Long course")["id"]
+    first = fake("save_lecture", course_id=cid, title="Welcome")["id"]
+    at.session_state["mc_course"] = cid
+    at.run()
+    # add two sections
+    next(t for t in at.text_input if t.label == "New section").input("Part 1: Basics")
+    btn(at, "➕ Add section").click().run()
+    assert not at.exception and not errors(at), errors(at)
+    next(t for t in at.text_input if t.label == "New section").input("Part 2: Practice")
+    btn(at, "➕ Add section").click().run()
+    s1, s2 = [x["id"] for x in sorted(fake.sections.values(), key=lambda x: x["position"])]
+    # a new lecture goes into the last section by default; another one into section 1
+    next(t for t in at.text_input if t.label == "New lecture").input("Exercises")
+    btn(at, "➕ Add lecture").click().run()
+    assert not errors(at), errors(at)
+    ex = next(l for l in fake.lectures.values() if l["title"] == "Exercises")
+    assert ex["section_id"] == s2
+    next(t for t in at.text_input if t.label == "New lecture").input("Key ideas")
+    next(s for s in at.selectbox if s.label == "In section").set_value(s1)
+    btn(at, "➕ Add lecture").click().run()
+    key = next(l for l in fake.lectures.values() if l["title"] == "Key ideas")
+    assert key["section_id"] == s1
+    # the list shows the lectures outside sections first, then each section, numbered through the course
+    heads = [e.label.split("  ·")[0] for e in at.expander if e.label.startswith("Lecture")]
+    assert heads == ["Lecture 1: Welcome", "Lecture 2: Key ideas", "Lecture 3: Exercises"], heads
+    titles = [m.value for m in at.markdown if m.value.startswith("####") and "ection" in m.value]
+    assert titles == ["#### Lectures outside any section", "#### Section 1: Part 1: Basics", "#### Section 2: Part 2: Practice"], titles
+    # move the welcome lecture into section 1 from its own settings
+    sel = next(s for s in at.selectbox if s.label == "Section" and s.value is None)
+    sel.set_value(s1)
+    form_btns = [b for b in at.button if b.label == "Save lecture"]
+    form_btns[0].click().run()
+    assert not errors(at), errors(at)
+    assert fake.lectures[first]["section_id"] == s1
+    # swap the two sections
+    next(b for b in at.button if b.key == f"secdown_{s1}").click().run()
+    assert fake.sections[s2]["position"] < fake.sections[s1]["position"]
+    # delete section 2: its lecture stays, outside any section
+    next(b for b in at.button if b.key == f"secdel_{s2}").click().run()
+    assert not errors(at), errors(at)
+    assert s2 not in fake.sections and fake.lectures[ex["id"]]["section_id"] is None

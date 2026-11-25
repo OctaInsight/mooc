@@ -374,37 +374,115 @@ def page_course(cid):
 
 # ------------------------------------------------------------------------------------------------ lectures
 def tab_lectures(c):
-    lectures = c["lectures"]
+    lectures, sections = c["lectures"], c.get("sections") or []
     if not lectures:
         st.info("A course is a series of lectures. Each lecture is a short path of steps: watch, read, answer, hand in.")
-    for i, lec in enumerate(lectures):
-        n_steps = len(lec["steps"])
-        head = f"Lecture {i + 1}: {lec['title']}  ·  {n_steps} step{'s' * (n_steps != 1)}  ·  {lec['status']}"
-        with st.expander(head, expanded=S.get("mc_open_lecture") == lec["id"]):
-            lecture_editor(c, lec, i, lectures)
+    sections_manager(c, sections, lectures)
+    # lectures, grouped by section when the course has sections (numbers run through the whole course)
+    groups = [(None, [l for l in lectures if not l.get("section_id")])]
+    groups += [(x, [l for l in lectures if l.get("section_id") == x["id"]]) for x in sections]
+    number = {l["id"]: i + 1 for i, l in enumerate(lectures)}
+    for k, (sec, group) in enumerate(groups):
+        if sections:
+            if sec is None:
+                if not group:
+                    continue
+                st.markdown("#### Lectures outside any section")
+                st.caption("Students see these first, before the first section.")
+            else:
+                st.markdown(f"#### Section {k}: {html.escape(sec['title'])}")
+                if sec.get("summary"):
+                    st.caption(sec["summary"])
+                if not group:
+                    st.caption("No lectures in this section yet. Add one below, or move a lecture here.")
+        for j, lec in enumerate(group):
+            n_steps = len(lec["steps"])
+            head = f"Lecture {number[lec['id']]}: {lec['title']}  ·  {n_steps} step{'s' * (n_steps != 1)}  ·  {lec['status']}"
+            with st.expander(head, expanded=S.get("mc_open_lecture") == lec["id"]):
+                lecture_editor(c, lec, j, group, sections)
     with st.form("new_lecture", clear_on_submit=True):
-        cols = st.columns([4, 1])
+        cols = st.columns([4, 2, 1]) if sections else st.columns([4, 1])
         t = cols[0].text_input("New lecture", placeholder="Lecture title")
-        cols[1].write("")
-        if cols[1].form_submit_button("➕ Add lecture", width="stretch") and t.strip():
-            r = run("save_lecture", "Lecture added.", course_id=c["id"], title=t.strip())
+        where = None
+        if sections:
+            opts = [None] + [x["id"] for x in sections]
+            names = {None: "No section", **{x["id"]: f"Section {i + 1}: {x['title']}" for i, x in enumerate(sections)}}
+            where = cols[1].selectbox("In section", opts, index=len(opts) - 1, format_func=names.get)
+        cols[-1].write("")
+        if cols[-1].form_submit_button("➕ Add lecture", width="stretch") and t.strip():
+            extra = {"section_id": where or ""} if sections else {}
+            r = run("save_lecture", "Lecture added.", course_id=c["id"], title=t.strip(), **extra)
             if r:
                 S["mc_open_lecture"] = r["id"]
                 st.rerun()
 
 
-def lecture_editor(c, lec, i, lectures):
+def sections_manager(c, sections, lectures):
+    """Optional sections: group the lectures of a longer course, for example "Part 1: Basics"."""
+    label = f"📑 Sections ({len(sections)})" if sections else "📑 Sections (optional)"
+    with st.expander(label, expanded=bool(S.pop("mc_open_sections", False))):
+        st.caption("A course can be a simple series of lectures, or be split into sections that each hold several "
+                   "lectures. Add sections only if you need them; students see them as headings in the course route.")
+        for i, x in enumerate(sections):
+            xid = x["id"]
+            n = sum(1 for l in lectures if l.get("section_id") == xid)
+            with st.container(border=True):
+                with st.form(f"sec_{xid}"):
+                    a, b = st.columns([2, 3])
+                    title = a.text_input(f"Section {i + 1} title", x["title"])
+                    summary = b.text_input("Short description (optional)", x.get("summary") or "")
+                    if st.form_submit_button("Save section"):
+                        S["mc_open_sections"] = True
+                        run("save_section", "Section saved.", id=xid, title=title.strip(), summary=summary.strip()) and st.rerun()
+                m = st.columns([1, 1, 3, 1])
+                if i > 0 and m[0].button("↑ Move up", key=f"secup_{xid}"):
+                    ids = [y["id"] for y in sections]
+                    ids[i - 1], ids[i] = ids[i], ids[i - 1]
+                    S["mc_open_sections"] = True
+                    run("reorder", what="section", ids=ids) and st.rerun()
+                if i < len(sections) - 1 and m[1].button("↓ Move down", key=f"secdown_{xid}"):
+                    ids = [y["id"] for y in sections]
+                    ids[i + 1], ids[i] = ids[i], ids[i + 1]
+                    S["mc_open_sections"] = True
+                    run("reorder", what="section", ids=ids) and st.rerun()
+                m[2].caption(f"{n} lecture{'s' * (n != 1)}")
+                with m[3].popover("Delete"):
+                    st.write("Delete this section? Its lectures stay in the course, outside any section.")
+                    if st.button("Yes, delete", key=f"secdel_{xid}", type="primary"):
+                        S["mc_open_sections"] = True
+                        run("delete", "Section deleted. Its lectures are now outside any section.", what="section", id=xid) and st.rerun()
+        with st.form("new_section", clear_on_submit=True):
+            a, b, d = st.columns([2, 3, 1])
+            title = a.text_input("New section", placeholder="For example: Part 1, Basics")
+            summary = b.text_input("Short description (optional)", key="new_section_summary")
+            d.write("")
+            if d.form_submit_button("➕ Add section", width="stretch") and title.strip():
+                S["mc_open_sections"] = True
+                run("save_section", "Section added. Choose it in a lecture's settings, or when you add a lecture.",
+                    course_id=c["id"], title=title.strip(), summary=summary.strip()) and st.rerun()
+
+
+def lecture_editor(c, lec, i, lectures, sections=()):
+    """lectures: the lectures this one moves among (its section, or the whole course without sections)."""
     lid = lec["id"]
     with st.form(f"lec_{lid}"):
         a, b = st.columns([3, 1])
         title = a.text_input("Title", lec["title"])
         status = b.selectbox("Visible to students", ["draft", "published"], index=["draft", "published"].index(lec["status"]),
                              format_func=lambda x: "Yes (published)" if x == "published" else "No (draft)")
+        where = None
+        if sections:
+            opts = [None] + [x["id"] for x in sections]
+            names = {None: "No section", **{x["id"]: f"Section {k + 1}: {x['title']}" for k, x in enumerate(sections)}}
+            cur = lec.get("section_id") if lec.get("section_id") in opts else None
+            where = st.selectbox("Section", opts, index=opts.index(cur), format_func=names.get,
+                                 help="Moving a lecture to another section puts it at the end of that section.")
         summary = st.text_area("What this lecture is about", lec.get("summary") or "", height=70)
         outcomes = st.text_area("Learning outcomes (one per line)", "\n".join(lec.get("outcomes") or []), height=80)
         if st.form_submit_button("Save lecture"):
+            extra = {"section_id": where or ""} if sections else {}
             if run("save_lecture", "Lecture saved.", id=lid, title=title.strip(), status=status, summary=summary,
-                   outcomes=lines(outcomes)):
+                   outcomes=lines(outcomes), **extra):
                 S["mc_open_lecture"] = lid
                 st.rerun()
     m = st.columns([1, 1, 4, 1])

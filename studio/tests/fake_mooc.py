@@ -17,6 +17,7 @@ class FakeMooc:
         self.people = {"u-t": dict(kind="teacher", status="pending", created_at=_now())}
         self.projects, self.courses, self.members, self.lectures, self.steps, self.questions = {}, {}, {}, {}, {}, {}
         self.badges, self.subs = {}, {}
+        self.sections = {}
         self.reqs = {}
         self.awards = {}
         self.sent, self.mail_limit = [], None
@@ -60,7 +61,11 @@ class FakeMooc:
 
     def course_full(self, cid):
         c = dict(self.courses[cid])
-        lec = sorted([l for l in self.lectures.values() if l["course_id"] == cid], key=lambda l: l["position"])
+        secs = sorted([x for x in self.sections.values() if x["course_id"] == cid], key=lambda x: x["position"])
+        c["sections"] = [dict(x) for x in secs]
+        spos = {x["id"]: x["position"] for x in secs}
+        lec = sorted([l for l in self.lectures.values() if l["course_id"] == cid],
+                     key=lambda l: (spos.get(l.get("section_id"), -1), l["position"]))
         c["lectures"] = []
         for l in lec:
             l = dict(l)
@@ -118,11 +123,26 @@ class FakeMooc:
             base.update({k: v for k, v in p.items() if k != "id"})
             self.courses[cid] = base
             return dict(ok=True, id=cid)
+        if action == "save_section":
+            if not (p.get("title") or "").strip():
+                return dict(ok=False, error="Give the section a title.")
+            xid = p.get("id") or self._id()
+            base = self.sections.get(xid) or dict(id=xid, course_id=p.get("course_id"), summary=None,
+                                                  position=10 * (len(self.sections) + 1))
+            base.update({k: v for k, v in p.items() if k not in ("id", "course_id")})
+            self.sections[xid] = base
+            return dict(ok=True, id=xid)
         if action == "save_lecture":
             lid = p.get("id") or self._id()
             base = self.lectures.get(lid) or dict(id=lid, course_id=p.get("course_id"), position=10 * (len(self.lectures) + 1),
-                                                  status="draft", outcomes=[], summary="")
+                                                  status="draft", outcomes=[], summary="", section_id=None)
+            moved = "section_id" in p and (p["section_id"] or None) != base.get("section_id")
             base.update({k: v for k, v in p.items() if k not in ("id", "course_id")})
+            if "section_id" in p:
+                base["section_id"] = p["section_id"] or None
+            if moved:
+                base["position"] = 10 + max([l["position"] for l in self.lectures.values() if l["id"] != lid
+                                             and l.get("section_id") == base["section_id"]] or [0])
             self.lectures[lid] = base
             return dict(ok=True, id=lid)
         if action == "save_step":
@@ -155,12 +175,18 @@ class FakeMooc:
             else:
                 self.members[(p["course_id"], u)] = p["role"]
             return dict(ok=True)
+        if action == "delete" and p["what"] == "section":
+            self.sections.pop(p["id"], None)
+            for l in self.lectures.values():
+                if l.get("section_id") == p["id"]:
+                    l["section_id"] = None
+            return dict(ok=True)
         if action == "delete":
             store = {"lecture": self.lectures, "step": self.steps, "question": self.questions, "badge": self.badges}[p["what"]]
             store.pop(p["id"], None)
             return dict(ok=True)
         if action == "reorder":
-            store = self.lectures if p["what"] == "lecture" else self.steps
+            store = {"lecture": self.lectures, "section": self.sections}.get(p["what"], self.steps)
             for n, i in enumerate(p["ids"]):
                 store[i]["position"] = (n + 1) * 10
             return dict(ok=True)
