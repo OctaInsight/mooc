@@ -113,9 +113,8 @@ input:focus, textarea:focus { border-color: var(--blue); outline: none; box-shad
 .logo.big img { max-height: 100%; object-fit: contain; }
 .project-band:not(:has(.logo)) { grid-template-columns: 1fr; }
 /* funder logo next to the project logo */
-.logos { display: flex; gap: 12px; align-items: center; }
-.project-head .funder { height: 84px; max-width: 230px; padding: 10px 12px; border-radius: var(--r-md); background: var(--paper);
-  border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; }
+.logos { display: flex; flex-direction: column; gap: 8px; }
+.project-head .funder { width: 84px; padding: 5px 6px; border-radius: 8px; background: var(--paper); border: 1px solid var(--line); }
 .funder img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; }
 .logos-col { display: flex; flex-direction: column; gap: 12px; width: 150px; }
 .logos-col .funder { padding: 8px 10px; border-radius: var(--r-md); background: var(--paper); border: 1px solid var(--line); }
@@ -150,7 +149,7 @@ input:focus, textarea:focus { border-color: var(--blue); outline: none; box-shad
 .continue .panel { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow);
   padding: 20px 24px; display: flex; gap: 22px; align-items: center; flex-wrap: wrap; }
 .continue .panel .t { flex: 1 1 260px; }
-.project-head { display: grid; grid-template-columns: auto 1fr auto; gap: 22px; align-items: start; margin-bottom: 26px; }
+.project-head { display: grid; grid-template-columns: 84px 1fr auto; gap: 22px; align-items: start; margin-bottom: 26px; }
 .project-head .logo { width: 84px; height: 84px; border-radius: var(--r-md); background: var(--paper); border: 1px solid var(--line);
   display: grid; place-items: center; overflow: hidden; padding: 8px; }
 .project-head .logo img { max-height: 100%; object-fit: contain; }
@@ -317,8 +316,7 @@ input:focus, textarea:focus { border-color: var(--blue); outline: none; box-shad
   .project-head { grid-template-columns: 60px 1fr; }
   .project-head .logo { width: 60px; height: 60px; }
   .project-head .site { grid-column: 1 / -1; }
-  .project-head:has(.funder) { grid-template-columns: 1fr; }
-  .project-head .funder { height: 60px; max-width: 200px; }
+  .project-head .funder { width: 60px; padding: 3px 4px; }
   .logos-col { flex-direction: row; align-items: center; width: auto; }
   .logos-col .funder { max-width: 200px; height: 96px; display: flex; align-items: center; }
   .project-band { grid-template-columns: 1fr; gap: 18px; }
