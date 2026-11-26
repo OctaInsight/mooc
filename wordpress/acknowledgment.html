@@ -39,6 +39,10 @@
 .cem-legal-page .cem-time li::before{content:"";position:absolute;left:-8px;top:10px;width:13px;height:13px;border-radius:50%;background:var(--mid);border:2px solid #fff}
 .cem-legal-page .cem-time b{display:block;font-family:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;color:var(--green);font-size:18px}
 .cem-legal-page .cem-funders li{margin:10px 0}
+.cem-legal-page .cem-funders-table td:nth-child(2){white-space:nowrap}
+@media (max-width:640px){.cem-legal-page .cem-funders-table td:nth-child(2){white-space:normal;word-break:break-all}
+  .cem-legal-page .cem-funders-table td[data-label]::before{content:attr(data-label) ": ";font-weight:700;color:var(--green)}
+  .cem-legal-page .cem-funders-table td:first-child{font-size:18px}}
 .cem-legal-page .cem-eu{display:flex;gap:18px;align-items:flex-start;background:var(--soft);border-radius:14px;padding:20px 22px;margin-top:10px}
 .cem-legal-page .cem-eu img{width:220px;max-width:40%;height:auto;flex:none}
 .cem-legal-page .cem-eu p{margin:0}
@@ -74,17 +78,16 @@
 </ul>
 
 <h2>3. Funding of the courses</h2>
-<p>The courses on the CloudEARTHi MOOC were developed in different projects, funded as follows:</p>
-<ul class="cem-funders">
-  <li><strong>BOOSTalent</strong> (project number 10048) was funded by the EIT HEI Initiative.</li>
-  <li><strong>Inspiring the Minds</strong> (project number 2022-1-NO01-KA220-HED-000087789) is funded by Erasmus+ under
-    Key Action 2 (Cooperation among organisations and institutions). It is administered and supported by the Norwegian
-    Directorate for Higher Education and Skills.</li>
-  <li><strong>SEEDplus</strong> is funded by Horizon Europe (grant agreement ID 101100494) and falls under the
-    administration of EISMEA, the European Innovation Council and SMEs Executive Agency.</li>
-  <li><strong>Mind the Gap</strong> is funded by Horizon Europe (grant agreement ID 101215579) and falls under the
-    administration of EISMEA, the European Innovation Council and SMEs Executive Agency.</li>
-</ul>
+<p>The courses on the CloudEARTHi MOOC were developed in the following projects:</p>
+<table class="cem-funders-table">
+  <thead><tr><th>Project</th><th>Project number</th><th>Funding programme</th><th>Granting authority</th></tr></thead>
+  <tbody>
+    <tr><td><strong>BOOSTalent</strong></td><td data-label="Project number">10048</td><td data-label="Funding programme">EIT HEI Initiative</td><td data-label="Granting authority">European Institute of Innovation and Technology (EIT)</td></tr>
+    <tr><td><strong>Inspiring the Minds</strong></td><td data-label="Project number">2022-1-NO01-KA220-HED-000087789</td><td data-label="Funding programme">Erasmus+, Key Action 2 (Cooperation among organisations and institutions)</td><td data-label="Granting authority">Norwegian Directorate for Higher Education and Skills (HK-dir)</td></tr>
+    <tr><td><strong>SEEDplus</strong></td><td data-label="Project number">101100494</td><td data-label="Funding programme">Horizon Europe</td><td data-label="Granting authority">European Innovation Council and SMEs Executive Agency (EISMEA)</td></tr>
+    <tr><td><strong>Mind the Gap</strong></td><td data-label="Project number">101215579</td><td data-label="Funding programme">Horizon Europe</td><td data-label="Granting authority">European Innovation Council and SMEs Executive Agency (EISMEA)</td></tr>
+  </tbody>
+</table>
 <p>Each course names the project it comes from on its course page.</p>
 
 <h2>4. Funding statement and disclaimer</h2>

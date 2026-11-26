@@ -91,6 +91,10 @@ function coverArt(seed) {
   return `<svg viewBox="0 0 400 225" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="225" fill="${bg}"/>${paths}
     <circle cx="${(peaks[0][0] * 400).toFixed(0)}" cy="${(peaks[0][1] * 225).toFixed(0)}" r="6" fill="${strong}"/></svg>`;
 }
+// the funder's logo next to a project's logo (projects without one show nothing)
+function funderLogo(p) {
+  return p.funder_logo_url ? `<div class="funder"><img src="${esc(p.funder_logo_url)}" alt="${esc(p.funder_name || "Funder")}" loading="lazy"></div>` : "";
+}
 function cover(c) { return c.image_url ? `<img src="${esc(c.image_url)}" alt="" loading="lazy">` : coverArt(c.slug || c.id); }
 
 // ------------------------------------------------------------------------------------------------ session
@@ -244,7 +248,7 @@ async function viewProject(view, slug) {
     <section class="project-hero"><div class="wrap">
       <div class="crumbs"><a href="#/">All courses</a> / ${esc(p.title)}</div>
       <div class="project-band">
-        ${slug !== "other" ? `<div class="logo big">${p.image_url ? `<img src="${esc(p.image_url)}" alt="${esc(p.title)} logo">` : coverArt(p.slug)}</div>` : ""}
+        ${slug !== "other" ? `<div class="logos-col"><div class="logo big">${p.image_url ? `<img src="${esc(p.image_url)}" alt="${esc(p.title)} logo">` : coverArt(p.slug)}</div>${funderLogo(p)}</div>` : ""}
         <div><h1>${esc(p.title)}</h1>
           ${about.map(x => `<p class="lead">${esc(x)}</p>`).join("")}
           <div class="row">${p.website ? `<a class="btn quiet" href="${esc(p.website)}" target="_blank" rel="noopener">Visit the project website</a>` : ""}
@@ -269,7 +273,7 @@ async function viewHome(view) {
     return `<section class="section" id="p-${esc(p.slug)}" data-group>
       <div class="wrap">
         <div class="project-head">
-          <div class="logo">${p.image_url ? `<img src="${esc(p.image_url)}" alt="${esc(p.title)} logo">` : coverArt(p.slug)}</div>
+          <div class="logos"><div class="logo">${p.image_url ? `<img src="${esc(p.image_url)}" alt="${esc(p.title)} logo">` : coverArt(p.slug)}</div>${funderLogo(p)}</div>
           <div><h2><a href="#/project/${encodeURIComponent(p.slug)}" style="color:inherit;text-decoration:none">${esc(p.title)}</a></h2>${short ? `<p>${esc(short)}${short.length >= 300 ? "…" : ""}</p>` : ""}</div>
           <a class="btn quiet site" href="#/project/${encodeURIComponent(p.slug)}">All ${esc(p.title)} courses</a>
         </div>

@@ -446,3 +446,14 @@ def test_teacher_splits_a_course_into_sections():
     next(b for b in at.button if b.key == f"secdel_{s2}").click().run()
     assert not errors(at), errors(at)
     assert s2 not in fake.sections and fake.lectures[ex["id"]]["section_id"] is None
+
+
+def test_super_admin_sets_a_project_funder():
+    at, fake = fresh()
+    pid = fake("save_project", title="SEEDplus")["id"]
+    at.sidebar.radio[0].set_value("Projects").run()
+    next(t for t in at.text_input if t.label == "Funder, as screen readers read it").input("Funded by the European Union")
+    next(b for b in at.button if b.label == "Save").click().run()
+    assert not at.exception and not errors(at), errors(at)
+    assert fake.projects[pid]["funder_name"] == "Funded by the European Union"
+    assert fake.projects[pid]["funder_logo_url"] == ""

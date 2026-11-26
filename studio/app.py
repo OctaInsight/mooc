@@ -900,6 +900,14 @@ def page_projects():
                 site = a.text_input("Project website", (p or {}).get("website") or "")
                 order = b.number_input("Order on the website", 0, 999, int((p or {}).get("sort_order", 100)), 10)
                 logo = st.file_uploader("Logo or image", type=["png", "jpg", "jpeg", "webp", "svg"], key=f"pl_{(p or {}).get('id', 'new')}")
+                st.markdown("**Funder** — shown next to the project logo in the course catalogue")
+                if (p or {}).get("funder_logo_url"):
+                    st.image(p["funder_logo_url"], width=220)
+                f1, f2 = st.columns(2)
+                funder = f1.text_input("Funder, as screen readers read it", (p or {}).get("funder_name") or "",
+                                       placeholder="Funded by the European Union")
+                flogo = f2.file_uploader("Funder logo", type=["png", "jpg", "jpeg", "webp", "svg"], key=f"pf_{(p or {}).get('id', 'new')}")
+                no_flogo = bool((p or {}).get("funder_logo_url")) and st.checkbox("Remove the funder logo", key=f"pfx_{(p or {}).get('id', 'new')}")
                 go = st.form_submit_button("Save", type="primary")
             if go:
                 if len(title.strip()) < 2:
@@ -913,7 +921,16 @@ def page_projects():
                     except MoocError as e:
                         st.error(str(e))
                         continue
-                args = dict(title=title.strip(), description=desc, website=site.strip(), sort_order=int(order), image_url=image_url)
+                funder_logo = None if no_flogo else (p or {}).get("funder_logo_url")
+                if flogo is not None:
+                    ext = flogo.name.rsplit(".", 1)[-1].lower()
+                    try:
+                        funder_logo = db.upload(flogo.getvalue(), flogo.name, {"svg": "image/svg+xml", "png": "image/png", "webp": "image/webp"}.get(ext, "image/jpeg"))
+                    except MoocError as e:
+                        st.error(str(e))
+                        continue
+                args = dict(title=title.strip(), description=desc, website=site.strip(), sort_order=int(order), image_url=image_url,
+                            funder_logo_url=funder_logo or "", funder_name=funder.strip())
                 if p:
                     args["id"] = p["id"]
                 run("save_project", "Project saved.", **args) and st.rerun()
